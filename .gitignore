@@ -1,0 +1,12 @@
+*.DS_Store
+.env
+*.db
+/Plan
+
+*.gem
+*.rbc
+/.config
+
+## Environment normalisation:
+/.bundle/
+/lib/bundler/man/
