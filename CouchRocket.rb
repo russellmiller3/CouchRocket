@@ -23,14 +23,25 @@ def show_params
 end
 
 get "/" do
-	erb :'Home'
+	@items = current_user.items
+
+	erb :'Home', :locals => { :items => @items, :user => current_user }
+
 end
 
 get "/items" do
 	@item = Item.new
-	erb :'partials/FilePickerTest', :locals => { :item => @item, :user => current_user }
-
+	erb :'partials/AddItem', :locals => { :item => @item, :user => current_user }
 end
+
+get "/items/:id" do
+	show_params
+	item_id = params[:id]
+	@item = Item.get(item_id)
+	show_params
+	erb :'partials/SalesPage', :locals => { :item => @item, :user => current_user }
+end
+
 
 
 post "/items" do

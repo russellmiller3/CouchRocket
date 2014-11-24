@@ -18,9 +18,9 @@ class Item
 	property :type, Text
 	property :brand, Text
 	property :notes, Text
-	property :original_price, Decimal
-	property :asking_price, Decimal
-	property :lowest_price, Decimal
+	property :original_price, Float
+	property :asking_price, Float
+	property :lowest_price, Float
 	property :picture1_url, Text
 	property :picture2_url, Text
 	property :picture3_url, Text
