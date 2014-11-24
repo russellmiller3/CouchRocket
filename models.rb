@@ -24,10 +24,28 @@ class Item
 	property :picture1_url, Text
 	property :picture2_url, Text
 	property :picture3_url, Text
+	property :sold, Boolean, :default  => false
 
 	belongs_to :user
+	belongs_to :buyer
 
 end
+
+class Buyer
+	include DataMapper::Resource
+
+	property :id, Serial
+	property :name, String
+	property :email, String
+	property :phone, String
+	property :address, Text
+	property :stripe_id, String
+
+	has n, :items
+
+end
+
+
 
 DataMapper.finalize
 DataMapper.auto_upgrade!

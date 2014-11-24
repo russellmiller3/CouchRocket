@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'sinatra'
 gem 'sinatra-partial'
 gem 'data_mapper'
-
+gem 'stripe'
 
 group :development do
   gem 'sqlite3'
