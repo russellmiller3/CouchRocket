@@ -60,6 +60,7 @@ post "/items" do
 	@item.save
 	@item.errors.each do |error|
 		puts error
+	end
   redirect "/"
 end
 
@@ -75,6 +76,7 @@ item_id = params[:item][:id]
 @buyer.save
 @buyer.errors.each do |error|
 		puts error
+end
 
 Stripe.api_key = "sk_test_x6GZa5DuUvqCIT7jAg20yVPH"
 
@@ -84,15 +86,15 @@ token = params[:stripeToken]
 # Create a Customer
 customer = Stripe::Customer.create(
 :card => token,
-:description => @buyer.name
-:email => @buyer.email
+:description => @buyer.name,
+:email => @buyer.email,
 )
 
 # Charge the Customer instead of the card
 Stripe::Charge.create(
-:amount => @amount
+:amount => @amount,
 :currency => "usd",
-:customer => customer.id
+:customer => customer.id,
 )
 
 @buyer.stripe_id = customer.id
@@ -103,5 +105,5 @@ Stripe::Charge.create(
 end
 
 
-end
+
 
