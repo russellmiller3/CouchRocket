@@ -11,6 +11,7 @@ class User
 
 end
 
+
 class Item
 	include DataMapper::Resource
 
@@ -47,7 +48,10 @@ class Buyer
 
 end
 
-
-
 DataMapper.finalize
 DataMapper.auto_upgrade!
+
+user = User.new(:id=>"1",:name=>"joe")
+user.save
+buyer = Buyer.new(:id=>"2",:name=>"dummy_buyer")
+buyer.save

@@ -65,55 +65,58 @@ post "/items" do
 end
 
 post "/charge" do
-show_params
+	show_params
 
-buyer_attrs = params[:buyer]
-@buyer = Buyer.new(buyer_attrs)
-@buyer.stripe_token = params[:stripeToken]
-@buyer.stripe_customer_id = params[:stripeCustomerID]
-@buyer.save
+	buyer_attrs = params[:buyer]
+	@buyer = Buyer.new(buyer_attrs)
+	@buyer.stripe_token = params[:stripeToken]
+	@buyer.stripe_customer_id = params[:stripeCustomerID]
+	@buyer.save
 
-@buyer.errors.each do |error|
-		puts error
-end
+	@buyer.errors.each do |error|
+			puts error
+	end
 
-item_attrs = params[:item]
-item_id = params[:item][:id]
-@item = Item.get(item_id)
-@item.update(item_attrs)
-@item.buyer_id = @buyer.id
-@item.save
+	item_attrs = params[:item]
+	item_id = params[:item][:id]
+	@item = Item.get(item_id)
+	@item.update(item_attrs)
+	@item.buyer_id = @buyer.id
+	@item.save
 
-@item.errors.each do |error|
-		puts error
-end
+	@item.errors.each do |error|
+			puts error
+	end
 
 
-#Stripe Payment:
 
-#amount in cents
-@amount = 100 * @item.asking_price
+	#Stripe Payment:
 
-Stripe.api_key = "sk_test_x6GZa5DuUvqCIT7jAg20yVPH"
+	#amount in cents
+	@amount = 100 * @item.asking_price
 
-# Get the credit card details submitted by the form
-token = params[:stripeToken]
+	"waffles"
 
-# Create a Customer
-customer = Stripe::Customer.create(
-:card => token,
-:description => @buyer.name,
-:email => @buyer.email,
-)
+	# Stripe.api_key = "sk_test_x6GZa5DuUvqCIT7jAg20yVPH"
 
-# Charge the Customer instead of the card
-Stripe::Charge.create(
-:amount => @amount,
-:currency => "usd",
-:customer => customer.id,
-)
+	# # Get the credit card details submitted by the form
+	# token = params[:stripeToken]
 
-redirect "/items"
+	# # Create a Customer
+	# customer = Stripe::Customer.create(
+	# :card => token,
+	# :description => @buyer.name,
+	# :email => @buyer.email,
+	# )
+
+	# # Charge the Customer instead of the card
+	# Stripe::Charge.create(
+	# :amount => @amount,
+	# :currency => "usd",
+	# :customer => customer.id,
+	# )
+
+	# redirect "/items"
 
 end
 
