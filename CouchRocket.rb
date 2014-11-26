@@ -67,16 +67,32 @@ end
 post "/charge" do
 show_params
 
-#amount in cents
-@amount = 100 * params[:item][:asking_price]
-
 buyer_attrs = params[:buyer]
-item_id = params[:item][:id]
 @buyer = Buyer.new(buyer_attrs)
+@buyer.stripe_token = params[:stripeToken]
+@buyer.stripe_customer_id = params[:stripeCustomerID]
 @buyer.save
+
 @buyer.errors.each do |error|
 		puts error
 end
+
+item_attrs = params[:item]
+item_id = params[:item][:id]
+@item = Item.get(item_id)
+@item.update(item_attrs)
+@item.buyer_id = @buyer.id
+@item.save
+
+@item.errors.each do |error|
+		puts error
+end
+
+
+#Stripe Payment:
+
+#amount in cents
+@amount = 100 * @item.asking_price
 
 Stripe.api_key = "sk_test_x6GZa5DuUvqCIT7jAg20yVPH"
 
@@ -97,10 +113,7 @@ Stripe::Charge.create(
 :customer => customer.id,
 )
 
-@buyer.stripe_id = customer.id
-@buyer.item = Item.get(item_id)
-
-@buyer.save
+redirect "/items"
 
 end
 

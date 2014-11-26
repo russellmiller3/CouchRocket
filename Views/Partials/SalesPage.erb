@@ -3,78 +3,86 @@
 <img src="<%= item.picture2_url %>"><br><br>
 <img src="<%= item.picture3_url %>">
 <br><br>
-
-	<h4><%= item.brand %> <%= item.type %></h4>
-	<p><%= item.notes %>
-<br><br>
+<h4><%= item.brand %> <%= item.type %></h4>
 Originally Priced at: <b><%= item.original_price %></b>
 <br><br>
 <h3>Now selling for: <b><%= item.asking_price %></b></h3>
+<br><br>
+Notes:
+<br><br>
+<%= item.notes %>
+<br><br>
+<h4>Purchase Today</h4>
 
 
-
+<!--Stripe Payment Form-->
 <form action="/charge" method="POST" id="payment-form">
   <span class="payment-errors"></span>
-
-<input name="item[asking_price]" type="hidden" value="<%= item.asking_price %>">
 
 <input name="item[id]" type="hidden" value="<%= item.id %>">
 
 <div class="form-row">
     <label>
       <span>Name</span>
-      <input name="buyer[name]" type="text" size="30" data-stripe="name"/>
+      <input name="buyer[name]" type="text" size="30" data-stripe="name" value="Peter Smith"/>
     </label>
 </div>
-
+<br>
 <div class="form-row">
     <label>
       <span>Email</span>
-      <input name="buyer[email]" type="text" size="30" data-stripe="name"/>
+      <input name="buyer[email]" type="text" size="30" data-stripe="email" value="petersmith@gmail.com"/>
     </label>
 </div>
-
+<br>
 <div class="form-row">
     <label>
       <span>Phone</span>
-      <input name="buyer[phone]" type="text" size="30" data-stripe="name"/>
+      <input name="buyer[phone]" type="text" size="30" data-stripe="phone" value="415-853-9060"/>
     </label>
 </div>
-
-
-
+<br>
 <div class="form-row">
     <label>
       <span>Shipping Address</span>
-      <input name="buyer[address]" type="text" size="30"/>
+      <input name="buyer[address]" type="text" size="30" value="3243 Mason Way, San Francisco, CA 94023"/>
     </label>
-  </div>
+</div>
+<br>
+<div class="form-row">
+    <label for "item[delivery_notes]">Delivery Notes:</label><br>
+    <textarea name="[item][delivery_notes]" placeholder="What's the best time and days to deliver?  Is there an access code? Do you have a dog who might bark at the delivery person? etc." rows="4" cols="50" >Please deliver at 3pm next Tuesday. My door code is #33</textarea>
+</div>
 
-  <div class="form-row">
-    <label>
-      <span>Card Number</span>
-      <input type="text" size="20" data-stripe="number"/>
-    </label>
-  </div>
+<div class="form-row">
+  <label>
+    <span>Card Number</span>
+    <input type="text" size="20" data-stripe="number" value="4242 4242 4242 4242" />
+  </label>
+</div>
 
-  <div class="form-row">
-    <label>
-      <span>CVC</span>
-      <input type="text" size="4" data-stripe="cvc"/>
-    </label>
-  </div>
+<div class="form-row">
+  <label>
+    <span>CVC</span>
+    <input type="text" size="4" data-stripe="cvc" value="123"/>
+  </label>
+</div>
 
-  <div class="form-row">
-    <label>
-      <span>Expiration (MM/YYYY)</span>
-      <input type="text" size="2" data-stripe="exp-month"/>
-    </label>
-    <span> / </span>
-    <input type="text" size="4" data-stripe="exp-year"/>
-  </div>
+<div class="form-row">
+  <label>
+    <span>Expiration (MM/YYYY)</span>
+    <input type="text" size="2" data-stripe="exp-month" value="05" />
+  </label>
+  <span> / </span>
+  <input type="text" size="4" data-stripe="exp-year" value="16"/>
+</div>
 
   <button type="submit">Submit Payment</button>
 </form>
 
 </div>
+
+
+
+
 

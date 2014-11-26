@@ -25,6 +25,7 @@ class Item
 	property :picture2_url, Text
 	property :picture3_url, Text
 	property :sold, Boolean, :default  => false
+	property :delivery_notes, Text
 
 	belongs_to :user
 	belongs_to :buyer
@@ -39,7 +40,8 @@ class Buyer
 	property :email, String
 	property :phone, String
 	property :address, Text
-	property :stripe_id, String
+	property :stripe_token, String
+	property :stripe_customer_id, String
 
 	has n, :items
 
