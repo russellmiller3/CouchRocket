@@ -94,29 +94,29 @@ post "/charge" do
 
 	#amount in cents
 	@amount = 100 * @item.asking_price
+	@amount = @amount.to_i
 
-	"waffles"
+	Stripe.api_key = "sk_test_x6GZa5DuUvqCIT7jAg20yVPH"
 
-	# Stripe.api_key = "sk_test_x6GZa5DuUvqCIT7jAg20yVPH"
+	# Get the credit card details submitted by the form
+	token = params[:stripeToken]
 
-	# # Get the credit card details submitted by the form
-	# token = params[:stripeToken]
+	# Create a Customer
+	customer = Stripe::Customer.create(
+	:card => token,
+	:description => @buyer.name,
+	:email => @buyer.email,
+	)
 
-	# # Create a Customer
-	# customer = Stripe::Customer.create(
-	# :card => token,
-	# :description => @buyer.name,
-	# :email => @buyer.email,
-	# )
 
-	# # Charge the Customer instead of the card
-	# Stripe::Charge.create(
-	# :amount => @amount,
-	# :currency => "usd",
-	# :customer => customer.id,
-	# )
+	# Charge the Customer instead of the card
+	Stripe::Charge.create(
+	:amount => @amount,
+	:currency => "usd",
+	:customer => customer.id,
+	)
 
-	# redirect "/items"
+	redirect "/"
 
 end
 
