@@ -7,56 +7,74 @@ class User
 
 	property :id, Serial
 	property :name, String
-	has n, :items, { :child_key => [:user_id] }
+	property :email, String
+	property :phone, String
+	property :address, Text
+
+	has 1, :seller_profile
+	has 1, :buyer_profile
 
 end
 
+class SellerProfile
+	include DataMapper::Resource
+
+	belongs_to :user, :key => true
+
+	has n, :items, { :child_key => [:user_id] }
+
+
+end
 
 class Item
 	include DataMapper::Resource
+
+	belongs_to :seller_profile, :key => true
+	belongs_to :buyer_profile, :required => false
 
 	property :id, Serial
 	property :type, Text
 	property :brand, Text
 	property :notes, Text
-	property :original_price, Float
-	property :asking_price, Float
+	property :original_price, Integer
+	property :asking_price, Integer
 	property :picture1_url, Text
 	property :picture2_url, Text
 	property :picture3_url, Text
 	property :sold, Boolean, :default  => false
 	property :delivery_notes, Text
 
-	belongs_to :user
-	belongs_to :buyer
+end
+
+
+
+class BuyerProfile
+	include DataMapper::Resource
+
+	belongs_to :user, :key => true
+
+	has n, :items, { :child_key => [:user_id] }
 
 end
 
-class Buyer
+
+class OrderDetails
 	include DataMapper::Resource
 
-	property :id, Serial
-	property :name, String
-	property :email, String
-	property :phone, String
-	property :address, Text
+	property :created_at, Date
+	property :price, Integer
+	property :fulfilled, Boolean, :default => false
+	property :shipdate, Date
+	property :charged, Boolean, :default => false
 	property :stripe_token, String
 	property :stripe_customer_id, String
 
-	has n, :items, { :child_key => [:buyer_id] }
+	belongs_to :item, :key => true
 
 end
+
 
 DataMapper.finalize
 DataMapper.auto_upgrade!
 
-user = User.new(:id=>"1",:name=>"joe")
-user.save
-buyer = Buyer.new(:id=>"2",:name=>"dummy_buyer")
-buyer.save
-item = Item.new(:id=>"3",:type=>"Couch",:brand=>"Davis",
-	:notes=>"A fine leather couch suitable for all occasions",
-	:original_price=>"100",:asking_price=>"70",
-	:picture1_url=>"http://www.thisthatandlife.com/wp-content/uploads/2012/11/Craigslist-Man-Leather-Couch-225.jpg",:user_id=>"1",:buyer_id=>"2"
-	)
-item.save
+
