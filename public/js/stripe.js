@@ -1,26 +1,3 @@
-<!DOCTYPE html>
-<head>
-  <title>CouchRocket</title>
-
-
-
-
-
-
-
-</head>
-
-<body>
-
-<%= yield %>
-
-
-</body>
-
-<!-- Load jQuery version 1.11.1 (uncompressed) -->
-  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.js"></script>
-
-  <!-- Load own scripts -->
   <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
 
 	<script type="text/javascript">
@@ -52,18 +29,17 @@
 	  } else {
 	    // response contains id and card, which contains additional card details
 	    var token = response.id;
-
+	    var customer = customer.id;
 	    // Insert the token and customer into the form so they gets submitted to my server
 	    $form.append($('<input type="hidden" name="stripeToken" />').val(token));
 
+	    $form.append($('<input type="hidden" name="stripeCustomerID" />').val(customer));
 
 
-]]
+
 	    // and submit
 	    $form.get(0).submit();
 	  }
 	};
 
   </script>
-
-<html>

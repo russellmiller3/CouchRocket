@@ -3,13 +3,13 @@ require 'sinatra/partial'
 require 'better_errors'
 require 'stripe'
 
+require_relative 'config/dotenv'
+require_relative 'models'
+
 set :publishable_key, ENV['PUBLISHABLE_KEY']
 set :secret_key, ENV['SECRET_KEY']
 
 Stripe.api_key = settings.secret_key
-
-require_relative 'config/dotenv'
-require_relative 'models'
 
 set :partial_template_engine, :erb
 
@@ -29,7 +29,7 @@ def show_params
 end
 
 get "/" do
-	@items = current_user.items
+	@items = current_user.seller_profile.items
 
 	erb :'Home', :locals => { :items => @items, :user => current_user }
 
@@ -44,58 +44,70 @@ get "/items/:id" do
 	show_params
 	item_id = params[:id]
 	@item = Item.get(item_id)
-	@buyer = Buyer.new
 	show_params
-	erb :'partials/SalesPage', :locals => { :item => @item, :user => current_user, :buyer => @buyer }
+	erb :'partials/SalesPage', :locals => { :item => @item }
 end
-
-
 
 post "/items" do
 	show_params
+
+	if current_user.seller_profile
+		@seller_profile = current_user.seller_profile
+	else
+		@seller_profile = SellerProfile.new({:user_id => current_user[:id]})
+	end
+
+	@seller_profile.save
+	@seller_profile.errors.each do |error|
+		puts error
+	end
+
 	item_attrs = params[:item]
-	default_buyer = Buyer.get(1)
-	item_attrs.merge!({ :user => current_user, :buyer => default_buyer})
+	item_attrs.merge!({ :seller_profile_id => @seller_profile.id})
+
+
+
 	@item = Item.new(item_attrs)
+	@item.original_price = 100 * @item.original_price
+	@item.asking_price = 100 * @item.asking_price
 	@item.save
 	@item.errors.each do |error|
 		puts error
 	end
+
   redirect "/"
 end
 
 post "/charge" do
 	show_params
 
-	buyer_attrs = params[:buyer]
-	@buyer = Buyer.new(buyer_attrs)
-	@buyer.stripe_token = params[:stripeToken]
-	@buyer.stripe_customer_id = params[:stripeCustomerID]
-	@buyer.save
+	#Create new user (buyer)
+	user_attrs = params[:user]
+	@new_user = User.new(user_attrs)
+	@new_user.buyer_profile = BuyerProfile.new
 
-	@buyer.errors.each do |error|
-			puts error
-	end
-
-	item_attrs = params[:item]
+	#Attach item to buyer
 	item_id = params[:item][:id]
 	@item = Item.get(item_id)
-	@item.update(item_attrs)
-	@item.buyer_id = @buyer.id
-	@item.save
+	@item.buyer_profile_id = @new_user.buyer_profile.id
 
 	@item.errors.each do |error|
 			puts error
 	end
 
+	#Create new order
+	@order = OrderDetails.new
+	@order.delivery_notes = params[:order][:delivery_notes]
+	@order.stripe_token = params[:stripeToken]
+	@order.stripe_customer_id = params[:stripeCustomerID]
+	@order.save
 
+	#Attach item to order
+	@item.order_details_id = @order.id
+	@item.save
 
-	#Stripe Payment:
-
-	#amount in cents
-	@amount = 100 * @item.asking_price
-	@amount = @amount.to_i
-
+	# **Stripe Payment:**
+	@amount = @item.asking_price
 	Stripe.api_key = "sk_test_x6GZa5DuUvqCIT7jAg20yVPH"
 
 	# Get the credit card details submitted by the form
@@ -104,10 +116,9 @@ post "/charge" do
 	# Create a Customer
 	customer = Stripe::Customer.create(
 	:card => token,
-	:description => @buyer.name,
-	:email => @buyer.email,
+	:description => @new_user.name,
+	:email => @new_user.email,
 	)
-
 
 	# Charge the Customer instead of the card
 	Stripe::Charge.create(

@@ -1,11 +1,15 @@
 <h1>CouchRocket</h1>
 <br><br>
-<a href="/items">Add Item</a>
+
+<form action="/items">
+    <input type="submit" value="Add Item">
+</form>
+
 <br><br>
 
 <h2>Items for Sale</h2>
 <% @items.each do |item| %>
 <a href="/items/<%= item.id %>">
-<IMG HEIGHT=50 WIDTH=50 SRC="<%= item.picture1_url %>">
+<IMG border="1" HEIGHT=50 WIDTH=50 SRC="<%= item.picture1_url %>">
 Sales Page for <%= item.brand %> <%= item.type %></a><br><br>
 <% end %>
