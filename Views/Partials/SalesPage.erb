@@ -1,22 +1,21 @@
 <div class="Sales Page">
-<img src="<%= item.picture1_url %>"><br><br>
-<img src="<%= item.picture2_url %>"><br><br>
+<img src="<%= item.picture1_url %>">
+<img src="<%= item.picture2_url %>">
 <img src="<%= item.picture3_url %>">
-<br><br>
 <h4><%= item.brand %> <%= item.type %></h4>
 Originally Priced at: <b><%= item.original_price/100 %></b>
-<br><br>
+<br>
 <h3>Now selling for: <b><%= item.asking_price/100 %></b></h3>
-<br><br>
+<br>
 Notes:
-<br><br>
+<br>
 <%= item.notes %>
 <br><br>
 <h4>Purchase Today</h4>
 
 
-<!--Stripe Payment Form-->
-<form action="/charge" method="POST" id="payment-form">
+
+<form action="/orders" method="POST" id="payment-form">
   <span class="payment-errors"></span>
 
 <input name="item[id]" type="hidden" value="<%= item.id %>">
@@ -24,7 +23,7 @@ Notes:
 <div class="form-row">
     <label>
       <span>Name</span>
-      <input name="user[name]" type="text" size="30" data-stripe="name" value="Jim Smith"/>
+      <input name="user[name]" type="text" size="30" value="Jim Smith"/>
     </label>
 </div>
 <br>
@@ -38,7 +37,7 @@ Notes:
 <div class="form-row">
     <label>
       <span>Phone</span>
-      <input name="user[phone]" type="text" size="30" data-stripe="phone" value="415-853-9060"/>
+      <input name="user[phone]" type="text" size="30" value="415-853-9060"/>
     </label>
 </div>
 <br>
@@ -77,8 +76,9 @@ Notes:
   <input type="text" size="4" data-stripe="exp-year" value="16"/>
 </div>
 
-  <button type="submit">Submit Payment</button>
+  <button type="submit">Order This</button>
 </form>
+<p>We will pre-authorize your credit card.  However, you won't be charged until the item is delivered and you have approved it.</p>
 
 </div>
 

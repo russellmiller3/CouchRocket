@@ -23,14 +23,17 @@ class SellerProfile
 	belongs_to :user
 	has n, :items, { :child_key => [:seller_profile_id] }
 end
-8
+
 
 class BuyerProfile
 	include DataMapper::Resource
 
 	property :id, Serial
+	property :stripe_customer_id, String
+
 	belongs_to :user
-	has n, :items, { :child_key => [:buyer_profile_id] }
+
+	has n, :orders, { :child_key => [:buyer_profile_id]}
 end
 
 class Item
@@ -48,25 +51,26 @@ class Item
 	property :sold, Boolean, { :default => false }
 
 	belongs_to :seller_profile
-	belongs_to :buyer_profile, :required => false
-	belongs_to :order_details, :required => false
+	belongs_to :order, :required => false
 
 end
 
-class OrderDetails
+class Order
 	include DataMapper::Resource
 
 	property :id, Serial
 	property :created_at, Date
-	property :price, Integer
-	property :fulfilled, Boolean, { :default => false }
+	property :total_price, Integer
+	property :shipping_address, Text
+	property :shipped, Boolean, { :default => false }
 	property :shipdate, Date
+	property :approved, Boolean, { :default => false }
 	property :charged, Boolean, { :default => false }
 	property :delivery_notes, Text
-	property :stripe_token, String
-	property :stripe_customer_id, String
+	property :admin_notes, Text
 
-	has n, :items,  { :child_key => [:order_details_id] }
+	has n, :items,  { :child_key => [:order_id] }
+	belongs_to :buyer_profile
 
 end
 
