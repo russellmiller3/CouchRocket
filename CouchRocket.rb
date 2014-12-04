@@ -2,6 +2,8 @@ require 'sinatra'
 require 'sinatra/partial'
 require 'better_errors'
 require 'stripe'
+require 'json'
+require 'pry'
 
 require_relative 'config/dotenv'
 require_relative 'models'
@@ -94,27 +96,33 @@ post "/orders" do
 	@new_user.buyer_profile = BuyerProfile.new
 	@new_user.save
 	@new_user.buyer_profile.save
-
-	#Attach item to buyer profile
-	item_id = params[:item][:id]
-	@item = Item.get(item_id)
-	@item.buyer_profile_id = @new_user.buyer_profile.id
-
-	@item.errors.each do |error|
+	@new_user.errors.each do |error|
 			puts error
 	end
 
+	#Fetch Item from db
+	item_id = params[:item][:id]
+	@item = Item.get(item_id)
+
 	#Create new order
 	@order = Order.new
-	@order.price = @item.asking_price
-	@order.address = @new_user.address
+	@order.total_price = @item.asking_price
+	@order.shipping_address = @new_user.address
 	@order.delivery_notes = params[:order][:delivery_notes]
-	@order.stripe_token = params[:stripeToken]
+	@order.buyer_profile_id =	@new_user.buyer_profile.id
+	#@order.stripe_token = params[:stripeToken]
 	@order.save
+	@order.errors.each do |error|
+			puts error
+	end
 
 	#Attach item to order, save item
 	@item.order_id = @order.id
 	@item.save
+
+	@item.errors.each do |error|
+			puts error
+	end
 
 	# **Stripe Payment:**
 	@amount = @item.asking_price
@@ -143,18 +151,29 @@ post "/orders" do
 end
 
 post "/charge" do
+	# show_params
 	order_id = params[:order][:id]
 	@order = Order.get(order_id)
+	# p @order.total_price
+	@buyer_profile = BuyerProfile.get(@order.buyer_profile_id)
+	customer_id = @buyer_profile.stripe_customer_id
+	# p customer_id
 
-	customer_id = @order.stripe_customer_id
-
-	Stripe::Charge.create(
+	charge_create = Stripe::Charge.create(
 	    :amount => @order.total_price,
 	    :currency => "usd",
 	    :customer => customer_id
 			)
 
-	@order.charged = :true
+  if charge_create.paid == true
+		@order.charged = true
+	else
+		@order.charged = "Error"
+	end
+
+	@order.save
+
+	p @order.charged
 
 	redirect "/admin"
 

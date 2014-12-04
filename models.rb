@@ -65,9 +65,13 @@ class Order
 	property :shipped, Boolean, { :default => false }
 	property :shipdate, Date
 	property :approved, Boolean, { :default => false }
-	property :charged, Boolean, { :default => false }
+	property :charged, Text
+	property :seller_paid, Boolean, { :default => false }
 	property :delivery_notes, Text
+	property :target_delivery_date, Date
+	property :target_delivery_time_start, Time
 	property :admin_notes, Text
+	# property :stripe_token, String
 
 	has n, :items,  { :child_key => [:order_id] }
 	belongs_to :buyer_profile

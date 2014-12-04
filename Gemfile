@@ -5,6 +5,8 @@ gem 'sinatra-partial'
 gem 'data_mapper'
 gem 'stripe'
 gem 'rake'
+gem 'json'
+gem 'pry'
 
 group :development do
   gem 'sqlite3'

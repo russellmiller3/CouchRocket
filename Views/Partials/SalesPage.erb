@@ -1,4 +1,8 @@
 <div class="Sales Page">
+<script type="text/javascript">
+$( "#date" ).datepicker();
+</script>
+
 <img src="<%= item.picture1_url %>">
 <img src="<%= item.picture2_url %>">
 <img src="<%= item.picture3_url %>">
@@ -38,6 +42,23 @@ Notes:
     <label>
       <span>Phone</span>
       <input name="user[phone]" type="text" size="30" value="415-853-9060"/>
+    </label>
+</div>
+<br>
+
+ Pick a day and two-hour window when you will definitely be home and available to approve your purchase.
+<br>
+<div class="form-row">
+    <label>
+      <span>Delivery Date</span>
+      <input name="order[target_delivery_date]" type="text" size="30" id="date"/>
+    </label>
+</div>
+<br>
+<div class="form-row">
+    <label>
+      <span>Delivery Time - Starting time for a 2-hour window </span>
+      <input name="order[target_delivery_time_start]" type="text" size="30" value="6:00 pm"/>
     </label>
 </div>
 <br>
