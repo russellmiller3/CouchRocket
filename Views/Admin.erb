@@ -1,0 +1,54 @@
+
+
+
+<table border="1" cellspacing="0">
+	<tr>
+		<th> Order ID </th>
+		<th> Date Created </th>
+		<th> Total Price </th>
+		<th> Buyer </th>
+		<th> Shipped? </th>
+		<th> Approved? </th>
+		<th> Charged? </th>
+		<th> Admin Notes </th>
+	</tr>
+
+
+
+<% @orders.each do |order| %>
+
+	<tr>
+		<td><%= order.id %></td>
+		<td><%= order.created_at %></td>
+		<td><%= order.total_price/100 %></td>
+		<td>
+			<% buyer = User.get(order.buyer_profile.user_id) %>
+			<%=	buyer.name %>
+		</td>
+		<td>
+			<% if order.shipped %>
+				<%= order.shipdate %>
+			<% else %>
+				<%= order.shipped %>
+		<% end %>
+		</td>
+		<td><%= order.approved %></td>
+		<td>
+			<% if order.charged %>
+					Charged
+			<% elsif order.charged = :false  %>
+
+				<form action="/charge" method="post">
+				<input name="order[id]" type="hidden" value="<%= order.id %>">
+				<input type="submit" value="Charge Customer">
+				</form>
+
+			<% end %>
+		</td>
+		<td><%= order.admin_notes %></td>
+	</tr>
+
+
+<% end %>
+
+</table>
