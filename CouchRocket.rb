@@ -32,10 +32,7 @@ def show_params
 end
 
 get "/" do
-	p current_user
-	p current_user.seller_profile
-	p current_user.seller_profile.items
-	@items = current_user.seller_profile.items
+		@items = current_user.seller_profile.items
 
 	erb :'Home', :locals => { :items => @items, :user => current_user }
 
@@ -99,7 +96,7 @@ post "/items" do
 	  <p>Hi #{current_user.name}. Thanks for listing your #{@item.type.downcase} with us!<br>
 	  <h3>What happens next?</h3>
 	  <p>We'll advertise your item, and as soon as there's a buyer we'll let you know, and send someone to pick it up.<br>
-		More questions?  Check out our FAQ <a href='CouchRocket.com/FAQ'>CouchRocket FAQ</a> </p>
+		More questions?  Check out the <a href='CouchRocket.com/FAQ'>CouchRocket FAQ</a> </p>
 	  </html>"
 	 end
 
@@ -128,7 +125,7 @@ post "/orders" do
 	#Create new order
 	order_attrs = params[:order]
 	@order = Order.new(order_attrs)
-	@order.total_price = @item.asking_price
+	@order.total_price = @item.asking_price + 30
 	@order.shipping_address = @new_user.address
 	@order.buyer_profile_id =	@new_user.buyer_profile.id
 	#@order.stripe_token = params[:stripeToken]
@@ -174,7 +171,7 @@ post "/orders" do
   	"@api.mailgun.net/v2/sandbox43786b89d4494ff4896863476bbc7c4c.mailgun.org/messages",
 	  :from => "CouchRocket <me@samples.mailgun.org>",
 	  :to => "#{@new_user.email}",
-	  :subject => "Scheduled for Delivery",
+	  :subject => "Your #{@item.type} is Scheduled for Delivery",
 	  :html => "<html>
 	  <img src='http://i.imgur.com/iI7g2uKs.jpg' border='0' title='CouchRocket'></a>
 	  <br><br>
@@ -191,9 +188,16 @@ post "/orders" do
 	  </html>"
 	 end
 
+
 	#Look up Seller
 	@seller_profile = SellerProfile.get(@item.seller_profile_id)
+
+	binding.pry
+
+
 	@seller = User.get(@seller_profile.user_id)
+
+
 
 	#Send Seller Notification Email
 	def send_seller_pickup_message
@@ -205,15 +209,15 @@ post "/orders" do
 	  :html => "<html>
 	  <img src='http://i.imgur.com/iI7g2uKs.jpg' border='0' title='CouchRocket'></a>
 	   <br><br>
-		 Hi #{@seller.name}. Your #{@item.type} has been sold!
+		 Hi #{@seller.name}. Your #{@item.type.downcase} has been sold!
 	   <h3>What happens next?</h3>
 	   <ol>
-	   <li><h4>We Pick Up Your furniture</h4>
+	   <li><h4>We pick up your furniture</h4>
 	    We'll come by to pick up your #{@item.type.downcase} on
 	  #{@order.target_delivery_date.strftime("%A, %B %d")} between #{@order.target_delivery_time_start.to_i - 1} p.m. and
 	  #{@order.target_delivery_time_start.to_i} p.m.
 	  </li>
-		 <li><h4>Buyer receives item and Approves</h4></li>
+		 <li><h4>Buyer receives item and approves</h4></li>
 		 <li><h4>You get paid!</h4></li>
 		 </ol>
 		 <h3>What if the buyer doesn't approve the item?</h3>
@@ -229,6 +233,8 @@ post "/orders" do
 	send_seller_pickup_message
 
 	"<html>
+	<img src='http://i.imgur.com/iI7g2uKs.jpg' border='0' title='CouchRocket'></a>
+	<h1>CouchRocket</h1>
 	<br><br>
 	Thanks, we'll start processing your order today.<br>
 	Get ready for liftoff!
