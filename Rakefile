@@ -15,7 +15,7 @@ task :seed do
 			joe = User.create({
 				:id=>"2",
 				:name=>"Joe Seller",
-				:email=>"joe@gmail.com",
+				:email=>"russell@adamm.net",
 				:phone=>"415-899-2331",
 				:address=>"412 Hampshire Way, #4, San Francisco, CA 94023"
 				})
@@ -31,7 +31,7 @@ task :seed do
 			tom = User.create({
 				:id=>"1",
 				:name=>"Tom Buyer",
-				:email=>"tom@gmail.com",
+				:email=>"ram@themillermediagroup.com",
 				:phone=>"415-899-3244",
 				:address=>"33 Regis Court, San Francisco, CA 97331"
 				})
@@ -57,7 +57,9 @@ task :seed do
 					:asking_price=>"7000",
 					:picture1_url=>"http://www.thisthatandlife.com/wp-content/uploads/2012/11/Craigslist-Man-Leather-Couch-225.jpg",
 					:seller_profile_id=>"1",
-					:order_id=>"1"
+					:order_id=>"1",
+					:sold=>"true"
+
 				})
 
 			item2 = Item.create({
@@ -102,6 +104,9 @@ task :seed do
 					:id => "1",
 					:buyer_profile_id => "1",
 					:total_price => "7000",
+					:shipped => "true",
+					:shipped_date => "2014-12-03T20:05:42-08:00",
+					:approved => "true",
 					:shipping_address => "33 Regis Court, San Francisco, CA 97331"
 				})
 
@@ -109,6 +114,9 @@ task :seed do
 					:id => "2",
 					:buyer_profile_id => "1",
 					:total_price => "12000",
+					:shipped => "true",
+					:shipped_date => "2014-12-03T20:05:42-08:00",
+					:approved => "true",
 					:shipping_address => "33 Regis Court, San Francisco, CA 97331"
 				})
 

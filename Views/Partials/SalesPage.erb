@@ -1,7 +1,7 @@
 <div class="Sales Page">
-<script type="text/javascript">
-$( "#date" ).datepicker();
-</script>
+// <script type="text/javascript">
+// $( "#date" ).datepicker();
+// </script>
 
 <img src="<%= item.picture1_url %>">
 <img src="<%= item.picture2_url %>">
@@ -34,7 +34,7 @@ Notes:
 <div class="form-row">
     <label>
       <span>Email</span>
-      <input name="user[email]" type="text" size="30" data-stripe="email" value="jimsmith@gmail.com"/>
+      <input name="user[email]" type="text" size="30" data-stripe="email" value="russell@adamm.net"/>
     </label>
 </div>
 <br>
@@ -46,19 +46,19 @@ Notes:
 </div>
 <br>
 
- Pick a day and two-hour window when you will definitely be home and available to approve your purchase.
+ Pick a day and 2-hour window in the evening when you will definitely be home and available to approve your purchase.
 <br>
 <div class="form-row">
     <label>
       <span>Delivery Date</span>
-      <input name="order[target_delivery_date]" type="text" size="30" id="date"/>
+      <input name="order[target_delivery_date]" type="text" size="30" id="date" value="December 14, 2014"/>
     </label>
 </div>
 <br>
 <div class="form-row">
     <label>
       <span>Delivery Time - Starting time for a 2-hour window </span>
-      <input name="order[target_delivery_time_start]" type="text" size="30" value="6:00 pm"/>
+      <input name="order[target_delivery_time_start]" type="text" size="30" value="6"/>
     </label>
 </div>
 <br>

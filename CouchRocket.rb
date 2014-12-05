@@ -4,6 +4,7 @@ require 'better_errors'
 require 'stripe'
 require 'json'
 require 'pry'
+require 'rest_client'
 
 require_relative 'config/dotenv'
 require_relative 'models'
@@ -39,6 +40,7 @@ get "/" do
 	erb :'Home', :locals => { :items => @items, :user => current_user }
 
 end
+
 
 get "/admin" do
 	@orders = Order.all
@@ -84,6 +86,25 @@ post "/items" do
 		puts error
 	end
 
+	#Send Buyer Listing Confirmation Email
+	def send_buyer_listing_confirmation_message
+ 		RestClient.post "https://api:key-8c6ae9be29401c9e6380409be3d68318"\
+  	"@api.mailgun.net/v2/sandbox43786b89d4494ff4896863476bbc7c4c.mailgun.org/messages",
+	  :from => "CouchRocket <me@samples.mailgun.org>",
+	  :to => "#{@current_user.email}",
+	  :subject => "Thanks for Listing with CouchRocket",
+	  :html => "<html>
+	  <img src='http://i.imgur.com/iI7g2uKs.jpg' border='0' title='CouchRocket'></a>
+	  <br><br>
+	  <p>Hi #{current_user.name}. Thanks for listing your #{@item.type.downcase} with us!<br>
+	  <h3>What happens next?</h3>
+	  <p>We'll advertise your item, and as soon as there's a buyer we'll let you know, and send someone to pick it up.<br>
+		More questions?  Check out our FAQ <a href='CouchRocket.com/FAQ'>CouchRocket FAQ</a> </p>
+	  </html>"
+	 end
+
+	send_buyer_listing_confirmation_message
+
   redirect "/"
 end
 
@@ -105,10 +126,10 @@ post "/orders" do
 	@item = Item.get(item_id)
 
 	#Create new order
-	@order = Order.new
+	order_attrs = params[:order]
+	@order = Order.new(order_attrs)
 	@order.total_price = @item.asking_price
 	@order.shipping_address = @new_user.address
-	@order.delivery_notes = params[:order][:delivery_notes]
 	@order.buyer_profile_id =	@new_user.buyer_profile.id
 	#@order.stripe_token = params[:stripeToken]
 	@order.save
@@ -146,7 +167,72 @@ post "/orders" do
 	@new_user.buyer_profile.stripe_customer_id = customer.id
 	@new_user.buyer_profile.save
 
-	"Thanks, your item is on its way."
+
+	#Send Buyer Confirmation Email
+	def send_buyer_delivery_message
+ 		RestClient.post "https://api:key-8c6ae9be29401c9e6380409be3d68318"\
+  	"@api.mailgun.net/v2/sandbox43786b89d4494ff4896863476bbc7c4c.mailgun.org/messages",
+	  :from => "CouchRocket <me@samples.mailgun.org>",
+	  :to => "#{@new_user.email}",
+	  :subject => "Scheduled for Delivery",
+	  :html => "<html>
+	  <img src='http://i.imgur.com/iI7g2uKs.jpg' border='0' title='CouchRocket'></a>
+	  <br><br>
+	  <p>Hi #{@new_user.name}. Thanks for your order! <br>
+	  <h3>What happens next?</h3>
+	  <p>We'll deliver your #{@item.type.downcase} on
+	  #{@order.target_delivery_date.strftime("%A, %B %d")}
+	  from #{@order.target_delivery_time_start.to_i} p.m.
+	  to #{@order.target_delivery_time_start.to_i+2} p.m.<br>
+	 	Once you approve the item, we release it to you, charge you, and that's it!</p>
+		<h3>What if I don't like the item, or there's something wrong with it?</h3>
+		<p>No problem! We'll take the item back at no cost, and you won't be charged.<br>
+		More questions?  Contact us at <a href='mailto:help@couchrocket.com'>CouchRocket Support</a> </p>
+	  </html>"
+	 end
+
+	#Look up Seller
+	@seller_profile = SellerProfile.get(@item.seller_profile_id)
+	@seller = User.get(@seller_profile.user_id)
+
+	#Send Seller Notification Email
+	def send_seller_pickup_message
+ 		RestClient.post "https://api:key-8c6ae9be29401c9e6380409be3d68318"\
+  	"@api.mailgun.net/v2/sandbox43786b89d4494ff4896863476bbc7c4c.mailgun.org/messages",
+	  :from => "CouchRocket <me@samples.mailgun.org>",
+	  :to => "#{@seller.email}",
+	  :subject => "Time Sensitive: Your #{@item.type.downcase} has been sold!",
+	  :html => "<html>
+	  <img src='http://i.imgur.com/iI7g2uKs.jpg' border='0' title='CouchRocket'></a>
+	   <br><br>
+		 Hi #{@seller.name}. Your #{@item.type} has been sold!
+	   <h3>What happens next?</h3>
+	   <ol>
+	   <li><h4>We Pick Up Your furniture</h4>
+	    We'll come by to pick up your #{@item.type.downcase} on
+	  #{@order.target_delivery_date.strftime("%A, %B %d")} between #{@order.target_delivery_time_start.to_i - 1} p.m. and
+	  #{@order.target_delivery_time_start.to_i} p.m.
+	  </li>
+		 <li><h4>Buyer receives item and Approves</h4></li>
+		 <li><h4>You get paid!</h4></li>
+		 </ol>
+		 <h3>What if the buyer doesn't approve the item?</h3>
+		 <p>We'll deliver the item back to you at no cost<br>
+		 	More questions?  Contact us at <a href='mailto:help@couchrocket.com'>CouchRocket Support</a> </p>
+
+	  	</html>"
+	end
+
+
+	send_buyer_delivery_message
+
+	send_seller_pickup_message
+
+	"<html>
+	<br><br>
+	Thanks, we'll start processing your order today.<br>
+	Get ready for liftoff!
+	</html>"
 
 end
 

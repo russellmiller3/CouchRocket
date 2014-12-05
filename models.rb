@@ -63,7 +63,7 @@ class Order
 	property :total_price, Integer
 	property :shipping_address, Text
 	property :shipped, Boolean, { :default => false }
-	property :shipdate, Date
+	property :shipped_date, Date
 	property :approved, Boolean, { :default => false }
 	property :charged, Text
 	property :seller_paid, Boolean, { :default => false }

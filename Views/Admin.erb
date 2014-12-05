@@ -27,9 +27,9 @@
 		</td>
 		<td>
 			<% if order.shipped %>
-				<%= order.shipdate %>
+				<%= order.shipped_date %>
 			<% else %>
-				<%= order.shipped %>
+				Date Shipped: <%= order.shipped %>
 		<% end %>
 		</td>
 		<td><%= order.approved %></td>

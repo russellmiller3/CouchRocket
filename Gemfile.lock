@@ -133,6 +133,7 @@ DEPENDENCIES
   pry
   rake
   rerun
+  rest-client
   sinatra
   sinatra-partial
   sqlite3

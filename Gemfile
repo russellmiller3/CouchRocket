@@ -7,6 +7,7 @@ gem 'stripe'
 gem 'rake'
 gem 'json'
 gem 'pry'
+gem 'rest-client'
 
 group :development do
   gem 'sqlite3'
