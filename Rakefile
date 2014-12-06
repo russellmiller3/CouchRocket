@@ -111,9 +111,11 @@ namespace :db do
 				:buyer_profile_id => "1",
 				:total_price => "7000",
 				:shipped => "true",
-				:shipped_date => "2014-12-03T20:05:42-08:00",
+				:shipped_date => "2014-12-07T20:05:42-08:00",
 				:approved => "true",
-				:shipping_address => "33 Regis Court, San Francisco, CA 97331"
+				:shipping_address => "33 Regis Court, San Francisco, CA 97331",
+				:target_delivery_date =>"2014-12-07",
+				:target_delivery_time_start =>"6"
 			})
 
 		order2 = Order.create({
@@ -121,16 +123,20 @@ namespace :db do
 				:buyer_profile_id => "1",
 				:total_price => "12000",
 				:shipped => "true",
-				:shipped_date => "2014-12-03T20:05:42-08:00",
+				:shipped_date => "2014-12-07T20:05:42-08:00",
 				:approved => "true",
-				:shipping_address => "33 Regis Court, San Francisco, CA 97331"
+				:shipping_address => "33 Regis Court, San Francisco, CA 97331",
+				:target_delivery_date =>"2014-12-07",
+				:target_delivery_time_start =>"6"
 			})
 
 		order3 = Order.create({
 				:id => "3",
 				:buyer_profile_id => "1",
 				:total_price => "11000",
-				:shipping_address => "33 Regis Court, San Francisco, CA 97331"
+				:shipping_address => "33 Regis Court, San Francisco, CA 97331",
+				:target_delivery_date =>"2014-12-07",
+				:target_delivery_time_start =>"6"
 			})
 
 		joe.save

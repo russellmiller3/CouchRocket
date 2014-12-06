@@ -8,6 +8,7 @@ gem 'rake'
 gem 'json'
 gem 'pry'
 gem 'rest-client'
+gem 'mailgun-ruby', '~>1.0.3', require: 'mailgun'
 
 group :development do
   gem 'sqlite3'

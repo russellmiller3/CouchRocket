@@ -79,6 +79,9 @@ GEM
       celluloid (>= 0.15.2)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
+    mailgun-ruby (1.0.3)
+      json (~> 1.8)
+      rest-client (~> 1.6)
     method_source (0.8.2)
     mime-types (2.4.3)
     multi_json (1.10.1)
@@ -129,6 +132,7 @@ DEPENDENCIES
   dm-sqlite-adapter
   dotenv
   json
+  mailgun-ruby (~> 1.0.3)
   pg
   pry
   rake

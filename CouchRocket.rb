@@ -5,14 +5,27 @@ require 'stripe'
 require 'json'
 require 'pry'
 require 'rest_client'
+require 'mailgun'
 
 require_relative 'config/dotenv'
 require_relative 'models'
 
-set :publishable_key, ENV['PUBLISHABLE_KEY']
-set :secret_key, ENV['SECRET_KEY']
 
-Stripe.api_key = settings.secret_key
+
+#Stripe Setup
+set :stripe_public_key, ENV['STRIPE_PUBLIC_KEY']
+set :stripe_secret_key, ENV['STRIPE_SECRET_KEY']
+Stripe.api_key = settings.stripe_secret_key
+
+#MailGun Setup
+set :mailgun_public_key, ENV['MAILGUN_PUBLIC_KEY']
+set :mailgun_secret_key, ENV['MAILGUN_SECRET_KEY']
+set :domain, ENV['DOMAIN']
+mg_client = Mailgun::Client.new(settings.mailgun_secret_key)
+
+
+
+
 
 set :partial_template_engine, :erb
 
@@ -24,6 +37,14 @@ end
 helpers do
   def current_user
     @current_user ||= User.last
+  end
+
+  def To_Cents(dollar_amount)
+  	dollar_amount * 100
+  end
+
+  def To_Dollars(cents)
+  	cents/100
   end
 end
 
@@ -48,7 +69,7 @@ end
 
 get "/items" do
 	@item = Item.new
-	erb :'partials/AddItem', :locals => { :item => @item, :user => current_user }
+	erb :'AddItem', :locals => { :item => @item, :user => current_user }
 end
 
 get "/items/:id" do
@@ -56,7 +77,7 @@ get "/items/:id" do
 	item_id = params[:id]
 	@item = Item.get(item_id)
 	show_params
-	erb :'partials/SalesPage', :locals => { :item => @item }
+	erb :'SalesPage', :locals => { :item => @item }
 end
 
 post "/items" do
@@ -76,31 +97,23 @@ post "/items" do
 	item_attrs = params[:item]
 	item_attrs.merge!({ :seller_profile_id => @seller_profile.id})
 	@item = Item.new(item_attrs)
-	@item.original_price = 100 * @item.original_price
-	@item.asking_price = 100 * @item.asking_price
+	To_Cents(@item.original_price)
+	To_Cents(@item.asking_price)
 	@item.save
 	@item.errors.each do |error|
 		puts error
 	end
 
-	#Send Buyer Listing Confirmation Email
-	def send_buyer_listing_confirmation_message
- 		RestClient.post "https://api:key-8c6ae9be29401c9e6380409be3d68318"\
-  	"@api.mailgun.net/v2/sandbox43786b89d4494ff4896863476bbc7c4c.mailgun.org/messages",
-	  :from => "CouchRocket <me@samples.mailgun.org>",
-	  :to => "#{@current_user.email}",
-	  :subject => "Thanks for Listing with CouchRocket",
-	  :html => "<html>
-	  <img src='http://i.imgur.com/iI7g2uKs.jpg' border='0' title='CouchRocket'></a>
-	  <br><br>
-	  <p>Hi #{current_user.name}. Thanks for listing your #{@item.type.downcase} with us!<br>
-	  <h3>What happens next?</h3>
-	  <p>We'll advertise your item, and as soon as there's a buyer we'll let you know, and send someone to pick it up.<br>
-		More questions?  Check out the <a href='CouchRocket.com/FAQ'>CouchRocket FAQ</a> </p>
-	  </html>"
-	 end
+	#Send Seller Listing Confirmation Email
+	seller_listing_confirmation = { :from => "CouchRocket <me@sandbox43786b89d4494ff4896863476bbc7c4c.mailgun.org>",
+																  :to => "#{current_user.email}",
+																  :subject => "Thanks for Listing with CouchRocket",
+																  :html => "#{erb :'partials/SellerListingConfirmationEmail', :locals => { :current_user => current_user, :item => @item }}"}
 
-	send_buyer_listing_confirmation_message
+	mg_client.send_message(settings.domain, seller_listing_confirmation)
+
+	# p message_id['id']
+	# p message = result ['message']
 
   redirect "/"
 end
@@ -144,8 +157,6 @@ post "/orders" do
 
 	# **Stripe Payment:**
 	@amount = @item.asking_price
-	Stripe.api_key = "sk_test_x6GZa5DuUvqCIT7jAg20yVPH"
-
 
 	# Get the credit card details submitted by the form
 	token = params[:stripeToken]
@@ -167,7 +178,7 @@ post "/orders" do
 
 	#Send Buyer Confirmation Email
 	def send_buyer_delivery_message
- 		RestClient.post "https://api:key-8c6ae9be29401c9e6380409be3d68318"\
+ 		RestClient.post "https://api:#{:mailgun_secret_key}"\
   	"@api.mailgun.net/v2/sandbox43786b89d4494ff4896863476bbc7c4c.mailgun.org/messages",
 	  :from => "CouchRocket <me@samples.mailgun.org>",
 	  :to => "#{@new_user.email}",
@@ -190,18 +201,11 @@ post "/orders" do
 
 
 	#Look up Seller
-	@seller_profile = SellerProfile.get(@item.seller_profile_id)
-
-	binding.pry
-
-
-	@seller = User.get(@seller_profile.user_id)
-
-
+	@seller = @item.seller_profile.user
 
 	#Send Seller Notification Email
 	def send_seller_pickup_message
- 		RestClient.post "https://api:key-8c6ae9be29401c9e6380409be3d68318"\
+ 		RestClient.post "https://api:#{:mailgun_secret_key}"\
   	"@api.mailgun.net/v2/sandbox43786b89d4494ff4896863476bbc7c4c.mailgun.org/messages",
 	  :from => "CouchRocket <me@samples.mailgun.org>",
 	  :to => "#{@seller.email}",

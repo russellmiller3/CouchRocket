@@ -69,7 +69,7 @@ class Order
 	property :seller_paid, Boolean, { :default => false }
 	property :delivery_notes, Text
 	property :target_delivery_date, Date
-	property :target_delivery_time_start, Time
+	property :target_delivery_time_start, Integer
 	property :admin_notes, Text
 	# property :stripe_token, String
 
