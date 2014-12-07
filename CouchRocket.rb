@@ -23,10 +23,6 @@ set :mailgun_secret_key, ENV['MAILGUN_SECRET_KEY']
 set :domain, ENV['DOMAIN']
 mg_client = Mailgun::Client.new(settings.mailgun_secret_key)
 
-
-
-
-
 set :partial_template_engine, :erb
 
 configure :development do
@@ -53,7 +49,11 @@ def show_params
 end
 
 get "/" do
+	if current_user.seller_profile
 		@items = current_user.seller_profile.items
+	else
+		@items = nil
+	end
 
 	erb :'Home', :locals => { :items => @items, :user => current_user }
 
@@ -66,6 +66,9 @@ get "/admin" do
 	erb :'Admin', :locals => {:orders => @orders}
 end
 
+get "/BuyerOrderConfirmation" do
+	erb(:'BuyerOrderConfirmation')
+end
 
 get "/items" do
 	@item = Item.new
@@ -105,15 +108,14 @@ post "/items" do
 	end
 
 	#Send Seller Listing Confirmation Email
-	seller_listing_confirmation = { :from => "CouchRocket <me@sandbox43786b89d4494ff4896863476bbc7c4c.mailgun.org>",
-																  :to => "#{current_user.email}",
-																  :subject => "Thanks for Listing with CouchRocket",
-																  :html => "#{erb :'partials/SellerListingConfirmationEmail', :locals => { :current_user => current_user, :item => @item }}"}
+	seller_listing_confirmation = {
+		:from => "CouchRocket <info@#{settings.domain}>",
+		:to => "#{current_user.email}",
+		:subject => "Thanks for Listing with CouchRocket",
+		:html => erb(:'Emails/SellerListingConfirmation',:locals => { :current_user => current_user, :item => @item })
+	}
+	mg_client.send_message(settings.domain,seller_listing_confirmation)
 
-	mg_client.send_message(settings.domain, seller_listing_confirmation)
-
-	# p message_id['id']
-	# p message = result ['message']
 
   redirect "/"
 end
@@ -177,72 +179,30 @@ post "/orders" do
 
 
 	#Send Buyer Confirmation Email
-	def send_buyer_delivery_message
- 		RestClient.post "https://api:#{:mailgun_secret_key}"\
-  	"@api.mailgun.net/v2/sandbox43786b89d4494ff4896863476bbc7c4c.mailgun.org/messages",
-	  :from => "CouchRocket <me@samples.mailgun.org>",
+	buyer_confirmation = {
+		:from => "CouchRocket <me@#{settings.domain}>",
 	  :to => "#{@new_user.email}",
 	  :subject => "Your #{@item.type} is Scheduled for Delivery",
-	  :html => "<html>
-	  <img src='http://i.imgur.com/iI7g2uKs.jpg' border='0' title='CouchRocket'></a>
-	  <br><br>
-	  <p>Hi #{@new_user.name}. Thanks for your order! <br>
-	  <h3>What happens next?</h3>
-	  <p>We'll deliver your #{@item.type.downcase} on
-	  #{@order.target_delivery_date.strftime("%A, %B %d")}
-	  from #{@order.target_delivery_time_start.to_i} p.m.
-	  to #{@order.target_delivery_time_start.to_i+2} p.m.<br>
-	 	Once you approve the item, we release it to you, charge you, and that's it!</p>
-		<h3>What if I don't like the item, or there's something wrong with it?</h3>
-		<p>No problem! We'll take the item back at no cost, and you won't be charged.<br>
-		More questions?  Contact us at <a href='mailto:help@couchrocket.com'>CouchRocket Support</a> </p>
-	  </html>"
-	 end
+	  :html => erb(:'Emails/BuyerConfirmation',
+	  	:locals => {:new_user => @new_user,:item => @item,:order=>@order})
+	}
+	mg_client.send_message(settings.domain,buyer_confirmation)
 
 
 	#Look up Seller
 	@seller = @item.seller_profile.user
 
 	#Send Seller Notification Email
-	def send_seller_pickup_message
- 		RestClient.post "https://api:#{:mailgun_secret_key}"\
-  	"@api.mailgun.net/v2/sandbox43786b89d4494ff4896863476bbc7c4c.mailgun.org/messages",
-	  :from => "CouchRocket <me@samples.mailgun.org>",
-	  :to => "#{@seller.email}",
-	  :subject => "Time Sensitive: Your #{@item.type.downcase} has been sold!",
-	  :html => "<html>
-	  <img src='http://i.imgur.com/iI7g2uKs.jpg' border='0' title='CouchRocket'></a>
-	   <br><br>
-		 Hi #{@seller.name}. Your #{@item.type.downcase} has been sold!
-	   <h3>What happens next?</h3>
-	   <ol>
-	   <li><h4>We pick up your furniture</h4>
-	    We'll come by to pick up your #{@item.type.downcase} on
-	  #{@order.target_delivery_date.strftime("%A, %B %d")} between #{@order.target_delivery_time_start.to_i - 1} p.m. and
-	  #{@order.target_delivery_time_start.to_i} p.m.
-	  </li>
-		 <li><h4>Buyer receives item and approves</h4></li>
-		 <li><h4>You get paid!</h4></li>
-		 </ol>
-		 <h3>What if the buyer doesn't approve the item?</h3>
-		 <p>We'll deliver the item back to you at no cost<br>
-		 	More questions?  Contact us at <a href='mailto:help@couchrocket.com'>CouchRocket Support</a> </p>
+	seller_pickup_notification ={
+		:from => "CouchRocket <me@#{settings.domain}>",
+		:to => "#{@seller.email}",
+		:subject => "Time Sensitive: Your #{@item.type.downcase} has been sold!",
+		:html => erb(:'Emails/SellerPickupNotification',
+		:locals => {:seller => @seller,:item=>@item,:order=>@order})
+	}
+	mg_client.send_message(settings.domain,seller_pickup_notification)
 
-	  	</html>"
-	end
-
-
-	send_buyer_delivery_message
-
-	send_seller_pickup_message
-
-	"<html>
-	<img src='http://i.imgur.com/iI7g2uKs.jpg' border='0' title='CouchRocket'></a>
-	<h1>CouchRocket</h1>
-	<br><br>
-	Thanks, we'll start processing your order today.<br>
-	Get ready for liftoff!
-	</html>"
+	redirect "/BuyerOrderConfirmation"
 
 end
 
