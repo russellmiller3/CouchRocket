@@ -1,0 +1,16 @@
+<html>
+	 Hi <%= seller.name %>. Your <%= item.type.downcase %> has been sold!
+	 <h3>What happens next?</h3>
+	 <ol>
+	 <li><h4>We pick up your furniture</h4>
+	  We'll come by to pick up your <%= item.type.downcase %> on
+	<%= order.target_delivery_date.strftime("%A, %B %d") %> between <%= order.target_delivery_time_start.to_i - 1 %> p.m. and
+<%= order.target_delivery_time_start.to_i %> p.m.
+	</li>
+	 <li><h4>Buyer receives item and approves</h4></li>
+	 <li><h4>You get paid!</h4></li>
+	 </ol>
+	 <h3>What if the buyer doesn't approve the item?</h3>
+	 <p>We'll deliver the item back to you at no cost<br>
+	 	More questions?  Contact us at <a href='mailto:help@couchrocket.com'>CouchRocket Support</a></p>
+</html>

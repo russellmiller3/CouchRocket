@@ -1,0 +1,79 @@
+
+<h1>Add Item</h1>
+
+<form id="new_item" action="/items" method="post" accept-charset="utf-8">
+
+<label for "item[type]">Item Type</label><br>
+<select name="item[type]" form="new_item">
+  <option value="Bed">Bed</option>
+  <option value="Couch">Couch</option>
+  <option value="Bedroom Set">Bedroom Set</option>
+  <option value="Bookshelf">Bookshelf</option>
+  <option value="Chair">Chair</option>
+  <option value="Desk">Desk</option>
+</select>
+
+<br><br>
+Items we don't accept:<br>
+Blah and foo<br>
+<br><br>
+
+<label for "item[brand]">Brand</label><br>
+<input type="text" name="item[brand]" value="Davis">
+<br><br>
+
+<label for "item[notes]">Notes:</label><br>
+<textarea name="item[notes]"
+placeholder="To sell for the highest price, tell a story about what you like best about this item. What's cool or unique about it?"
+rows="4" cols="50" >This is a great bed!</textarea>
+<br><br>
+
+<label for "item[original_price]">Original Price</label><br>
+<input type ="integer" name="item[original_price]" label="Original Price"
+pattern="^\\$?(([1-9](\\d*|\\d{0,2}(,\\d{3})*))|0)(\\.\\d{1,2})?$"
+placeholder="100.00" value="100"
+required data-errormessage-value-missing="Uh oh, somethings wrong!" data-errormessage-type-mismatch="Uh oh, somethings wrong!"
+>
+
+
+<br>
+<label for "item[asking_price]">Asking Price</label><br>
+<input type ="integer" name="item[asking_price]" value="80">
+
+<!-- <br>
+<label for "item[lowest_price]">Lowest Price You'll Accept</label><br>
+<input type ="integer" name="item[lowest_price]" value="60">
+<br><br> -->
+
+<p>
+Attach up to 3 files. Each one can be up to 10 mb.</p>
+
+<input type="filepicker" name="item[picture1_url]" data-fp-button-text="Upload Image 1" data-fp-apikey="ALeZw9de5TTGfo53U9bfRz" data-fp-mimetypes="image/*" data-fp-container="modal" data-fp-maxsize="10485760"
+onchange="SuccessAlert()">
+<br><br>
+<input type="filepicker" name="item[picture2_url]" data-fp-button-text="Upload Image 2" data-fp-apikey="ALeZw9de5TTGfo53U9bfRz" data-fp-mimetypes="image/*" data-fp-container="modal" data-fp-maxsize="10485760"
+onchange="SuccessAlert()">
+<br><br>
+<input type="filepicker" name="item[picture3_url]" data-fp-button-text="Upload Image 3" data-fp-apikey="ALeZw9de5TTGfo53U9bfRz" data-fp-mimetypes="image/*" data-fp-container="modal" data-fp-maxsize="10485760"
+onchange="SuccessAlert()">
+
+<script type="text/javascript">
+function SuccessAlert(){
+	alert('File Uploaded.')
+}
+</script>
+
+
+
+
+
+
+<br><br>
+
+<input type="submit">
+
+</form>
+
+<script type="text/javascript" src="http://api.filepicker.io/v1/filepicker.js"></script>
+
+

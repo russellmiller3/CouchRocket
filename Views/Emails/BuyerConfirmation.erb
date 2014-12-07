@@ -1,0 +1,12 @@
+<html>
+  <p>Hi <%= new_user.name %>. Thanks for your order! <br>
+  <h3>What happens next?</h3>
+  <p>We'll deliver your <%= item.type.downcase %> on
+  <%= order.target_delivery_date.strftime("%A, %B %d") %>
+  from <%= order.target_delivery_time_start.to_i %> p.m.
+  to <%= order.target_delivery_time_start.to_i+2 %> p.m.<br>
+ 	Once you approve the item, we release it to you, charge you, and that's it!</p>
+	<h3>What if I don't like the item, or there's something wrong with it?</h3>
+	<p>No problem! We'll take the item back at no cost, and you won't be charged.<br>
+	More questions?  Contact us at <a href='mailto:help@couchrocket.com'>CouchRocket Support</a> </p>
+</html>
