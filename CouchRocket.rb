@@ -31,8 +31,8 @@ configure :development do
 end
 
 helpers do
-  def current_user
-    @current_user ||= User.last
+	def current_user
+   @current_user ||= User.last
   end
 
   def To_Cents(dollar_amount)
@@ -56,13 +56,11 @@ get "/" do
 	end
 
 	erb :'Home', :locals => { :items => @items, :user => current_user }
-
 end
 
 
 get "/admin" do
 	@orders = Order.all
-
 	erb :'Admin', :locals => {:orders => @orders}
 end
 
