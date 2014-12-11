@@ -1,6 +1,15 @@
 
 <h1>Add Item</h1>
 
+
+<h3>Return Fee</h3>
+<p>
+Add your item here.
+On the next page, we will get your debit card information so that we can pay you.
+We will also use this card to charge you a return fee of <%= return_fee %><br>
+The return fee is <i>only</i> charged if an item is returned.<br>
+To avoid returns and paying a return fee, please be as honest as possible about<br>any flaws or issues with your item, and include pictures of the flaws.</p>
+
 <form id="new_item" action="/items" method="post" accept-charset="utf-8">
 
 <label for "item[type]">Item Type</label><br>
@@ -40,11 +49,6 @@ required data-errormessage-value-missing="Uh oh, somethings wrong!" data-errorme
 <label for "item[asking_price]">Asking Price</label><br>
 <input type ="integer" name="item[asking_price]" value="80">
 
-<!-- <br>
-<label for "item[lowest_price]">Lowest Price You'll Accept</label><br>
-<input type ="integer" name="item[lowest_price]" value="60">
-<br><br> -->
-
 <p>
 Attach up to 3 files. Each one can be up to 10 mb.</p>
 
@@ -57,23 +61,20 @@ onchange="SuccessAlert()">
 <input type="filepicker" name="item[picture3_url]" data-fp-button-text="Upload Image 3" data-fp-apikey="ALeZw9de5TTGfo53U9bfRz" data-fp-mimetypes="image/*" data-fp-container="modal" data-fp-maxsize="10485760"
 onchange="SuccessAlert()">
 
+<input type="submit">
+
 <script type="text/javascript">
 function SuccessAlert(){
 	alert('File Uploaded.')
 }
 </script>
 
-
-
-
-
-
-<br><br>
-
-<input type="submit">
+<script type="text/javascript" src="http://api.filepicker.io/v1/filepicker.js"></script>
 
 </form>
 
-<script type="text/javascript" src="http://api.filepicker.io/v1/filepicker.js"></script>
+
+
+
 
 

@@ -2,6 +2,7 @@
 .env
 *.db
 /Plan
+/Notes
 
 *.gem
 *.rbc

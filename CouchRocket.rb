@@ -10,12 +10,11 @@ require 'mailgun'
 require_relative 'config/dotenv'
 require_relative 'models'
 
-
-
 #Stripe Setup
 set :stripe_public_key, ENV['STRIPE_PUBLIC_KEY']
 set :stripe_secret_key, ENV['STRIPE_SECRET_KEY']
 Stripe.api_key = settings.stripe_secret_key
+stripe_public_key = settings.stripe_public_key
 
 #MailGun Setup
 set :mailgun_public_key, ENV['MAILGUN_PUBLIC_KEY']
@@ -30,6 +29,10 @@ configure :development do
   BetterErrors.application_root = File.expand_path('..', __FILE__)
 end
 
+#Global Variables
+delivery_fee = 30
+return_fee = 7
+
 helpers do
   def current_user
    @current_user ||= User.last
@@ -42,11 +45,41 @@ helpers do
   def To_Dollars(cents)
     cents/100
   end
+
+
+  def Stripe_Error_Handling(code)
+    begin
+      code
+    rescue Stripe::CardError => e
+      # Since it's a decline, Stripe::CardError will be caught
+    rescue Stripe::InvalidRequestError => e
+      # Invalid parameters were supplied to Stripe's API
+    rescue Stripe::AuthenticationError => e
+      # Authentication with Stripe's API failed
+      # (maybe you changed API keys recently)
+    rescue Stripe::APIConnectionError => e
+      # Network communication with Stripe failed
+    rescue Stripe::StripeError => e
+      # Display a very generic error to the user, and maybe send
+      # yourself an email
+      body = e.json_body
+      err  = body[:error]
+      puts "Status is: #{e.http_status}"
+      puts "Type is: #{err[:type]}"
+      puts "Code is: #{err[:code]}"
+      # param is '' in this case
+      puts "Param is: #{err[:param]}"
+      puts "Message is: #{err[:message]}"
+    end
+  end
+
 end
 
 def show_params
   p params
 end
+
+#Begin Routes
 
 get "/" do
   if current_user.seller_profile
@@ -57,7 +90,6 @@ get "/" do
 
   erb :'Home', :locals => { :items => @items, :user => current_user }
 end
-
 
 get "/admin" do
   @orders = Order.all
@@ -114,8 +146,12 @@ post "/items" do
   }
   mg_client.send_message(settings.domain,seller_listing_confirmation)
 
+  if @seller_profile.stripe_recipient_id
+    redirect "/"
+  else
+    redirect "/SellerPaymentDetails"
+  end
 
-  redirect "/"
 end
 
 post "/orders" do
@@ -135,11 +171,11 @@ post "/orders" do
   item_id = params[:item][:id]
   @item = Item.get(item_id)
 
-  #Create new order
+  #Create new order, populate
   order_attrs = params[:order]
   @order = Order.new(order_attrs)
-  @order.total_price = @item.asking_price + 30
-  @order.shipping_address = @new_user.address
+  @order.total_price = @item.asking_price + delivery_fee
+  @order.buyer_address = @new_user.address
   @order.buyer_profile_id = @new_user.buyer_profile.id
   #@order.stripe_token = params[:stripeToken]
   @order.save
@@ -201,8 +237,88 @@ post "/orders" do
   mg_client.send_message(settings.domain,seller_pickup_notification)
 
   redirect "/BuyerOrderConfirmation"
+end
+
+get "/register" do
+  erb(:'Register')
+end
+
+post "/register" do
+  show_params
+  user_attrs = params[:user]
+  @new_user  = User.new(user_attrs)
+  @new_user.save
+  p @new_user
 
 end
+
+
+get "/SellerPaymentDetails" do
+  erb(:'SellerPaymentDetails',:locals => {:stripe_public_key => stripe_public_key})
+end
+
+
+post "/SellerPaymentDetails" do
+  show_params
+  seller_attrs = params[:seller]
+  token = params[:stripeToken]   # Get the credit card details submitted by the form
+
+  seller_stripe_recipient_profile = Stripe::Recipient.create(
+    :name => seller_attrs[:name],
+    :type => "individual",
+    :tax_id => seller_attrs[:ssn],
+    :email => current_user.email,
+    :metadata => {
+    'Address' => current_user.address
+    },
+    :card => token
+    )
+
+  # Create a Customer for charging Seller a return fee, if needed
+  seller_stripe_customer_profile = Stripe::Customer.create(
+  :card => token,
+  :email => current_user.email,
+  :metadata => {
+    'Name' => current_user.name,
+    'Phone' => current_user.phone,
+    'Address' => current_user.address
+    }
+  )
+
+  #Add to User's seller profile
+  current_user.seller_profile.stripe_recipient_id = seller_stripe_recipient_profile.id
+  current_user.seller_profile.stripe_customer_id = seller_stripe_customer_profile.id
+  current_user.save
+
+
+  redirect "/"
+
+end
+
+
+post "/PaySeller" do
+
+  order = Order.get(params[:order][:id])
+
+  buyer_share = 0.8*(order.total_price-delivery_fee)
+  buyer_share = buyer_share.to_i
+
+
+  pay_seller_transfer = Stripe::Transfer.create(
+  :amount => buyer_share,
+  :currency => "usd",
+  :recipient => "#{current_user.seller_profile.stripe_recipient_id}",
+  :description => "Payment for CouchRocket sale"
+  )
+
+  order.seller_paid = true
+  order.save
+
+end
+
+
+
+
 
 post "/charge" do
   # show_params

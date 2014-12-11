@@ -20,6 +20,9 @@ class SellerProfile
 	include DataMapper::Resource
 
 	property :id, Serial
+	property :stripe_recipient_id, String
+	property :stripe_customer_id, String #for paying return fee, if needed
+
 	belongs_to :user
 	has n, :items, { :child_key => [:seller_profile_id] }
 end
@@ -32,7 +35,6 @@ class BuyerProfile
 	property :stripe_customer_id, String
 
 	belongs_to :user
-
 	has n, :orders, { :child_key => [:buyer_profile_id]}
 end
 
@@ -61,17 +63,21 @@ class Order
 	property :id, Serial
 	property :created_at, Date
 	property :total_price, Integer
-	property :shipping_address, Text
+	property :buyer_name, Text
+	property :buyer_phone, Text
+	property :seller_name, Text
+	property :seller_phone, Text
+	property :buyer_address, Text
+	property :seller_address, Text
 	property :shipped, Boolean, { :default => false }
 	property :shipped_date, Date
-	property :approved, Boolean, { :default => false }
+	property :approved, Text
 	property :charged, Text
 	property :seller_paid, Boolean, { :default => false }
 	property :delivery_notes, Text
 	property :target_delivery_date, Date
 	property :target_delivery_time_start, Integer
 	property :admin_notes, Text
-	# property :stripe_token, String
 
 	has n, :items,  { :child_key => [:order_id] }
 	belongs_to :buyer_profile
