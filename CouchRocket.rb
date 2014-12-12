@@ -100,7 +100,7 @@ get "/BuyerOrderConfirmation" do
   erb(:'BuyerOrderConfirmation')
 end
 
-get "/items" do
+get "/AddItem" do
   @item = Item.new
   erb :'AddItem', :locals => { :item => @item, :user => current_user }
 end
@@ -250,6 +250,7 @@ post "/register" do
   @new_user.save
   p @new_user
 
+  redirect "/AddItem"
 end
 
 
