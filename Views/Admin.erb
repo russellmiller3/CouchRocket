@@ -4,7 +4,7 @@
 		<th> Date Created </th>
 		<th> Total Price </th>
 		<th> Buyer </th>
-		<th> Shipped? </th>
+		<th> Delivered? </th>
 		<th> Approved? </th>
 		<th> Charged? </th>
 		<th> Admin Notes </th>
@@ -27,8 +27,12 @@
 				Delivered <%= order.shipped_date.strftime('%A, %B %d') %>
 			<% else %>
 				Expected Delivery Date:<br>
-				<%= order.target_delivery_date.strftime('%A, %B %d') %>,  <%= order.target_delivery_time_start.to_i %> p.m.
-			  to <%= order.target_delivery_time_start.to_i+2 %> p.m.
+				<b><%= order.target_delivery_date.strftime('%A, %B %d') %><br><%= order.target_delivery_time_start.to_i %> p.m.
+			  to <%= order.target_delivery_time_start.to_i+2 %> p.m.</b><br><br>
+			  <form action="/ScheduleDelivery" method="get">
+				<input name="order_id" type="hidden" value="<%= order.id %>">
+				<input type="submit" value="Schedule Delivery">
+				</form>
 			<% end %>
 		</td>
 		<td>
@@ -40,14 +44,15 @@
 		</td>
 		<td>
 			<% if order.charged %>
-					Charged
+			Charged
 			<% elsif order.shipped && order.approved %>
 
 				<form action="/charge" method="post">
 				<input name="order[id]" type="hidden" value="<%= order.id %>">
 				<input type="submit" value="Charge Customer">
 				</form>
-			<% else No %>
+			<% else %>
+			No
 			<% end %>
 		</td>
 		<td><%= order.admin_notes %></td>

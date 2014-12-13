@@ -25,13 +25,14 @@ namespace :db do
 			:id=>"2",
 			:name=>"Joe Seller",
 			:email=>"russell@adamm.net",
-			:phone=>"415-899-2331",
+			:phone=>"415-392-2331",
 			:address=>"412 Hampshire Way, #4, San Francisco, CA 94023"
 			})
 
 		joe_sellerprofile = SellerProfile.create({
 			:id=>"1",
 			:user_id => "2",
+			:pickup_notes => "Gate code is #234. Ask for Joe"
 			})
 
 
@@ -113,7 +114,7 @@ namespace :db do
 				:shipped => "true",
 				:shipped_date => "2014-12-07T20:05:42-08:00",
 				:approved => "true",
-				:shipping_address => "33 Regis Court, San Francisco, CA 97331",
+				:buyer_address => "33 Regis Court, San Francisco, CA 97331",
 				:target_delivery_date =>"2014-12-07",
 				:target_delivery_time_start =>"6"
 			})
@@ -125,16 +126,24 @@ namespace :db do
 				:shipped => "true",
 				:shipped_date => "2014-12-07T20:05:42-08:00",
 				:approved => "true",
-				:shipping_address => "33 Regis Court, San Francisco, CA 97331",
+				:buyer_address => "33 Regis Court, San Francisco, CA 97331",
 				:target_delivery_date =>"2014-12-07",
 				:target_delivery_time_start =>"6"
 			})
 
 		order3 = Order.create({
 				:id => "3",
+				:item => Item.get(2),
 				:buyer_profile_id => "1",
+				:buyer_name => "Tom Buyer",
+				:buyer_phone=>"415-899-3244",
+				:buyer_address => "33 Regis Court, San Francisco, CA 97331",
+				:seller_name=>"Joe Seller",
+				:seller_phone=>"415-392-2331",
+				:seller_address=>"412 Hampshire Way, #4, San Francisco, CA 94023",
+				:pickup_notes => joe_sellerprofile.pickup_notes,
+				:delivery_notes => "I live in an old white condo. I'll be out front wearing a hat.",
 				:total_price => "11000",
-				:shipping_address => "33 Regis Court, San Francisco, CA 97331",
 				:target_delivery_date =>"2014-12-07",
 				:target_delivery_time_start =>"6"
 			})

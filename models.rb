@@ -21,7 +21,7 @@ class SellerProfile
 
 	property :id, Serial
 	property :stripe_recipient_id, String
-	property :stripe_customer_id, String #for paying return fee, if needed
+	property :pickup_notes, Text
 
 	belongs_to :user
 	has n, :items, { :child_key => [:seller_profile_id] }
@@ -65,21 +65,25 @@ class Order
 	property :total_price, Integer
 	property :buyer_name, Text
 	property :buyer_phone, Text
+	property :buyer_address, Text
+
 	property :seller_name, Text
 	property :seller_phone, Text
-	property :buyer_address, Text
 	property :seller_address, Text
+
+
 	property :shipped, Boolean, { :default => false }
 	property :shipped_date, Date
 	property :approved, Text
 	property :charged, Text
 	property :seller_paid, Boolean, { :default => false }
+	property :pickup_notes, Text
 	property :delivery_notes, Text
 	property :target_delivery_date, Date
 	property :target_delivery_time_start, Integer
 	property :admin_notes, Text
 
-	has n, :items,  { :child_key => [:order_id] }
+	has 1, :item,  { :child_key => [:order_id] }
 	belongs_to :buyer_profile
 
 end
