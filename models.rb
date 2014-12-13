@@ -74,6 +74,7 @@ class Order
 
 	property :shipped, Boolean, { :default => false }
 	property :shipped_date, Date
+	property :shipper_email_sent, Boolean, { :default => false}
 	property :approved, Text
 	property :charged, Text
 	property :seller_paid, Boolean, { :default => false }

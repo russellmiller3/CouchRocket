@@ -96,7 +96,7 @@ get "/AddItem" do
   erb :'AddItem', :locals => { :item => @item, :user => current_user, :return_fee => return_fee }
 end
 
-get "/admin" do
+get "/Admin" do
   @orders = Order.all
   erb :'Admin', :locals => {:orders => @orders}
 end
@@ -317,6 +317,26 @@ get "/ScheduleDelivery" do
   @order = Order.get(params[:order_id])
   erb(:'ScheduleDelivery',
     :locals => {:order => @order})
+end
+
+post "/ScheduleDelivery" do
+  show_params
+  @shipper = params[:shipper]
+  @order = Order.get(params[:order][:id])
+  #Send Shipper Email
+  shipper_email = {
+    :from => "CouchRocket <me@#{settings.domain}>",
+    :to => "#{@shipper[:email]}",
+    :subject => "CouchRocket: #{@order.item.brand} #{@order.item.type} delivery #{@order.target_delivery_date.strftime('%A, %B %d')}",
+    :html => erb(:'Emails/Shipper',
+      :locals => {:order=>@order})
+  }
+  mg_client.send_message(settings.domain,shipper_email)
+
+  @order.shipper_email_sent = true
+  @order.save
+  redirect "/Admin"
+
 end
 
 

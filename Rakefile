@@ -8,8 +8,7 @@ namespace :db do
 	end
 
 	task :delete_database_file do
-		database_file = "./development.db"
-		if database_file
+		if File.exist?("./development.db")
 			File.delete("./development.db")
 			puts "Old Database destroyed."
 		else
