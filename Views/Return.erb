@@ -1,0 +1,19 @@
+Hey <%= order.buyer_name %>,<br><br>
+Sorry you didn't like your <%= order.item.type %>.<br>No worries! These things happen.<br>
+<h3>What happens now?</h3>
+<p>
+<ul>
+<li>We return the item to the seller.</li>
+<li>You only pay the initial shipping fee.  The return insurance part of the fee covers the return cost.</li>
+</ul>
+</p>
+<p>
+Can you tell us why you're returning the item, so we can tell the seller?<br>
+<form action="/Return" method="post" >
+<input name="order[id]" type="hidden" value="<%= order.id %>">
+<label for "order[return_reason]">Return Reason:</label><br>
+<textarea name="order[return_reason]" rows="2" cols="50"></textarea>
+
+<input type="submit">Take it back..</input>
+</form>
+</p>

@@ -1,0 +1,115 @@
+<style>
+.card-errors {
+    color: red;
+    font-size: 125%;
+    display: block;
+}
+
+</style>
+
+<h3>Debit Card Information</h3>
+<p>Enter your debit card information so we can pay you.</p>
+</p>
+<form action="/SellerPaymentDetails" method="POST" id="seller_card_details_for_recipient_creation">
+
+<span class="card-errors"></span>
+<div class="form-row">
+    <label>
+      <span>Name, as it appears on debit card</span>
+      <input name="seller[name]" type="text" size="30" value="Jim Smith"/>
+
+    </label>
+</div>
+<br>
+<div class="form-row">
+    <label>
+      <span>Social Security Number - To help avoid criminal activity and money laundering, US law requires we run an OFAC check on each person we pay. <i>We do not store your SSN</i>, we only use it for a one-time verification check.</span>
+    <input type="text" name="seller[ssn]" placeholder="555555555" value="000000000">
+    </label>
+</div>
+<div class="form-row">
+  <label>
+    <span>Debit Card Number</span>
+    <input type="text" size="20" data-stripe="number" value="4000056655665556" />
+  </label>
+</div>
+<div class="form-row">
+  <label>
+    <span>Expiration (MM/YY)</span>
+    <input type="text" size="2" data-stripe="exp-month" value="04" />
+  </label>
+  <span> / </span>
+  <input type="text" size="2" data-stripe="exp-year" value="16"/>
+</div>
+
+<div class="form-row">
+  <label>
+    <span>CVC</span>
+    <input type="text" size="4" data-stripe="cvc" value="123"/>
+  </label>
+</div>
+<br><br>
+  <button type="submit">Submit</button>
+</form>
+
+
+
+<!-- Remove extra characters from SSN
+Doesn't work, fix later
+
+<script type="text/javascript">
+	$('form').on('submit', function(evt){
+	    evt.preventDefault();
+	    var ssn = $(this).find('#SSN').val().replace(/-/g, '');});
+</script>
+
+-->
+
+ <!-- Stripe -->
+  <script type="text/javascript" src="https://js.stripe.com/v2/">
+	console.log("Stripe javascript loaded")
+  </script>
+
+	<script type="text/javascript">
+  Stripe.setPublishableKey("<%= stripe_public_key %>");
+	console.log("Public key set")
+
+	jQuery(function($) {
+	  $('#seller_card_details_for_recipient_creation').submit(function(event) {
+	    var $form = $(this);
+	    console.log("Listening for submit")
+
+	    // Disable the submit button to prevent repeated clicks
+	    $form.find('button').prop('disabled', true);
+
+
+    Stripe.card.createToken($form, stripeResponseHandler);
+
+
+	    // Prevent the form from submitting with the default action
+	    return false;
+	  });
+	});
+
+	function stripeResponseHandler(status, response) {
+	  var $form = $('#seller_card_details_for_recipient_creation');
+
+	  if (response.error) {
+	    // Show the errors on the form
+	    $form.find('.card-errors').text(response.error.message);
+	    $form.find('button').prop('disabled', false);
+	  }
+
+	  else {
+	    // response contains id and card, which contains additional card details
+	    var token = response.id;
+
+	    // Insert the token and customer into the form so they gets submitted to my server
+	    $form.append($('<input type="hidden" name="stripeToken" />').val(token));
+
+	    // and submit
+	    $form.get(0).submit();
+	  }
+	};
+
+  </script>

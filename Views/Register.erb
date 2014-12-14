@@ -1,0 +1,33 @@
+<p>Hey there!  We're CouchRocket.<br>
+Tell us a bit about you.</p>
+
+<form action="/register" method="post" accept-charset="utf-8" id="registration-form">
+
+<div class="form-row">
+    <label>
+      <span>Name</span>
+      <input name="user[name]" type="text" size="30" value="Gavin Smith"/>
+    </label>
+</div>
+<br>
+<div class="form-row">
+    <label>
+      <span>Email</span>
+      <input name="user[email]" type="text" size="30" data-stripe="email" value="russell@adamm.net"/>
+    </label>
+</div>
+<br>
+<div class="form-row">
+    <label>
+      <span>Phone</span>
+      <input name="user[phone]" type="text" size="30" value="415-853-9060"/>
+    </label>
+</div>
+<div class="form-row">
+    <label>
+      <span>Address</span>
+      <input name="user[address]" type="text" size="30" value="3243 Mason Way, San Francisco, CA 94023"/>
+    </label>
+</div>
+<button type="submit">Set me up!</button>
+</form>
