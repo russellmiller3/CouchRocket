@@ -6,6 +6,7 @@ require 'json'
 require 'pry'
 require 'rest_client'
 require 'mailgun'
+require 'twilio-ruby'
 
 require_relative 'config/dotenv'
 require_relative 'models'
@@ -15,6 +16,13 @@ set :stripe_public_key, ENV['STRIPE_PUBLIC_KEY']
 set :stripe_secret_key, ENV['STRIPE_SECRET_KEY']
 Stripe.api_key = settings.stripe_secret_key
 stripe_public_key = settings.stripe_public_key
+
+#Twilio Setup
+set :twilio_account_sid, ENV['TWILIO_ACCOUNT_SID']
+set :twilio_auth_token, ENV['TWILIO_AUTH_TOKEN']
+set :twilio_number, ENV['TWILIO_NUMBER']
+twilio_client = Twilio::REST::Client.new settings.twilio_account_sid, settings.twilio_auth_token
+twilio_number = settings.twilio_number
 
 #MailGun Setup
 set :mailgun_public_key, ENV['MAILGUN_PUBLIC_KEY']
@@ -175,9 +183,49 @@ post "/items" do
   }
   mg_client.send_message(settings.domain,seller_listing_confirmation)
 
-
   redirect "/"
 
+end
+
+post "/NotifyBuyer/" do
+order_id = params[:order_id]
+@order = Order.get(order_id)
+
+begin
+  message = twilio_client.account.messages.create({
+    :from => "+1#{twilio_number}",
+    :to => "+1#{@order.buyer_phone}",
+    :body => "Your #{@order.item.brand} #{@order.item.type} from CouchRocket is here!\n http://localhost:9292/BuyerAccept/#{order_id}",
+    })
+rescue Twilio::REST::RequestError => e
+puts e.message
+puts message.sid
+end
+
+erb(:'NotifyBuyer')
+
+end
+
+
+get "/BuyerAccept/:order_id" do
+order_id = params [:order_id]
+@order = Order.get(order_id)
+
+erb(:'BuyerAccept',:locals => {:order => @order})
+
+end
+
+
+
+
+post "/NotifySeller/:order_id" do
+order_id = params[:order_id]
+order = Order.get(order_id)
+
+#SMS
+
+
+"Thanks, we've sent the seller an SMS to let them know you're here"
 
 end
 
@@ -267,9 +315,6 @@ post "/orders" do
   }
   mg_client.send_message(settings.domain,seller_pickup_notification)
 
-  binding.pry
-
-
   redirect "/BuyerOrderConfirmation"
 end
 
@@ -327,7 +372,7 @@ post "/ScheduleDelivery" do
   shipper_email = {
     :from => "CouchRocket <me@#{settings.domain}>",
     :to => "#{@shipper[:email]}",
-    :subject => "CouchRocket: #{@order.item.brand} #{@order.item.type} delivery #{@order.target_delivery_date.strftime('%A, %B %d')}",
+    :subject => "#{@order.item.brand} #{@order.item.type} delivery #{@order.target_delivery_date.strftime('%A, %B %d')}",
     :html => erb(:'Emails/Shipper',
       :locals => {:order=>@order})
   }

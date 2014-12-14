@@ -9,6 +9,7 @@ gem 'json'
 gem 'pry'
 gem 'rest-client'
 gem 'mailgun-ruby', '~>1.0.3', require: 'mailgun'
+gem 'twilio-ruby'
 
 group :development do
   gem 'sqlite3'

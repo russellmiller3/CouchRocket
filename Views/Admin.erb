@@ -24,7 +24,7 @@
 		</td>
 		<td>
 			<% if order.shipped %>
-				Delivered <%= order.shipped_date.strftime('%A, %B %d') %>
+				Delivered<br><%= order.shipped_date.strftime('%A, %B %d') %>
 			<% else %>
 				Expected Delivery Date:<br>
 				<b><%= order.target_delivery_date.strftime('%A, %B %d') %><br><%= order.target_delivery_time_start.to_i %> p.m.

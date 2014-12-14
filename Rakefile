@@ -24,7 +24,7 @@ namespace :db do
 			:id=>"2",
 			:name=>"Joe Seller",
 			:email=>"russell@adamm.net",
-			:phone=>"415-392-2331",
+			:phone=>"4158598060",
 			:address=>"412 Hampshire Way, #4, San Francisco, CA 94023"
 			})
 
@@ -41,7 +41,7 @@ namespace :db do
 			:id=>"1",
 			:name=>"Tom Buyer",
 			:email=>"ram@themillermediagroup.com",
-			:phone=>"415-899-3244",
+			:phone=>"4158598060",
 			:address=>"33 Regis Court, San Francisco, CA 97331"
 			})
 
@@ -135,10 +135,10 @@ namespace :db do
 				:item => Item.get(2),
 				:buyer_profile_id => "1",
 				:buyer_name => "Tom Buyer",
-				:buyer_phone=>"415-899-3244",
+				:buyer_phone=>"4158598060",
 				:buyer_address => "33 Regis Court, San Francisco, CA 97331",
 				:seller_name=>"Joe Seller",
-				:seller_phone=>"415-392-2331",
+				:seller_phone=>"4158598060",
 				:seller_address=>"412 Hampshire Way, #4, San Francisco, CA 94023",
 				:pickup_notes => joe_sellerprofile.pickup_notes,
 				:delivery_notes => "I live in an old white condo. I'll be out front wearing a hat.",
