@@ -71,11 +71,15 @@ class Order
 	property :seller_phone, Text
 	property :seller_address, Text
 
-
+	property :shipper_name, Text
+	property :shipper_phone, Text
+	property :shipper_email, Text
 	property :shipped, Boolean, { :default => false }
 	property :shipped_date, Date
 	property :shipper_email_sent, Boolean, { :default => false}
+
 	property :approved, Text
+	property :return_reason, Text
 	property :charged, Text
 	property :seller_paid, Boolean, { :default => false }
 	property :pickup_notes, Text

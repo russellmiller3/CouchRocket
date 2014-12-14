@@ -113,14 +113,13 @@ get "/BuyerOrderConfirmation" do
   erb(:'BuyerOrderConfirmation')
 end
 
-post "/charge" do
-  # show_params
-  order_id = params[:order][:id]
+post "/Charge" do
+  show_params
+  order_id = params[:order_id]
   @order = Order.get(order_id)
-  # p @order.total_price
+  @order.approved = :true
   @buyer_profile = BuyerProfile.get(@order.buyer_profile_id)
   customer_id = @buyer_profile.stripe_customer_id
-  # p customer_id
 
   charge_create = Stripe::Charge.create(
       :amount => @order.total_price,
@@ -133,14 +132,10 @@ post "/charge" do
   else
     @order.charged = "Error"
   end
-
   @order.save
-
-  p @order.charged
-
-  redirect "/admin"
-
+  erb :'Thanks'
 end
+
 
 get "/items/:id" do
   show_params
@@ -210,8 +205,8 @@ end
 get "/BuyerAccept/:order_id" do
 order_id = params [:order_id]
 @order = Order.get(order_id)
-
-erb(:'BuyerAccept',:locals => {:order => @order})
+@item = order.item
+erb(:'BuyerAccept',:locals => {:order => @order,:item => @item})
 
 end
 
@@ -355,7 +350,57 @@ post "/register" do
   redirect "/AddItem"
 end
 
+get "/Return" do
+  @order = Order.get(params[:order_id])
+  erb(:'Return',:locals =>{:order=>@order})
+end
 
+
+post "/Return" do
+  show_params
+  @order = Order.get(params[:order][:id])
+  @order.approved = :false
+  @order.return_reason = params[:order][:return_reason]
+
+  #Charge Buyer Shipping Only
+  @buyer_profile = BuyerProfile.get(@order.buyer_profile_id)
+  customer_id = @buyer_profile.stripe_customer_id
+
+  shipping_cost = delivery_fee + return_insurance
+
+  charge_create = Stripe::Charge.create(
+      :amount => shipping_cost,
+      :currency => "usd",
+      :customer => customer_id
+      )
+
+  if charge_create.paid == true
+    @order.charged = true
+  else
+    @order.charged = "Error"
+  end
+  @order.save
+
+  #Notify Shipper to Return Item
+  begin
+    message = twilio_client.account.messages.create({
+      :from => "+1#{twilio_number}",
+      :to => "+1#{@order.shipper_phone}",
+      :body => "Return #{@order.item.type} to #{@order.seller_name} at #{@order.seller_address}.\n
+      Please call #{@order.seller_phone} to let them know. Thanks!"
+      })
+  rescue Twilio::REST::RequestError => e
+  puts e.message
+  puts message.sid
+  end
+
+  redirect "/ReturnComplete"
+
+end
+
+get "/ReturnComplete" do
+  erb(:'ReturnComplete')
+end
 
 get "/ScheduleDelivery" do
   show_params
@@ -366,8 +411,10 @@ end
 
 post "/ScheduleDelivery" do
   show_params
-  @shipper = params[:shipper]
+  order_attrs = params[:order]
   @order = Order.get(params[:order][:id])
+  @order.update(order_attrs)
+
   #Send Shipper Email
   shipper_email = {
     :from => "CouchRocket <me@#{settings.domain}>",
