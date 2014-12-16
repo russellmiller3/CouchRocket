@@ -182,46 +182,52 @@ post "/items" do
 
 end
 
-post "/NotifyBuyer/" do
-order_id = params[:order_id]
-@order = Order.get(order_id)
-
-begin
-  message = twilio_client.account.messages.create({
-    :from => "+1#{twilio_number}",
-    :to => "+1#{@order.buyer_phone}",
-    :body => "Your #{@order.item.brand} #{@order.item.type} from CouchRocket is here!\n http://localhost:9292/BuyerAccept/#{order_id}",
-    })
-rescue Twilio::REST::RequestError => e
-puts e.message
-puts message.sid
-end
-
-erb(:'NotifyBuyer')
-
-end
-
 
 get "/BuyerAccept/:order_id" do
-order_id = params [:order_id]
+order_id = params[:order_id]
 @order = Order.get(order_id)
-@item = order.item
+@item = @order.item
 erb(:'BuyerAccept',:locals => {:order => @order,:item => @item})
-
 end
 
 
+post "/NotifyBuyer/:order_id" do
+order_id = params[:order_id]
+order = Order.get(order_id)
+
+  begin
+    message = twilio_client.account.messages.create({
+      :from => "+1#{twilio_number}",
+      :to => "+1#{order.buyer_phone}",
+      :body => "Your delivery person from CouchRocket is here with your
+      #{order.item.brand} #{order.item.type}!\n http://localhost:9292/BuyerAccept/#{order_id}",
+      :media_url => "http://i.imgur.com/iI7g2uKs.jpg"
+      })
+  rescue Twilio::REST::RequestError => e
+    puts e.message
+    puts message.sid
+  end
+erb(:'NotifyBuyer')
+end
 
 
 post "/NotifySeller/:order_id" do
 order_id = params[:order_id]
 order = Order.get(order_id)
 
-#SMS
-
-
-"Thanks, we've sent the seller an SMS to let them know you're here"
-
+  begin
+    message = twilio_client.account.messages.create({
+      :from => "+1#{twilio_number}",
+      :to => "+1#{order.seller_phone}",
+      :body => "Your delivery person from CouchRocket is here to pick up
+      your #{order.item.brand} #{order.item.type} and deliver to your buyer.",
+      :media_url => "http://i.imgur.com/iI7g2uKs.jpg"
+      })
+  rescue Twilio::REST::RequestError => e
+    puts e.message
+    puts message.sid
+  end
+erb(:'NotifySeller')
 end
 
 post "/orders" do
@@ -359,7 +365,7 @@ end
 post "/Return" do
   show_params
   @order = Order.get(params[:order][:id])
-  @order.approved = :false
+  @order.approved = "Returned"
   @order.return_reason = params[:order][:return_reason]
 
   #Charge Buyer Shipping Only
@@ -415,10 +421,12 @@ post "/ScheduleDelivery" do
   @order = Order.get(params[:order][:id])
   @order.update(order_attrs)
 
+  binding.pry
+
   #Send Shipper Email
   shipper_email = {
     :from => "CouchRocket <me@#{settings.domain}>",
-    :to => "#{@shipper[:email]}",
+    :to => "#{@order.shipper_email}",
     :subject => "#{@order.item.brand} #{@order.item.type} delivery #{@order.target_delivery_date.strftime('%A, %B %d')}",
     :html => erb(:'Emails/Shipper',
       :locals => {:order=>@order})

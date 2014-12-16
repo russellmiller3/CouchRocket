@@ -48,20 +48,17 @@
 		<td>
 			<% if order.charged %>
 			Charged
-			<% elsif order.shipped && order.approved %>
-
-				<form action="/charge" method="post">
-				<input name="order[id]" type="hidden" value="<%= order.id %>">
-				<input type="submit" value="Charge Customer">
-				</form>
 			<% else %>
 			No
 			<% end %>
 		</td>
-		<td><%= order.admin_notes %></td>
+		<td>
+		<%= order.admin_notes %>
+		<% if order.approved == "Returned" %>
+				Returned:<br><%= order.return_reason %>
+		<% end %>
+		</td>
 	</tr>
 
-
 <% end %>
-
 </table>

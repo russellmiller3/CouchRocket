@@ -92,19 +92,7 @@ namespace :db do
 				:order_id=>"3"
 			})
 
-		item4 = Item.create({
-				:id =>"4",
-				:type=>"Desk",
-				:brand=>"Sears",
-				:notes=>"A good desk for work",
-				:original_price=>"9000",
-				:asking_price=>"5000",
-				:picture1_url=>"http://www.rescueinds.com/desks/images/4%20drawer%20desk.jpg",
-				:seller_profile_id=>"1",
-				:order_id=>"3"
-			})
-
-# Create 3 orders, 1 order with 2 items
+# Create 3 orders
 
 		order1 = Order.create({
 				:id => "1",
@@ -132,16 +120,16 @@ namespace :db do
 
 		order3 = Order.create({
 				:id => "3",
-				:item => Item.get(2),
+				:item => Item.get(3),
 				:buyer_profile_id => "1",
 				:buyer_name => "Tom Buyer",
 				:buyer_phone=>"4158598060",
 				:buyer_address => "33 Regis Court, San Francisco, CA 97331",
+				:delivery_notes => "I live in an old white condo. I'll be out front wearing a hat.",
 				:seller_name=>"Joe Seller",
 				:seller_phone=>"4158598060",
 				:seller_address=>"412 Hampshire Way, #4, San Francisco, CA 94023",
 				:pickup_notes => joe_sellerprofile.pickup_notes,
-				:delivery_notes => "I live in an old white condo. I'll be out front wearing a hat.",
 				:total_price => "11000",
 				:target_delivery_date =>"2014-12-07",
 				:target_delivery_time_start =>"6"
@@ -158,7 +146,6 @@ namespace :db do
 
 		item2.save
 		item3.save
-		item4.save
 		order1.save
 		order2.save
 		order3.save

@@ -1,4 +1,4 @@
-Hi there,<br><br>
+Hi <%= order.shipper_name %>,<br><br>
 
 On <%= order.target_delivery_date.strftime('%A, %B %d') %><br>
 Please pick up this item:<br>
@@ -8,19 +8,22 @@ Please pick up this item:<br>
 
 
 From:<br>
-<i><%= order.buyer_name%></i>,<br>
-<b><%= order.buyer_address %></b><br>
+<i><%= order.seller_name%></i>,<br>
+<b><%= order.seller_address %></b><br>
 between <b><%= order.target_delivery_time_start.to_i - 1 %> and <%= order.target_delivery_time_start.to_i %> p.m.</b> <br>
-<%= order.buyer_phone %><br>
+
+<a href="<%= order.seller_phone %>"><%= order.seller_phone %></a>
+<br>
 Pickup Notes:
 <%= order.pickup_notes %>
 <br><br>
 
 Deliver to:<br>
-<i><%= order.seller_name%></i>,<br>
-<b><%= order.seller_address %></b><br>
+<i><%= order.buyer_name%></i>,<br>
+<b><%= order.buyer_address %></b><br>
 between <b><%= order.target_delivery_time_start %> and <%= order.target_delivery_time_start + 2%> p.m.</b><br>
-<%= order.seller_phone %><br>
+<a href="<%= order.buyer_phone %>"><%= order.buyer_phone %></a>
+<br>
 Delivery Notes:
 <%= order.delivery_notes %>
 
@@ -28,15 +31,14 @@ Delivery Notes:
 
 <b>On Pickup:</b><br>When you arrive, press the button below to notify the seller that you're here.<br><br>
 
-
-<img src="http://i.imgur.com/WeKAwZ0.png"/>
+<form action="http://localhost:9292/NotifySeller/<%= order.id %>" method="POST" >
+<input type="image" src="http://i.imgur.com/WeKAwZ0.png"/>
+</form>
 
 <hr>
-
 <b>On Arrival:</b><br>When you arrive, press the button below to notify the buyer, so that he can confirm the purchase and we can pay you.<br><br>
 
-<form action="http://localhost:9292/NotifyBuyer/" method="POST" >
-<input name="order_id" type="hidden" value="<%= order.id %>"/>
+<form action="http://localhost:9292/NotifyBuyer/<%= order.id %>" method="POST" >
 <input type="image" src="http://i.imgur.com/9h7CKDs.png"/>
 </form>
 
