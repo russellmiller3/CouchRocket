@@ -27,7 +27,7 @@ twilio_number = settings.twilio_number
 #MailGun Setup
 set :mailgun_public_key, ENV['MAILGUN_PUBLIC_KEY']
 set :mailgun_secret_key, ENV['MAILGUN_SECRET_KEY']
-set :domain, ENV['DOMAIN']
+set :mail_domain, ENV['MAIL_DOMAIN']
 mg_client = Mailgun::Client.new(settings.mailgun_secret_key)
 
 set :partial_template_engine, :erb
@@ -38,8 +38,9 @@ configure :development do
 end
 
 #Global Variables
-delivery_fee = 30
-return_insurance = 7
+delivery_fee = 3000
+return_insurance = 700
+set :domain, ENV['DOMAIN']
 
 helpers do
   def current_user
@@ -142,7 +143,11 @@ get "/items/:id" do
   item_id = params[:id]
   @item = Item.get(item_id)
   show_params
-  erb :'SalesPage', :locals => { :item => @item }
+  erb :'SalesPage', :locals => { :item => @item,
+    :delivery_fee => delivery_fee,
+    :return_insurance => return_insurance,
+    :stripe_public_key =>  stripe_public_key
+    }
 end
 
 post "/items" do
@@ -171,12 +176,12 @@ post "/items" do
 
   #Send Seller Listing Confirmation Email
   seller_listing_confirmation = {
-    :from => "CouchRocket <info@#{settings.domain}>",
+    :from => "CouchRocket <info@#{settings.mail_domain}>",
     :to => "#{current_user.email}",
     :subject => "Thanks for Listing with CouchRocket",
     :html => erb(:'Emails/SellerListingConfirmation',:locals => { :current_user => current_user, :item => @item })
   }
-  mg_client.send_message(settings.domain,seller_listing_confirmation)
+  mg_client.send_message(settings.mail_domain,seller_listing_confirmation)
 
   redirect "/"
 
@@ -200,8 +205,8 @@ order = Order.get(order_id)
       :from => "+1#{twilio_number}",
       :to => "+1#{order.buyer_phone}",
       :body => "Your delivery person from CouchRocket is here with your
-      #{order.item.brand} #{order.item.type}!\n http://localhost:9292/BuyerAccept/#{order_id}",
-      :media_url => "http://i.imgur.com/iI7g2uKs.jpg"
+      #{order.item.brand} #{order.item.type}!\n http://#{settings.domain}/BuyerAccept/#{order_id}",
+      :media_url => "http://i.imgur.com/iWHg83s.png"
       })
   rescue Twilio::REST::RequestError => e
     puts e.message
@@ -221,7 +226,7 @@ order = Order.get(order_id)
       :to => "+1#{order.seller_phone}",
       :body => "Your delivery person from CouchRocket is here to pick up
       your #{order.item.brand} #{order.item.type} and deliver to your buyer.",
-      :media_url => "http://i.imgur.com/iI7g2uKs.jpg"
+      :media_url => "http://i.imgur.com/iWHg83s.png"
       })
   rescue Twilio::REST::RequestError => e
     puts e.message
@@ -235,11 +240,11 @@ post "/orders" do
 
   #Create new user (buyer)
   user_attrs = params[:user]
-  @new_user = User.new(user_attrs)
-  @new_user.buyer_profile = BuyerProfile.new
-  @new_user.save
-  @new_user.buyer_profile.save
-  @new_user.errors.each do |error|
+  @user = User.new(user_attrs)
+  @user.buyer_profile = BuyerProfile.new
+  @user.save
+  @user.buyer_profile.save
+  @user.errors.each do |error|
       puts error
   end
 
@@ -252,15 +257,16 @@ post "/orders" do
   @order = Order.new(order_attrs)
   @order.total_price = @item.asking_price + delivery_fee + return_insurance
 
-  @order.buyer_name =@new_user.name
-  @order.buyer_address = @new_user.address
-  @order.buyer_phone = @new_user.phone
+  @order.buyer_name =@user.name
+  @order.buyer_address = @user.address
+  @order.buyer_phone = @user.phone
 
-  @order.seller_name = @item.seller_profile.user.address
+  @order.seller_name = @item.seller_profile.user.name
   @order.seller_phone = @item.seller_profile.user.phone
   @order.seller_address = @item.seller_profile.user.address
   @order.pickup_notes = @item.seller_profile.pickup_notes
 
+  @order.buyer_profile = @user.buyer_profile
 
   @order.save
   @order.errors.each do |error|
@@ -281,40 +287,40 @@ post "/orders" do
 
   customer = Stripe::Customer.create(
   :card => token,
-  :email => @new_user.email,
+  :email => @user.email,
   :metadata => {
-    'Name' => @new_user.name,
-    'Phone' => @new_user.phone,
-    'Address' => @new_user.address
+    'Name' => @user.name,
+    'Phone' => @user.phone,
+    'Address' => @user.address
     }
   )
 
-  @new_user.buyer_profile.stripe_customer_id = customer.id
-  @new_user.buyer_profile.save
+  @user.buyer_profile.stripe_customer_id = customer.id
+  @user.buyer_profile.save
 
 
   #Send Buyer Confirmation Email
   buyer_confirmation = {
-    :from => "CouchRocket <me@#{settings.domain}>",
-    :to => "#{@new_user.email}",
+    :from => "CouchRocket <me@#{settings.mail_domain}>",
+    :to => "#{@user.email}",
     :subject => "Your #{@item.type} is Scheduled for Delivery",
     :html => erb(:'Emails/BuyerConfirmation',
-      :locals => {:new_user => @new_user,:item => @item,:order=>@order})
+      :locals => {:user => @user,:item => @item,:order=>@order})
   }
-  mg_client.send_message(settings.domain,buyer_confirmation)
+  mg_client.send_message(settings.mail_domain,buyer_confirmation)
 
   #Look up Seller
   @seller = @item.seller_profile.user
 
   #Send Seller Notification Email
   seller_pickup_notification ={
-    :from => "CouchRocket <me@#{settings.domain}>",
+    :from => "CouchRocket <me@#{settings.mail_domain}>",
     :to => "#{@seller.email}",
     :subject => "Time Sensitive: Your #{@item.type.downcase} has been sold!",
     :html => erb(:'Emails/SellerPickupNotification',
     :locals => {:seller => @seller,:item=>@item,:order=>@order})
   }
-  mg_client.send_message(settings.domain,seller_pickup_notification)
+  mg_client.send_message(settings.mail_domain,seller_pickup_notification)
 
   redirect "/BuyerOrderConfirmation"
 end
@@ -393,7 +399,8 @@ post "/Return" do
       :from => "+1#{twilio_number}",
       :to => "+1#{@order.shipper_phone}",
       :body => "Return #{@order.item.type} to #{@order.seller_name} at #{@order.seller_address}.\n
-      Please call #{@order.seller_phone} to let them know. Thanks!"
+      Please call #{@order.seller_phone} to let them know. Thanks!",
+      :media_url => "http://i.imgur.com/iWHg83s.png"
       })
   rescue Twilio::REST::RequestError => e
   puts e.message
@@ -425,13 +432,13 @@ post "/ScheduleDelivery" do
 
   #Send Shipper Email
   shipper_email = {
-    :from => "CouchRocket <me@#{settings.domain}>",
+    :from => "CouchRocket <me@#{settings.mail_domain}>",
     :to => "#{@order.shipper_email}",
     :subject => "#{@order.item.brand} #{@order.item.type} delivery #{@order.target_delivery_date.strftime('%A, %B %d')}",
     :html => erb(:'Emails/Shipper',
       :locals => {:order=>@order})
   }
-  mg_client.send_message(settings.domain,shipper_email)
+  mg_client.send_message(settings.mail_domain,shipper_email)
 
   @order.shipper_email_sent = true
   @order.save

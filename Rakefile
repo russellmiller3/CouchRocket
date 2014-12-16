@@ -52,7 +52,7 @@ namespace :db do
 
 			})
 
-	# Create 4 items
+	# Create 3 items
 
 		item1 = Item.create({
 				:id =>"1",
@@ -89,13 +89,13 @@ namespace :db do
 				:asking_price=>"6000",
 				:picture1_url=>"http://www.ikea.com/PIAimages/0122106_PE278491_S5.JPG",
 				:seller_profile_id=>"1",
-				:order_id=>"3"
 			})
 
-# Create 3 orders
+# Create 2 orders
 
 		order1 = Order.create({
 				:id => "1",
+				:item => Item.get(1),
 				:buyer_profile_id => "1",
 				:total_price => "7000",
 				:shipped => "true",
@@ -108,6 +108,7 @@ namespace :db do
 
 		order2 = Order.create({
 				:id => "2",
+				:item => Item.get(2),
 				:buyer_profile_id => "1",
 				:total_price => "12000",
 				:shipped => "true",
@@ -118,40 +119,18 @@ namespace :db do
 				:target_delivery_time_start =>"6"
 			})
 
-		order3 = Order.create({
-				:id => "3",
-				:item => Item.get(3),
-				:buyer_profile_id => "1",
-				:buyer_name => "Tom Buyer",
-				:buyer_phone=>"4158598060",
-				:buyer_address => "33 Regis Court, San Francisco, CA 97331",
-				:delivery_notes => "I live in an old white condo. I'll be out front wearing a hat.",
-				:seller_name=>"Joe Seller",
-				:seller_phone=>"4158598060",
-				:seller_address=>"412 Hampshire Way, #4, San Francisco, CA 94023",
-				:pickup_notes => joe_sellerprofile.pickup_notes,
-				:total_price => "11000",
-				:target_delivery_date =>"2014-12-07",
-				:target_delivery_time_start =>"6"
-			})
 
 		joe.save
 		joe_sellerprofile.save
 		tom.save
 		tom_buyerprofile.save
-		item1.save
-		item1.errors.each do |error|
-			puts error
-		end
 
+		item1.save
 		item2.save
 		item3.save
+
 		order1.save
 		order2.save
-		order3.save
-		order1.errors.each do |error|
-			puts error
-		end
 
 		puts "New Database seeded."
 		end

@@ -63,6 +63,7 @@ class Order
 	property :id, Serial
 	property :created_at, Date
 	property :total_price, Integer
+
 	property :buyer_name, Text
 	property :buyer_phone, Text
 	property :buyer_address, Text

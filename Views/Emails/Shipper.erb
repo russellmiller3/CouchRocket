@@ -31,14 +31,14 @@ Delivery Notes:
 
 <b>On Pickup:</b><br>When you arrive, press the button below to notify the seller that you're here.<br><br>
 
-<form action="http://localhost:9292/NotifySeller/<%= order.id %>" method="POST" >
+<form action="http://<%= settings.domain %>/NotifySeller/<%= order.id %>" method="POST" >
 <input type="image" src="http://i.imgur.com/WeKAwZ0.png"/>
 </form>
 
 <hr>
 <b>On Arrival:</b><br>When you arrive, press the button below to notify the buyer, so that he can confirm the purchase and we can pay you.<br><br>
 
-<form action="http://localhost:9292/NotifyBuyer/<%= order.id %>" method="POST" >
+<form action="http://<%= settings.domain %>/NotifyBuyer/<%= order.id %>" method="POST" >
 <input type="image" src="http://i.imgur.com/9h7CKDs.png"/>
 </form>
 

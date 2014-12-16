@@ -1,23 +1,22 @@
 <div class="Sales Page">
-
-<img src="<%= item.picture1_url %>">
+<h3><%= item.brand %> <%= item.type %></h3>
+<img src="<%= item.picture1_url %>" width=300>
 <img src="<%= item.picture2_url %>">
 <img src="<%= item.picture3_url %>">
-<h4><%= item.brand %> <%= item.type %></h4>
-Originally Priced at: $<b><%= To_Dollars(item.original_price) %></b>
-<br>
-<h3>Now selling for: $<b><%= To_Dollars(item.asking_price) %></b></h3>
-<h2>Delivery Cost: $<%= delivery_fee %></h2>
-<h2>Hassle Free Return Fee: $<%= return_fee %> </h2>
-<p>This ensures that you can return the item if you don't like it, and have us pay the full return fee.</p>
-<h2>Total Cost: $<%= To_Dollars(item.asking_price) + delivery_fee + return_fee %></h2>
-
 <br>
 Notes:
 <br>
 <%= item.notes %>
+<br>Originally Priced at: $<b><%= To_Dollars(item.original_price) %></b>
+<br>
+<h3>Now selling for: $<b><%= To_Dollars(item.asking_price) %></b></h3>
+Delivery Cost: $<%= delivery_fee %><br>
+Hassle Free Return Fee: $<%= return_insurance %> - This ensures that you can return the item if you don't like it, and have us pay the full return fee.
+<h2>Delivered to your door for:<br>$<%= To_Dollars(item.asking_price) + delivery_fee + return_insurance %></h2>
+
+
 <br><br>
-<h4>Purchase Today</h4>
+<h4>Purchase Today!</h4>
 
 
 
@@ -43,7 +42,7 @@ Notes:
 <div class="form-row">
     <label>
       <span>Phone</span>
-      <input name="user[phone]" type="text" size="30" value="415-853-9060"/>
+      <input name="user[phone]" type="text" size="30" value="415-859-8060"/>
     </label>
 </div>
 <br>
@@ -92,7 +91,7 @@ Notes:
 
 <div class="form-row">
   <label>
-    <span>Expiration (MM/YYYY)</span>
+    <span>Expiration (MM/YY)</span>
     <input type="text" size="2" data-stripe="exp-month" value="05" />
   </label>
   <span> / </span>

@@ -14,8 +14,13 @@ Can you tell us why you're returning the item, so we can tell the seller?<br>
 <label for "order[return_reason]">Return Reason:</label><br>
 <textarea name="order[return_reason]" rows="2" cols="50"></textarea>
 <br>
-
 <button style="background-color:pink" style="width:260">Take it back..</button>
-
+</form>
+</p>
+<p>
+Changed my mind, all good.
+<form action="/Charge" method="POST" >
+<input name="order_id" type="hidden" value="<%= order.id %>"/>
+<button style="background-color:lightgreen" style="width:260;height:130">Rock on!</button>
 </form>
 </p>
