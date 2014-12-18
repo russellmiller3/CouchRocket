@@ -1,22 +1,19 @@
 Hey there,<br>
 We're psyched for you! You've bought a cool piece of furniture without having to schlep across town, and here it is:<br>
-<h3><%= item.type %> <%= item.brand %></h3>
+<h3><%= item.brand %> <%= item.type %></h3>
 <IMG border="1" WIDTH=200 SRC="<%= item.picture1_url %>"><br>
 <IMG border="1" WIDTH=200 SRC="<%= item.picture2_url %>"><br>
 <IMG border="1" WIDTH=200 SRC="<%= item.picture2_url %>"><br>
 Take a moment to inspect it to make sure it's good<br><br>
-All good?  Click the Big Green Button to have the item released to you by your CouchRocket<br>
-
-<form action="/Charge" method="POST" >
-<input name="order_id" type="hidden" value="<%= order.id %>"/>
-<button style="background-color:lightgreen" style="width:260;height:130">Rock on!</button>
+All good?  Click the Big Green Button to finalize your purchase.<br><br>
+<form action="/Charge/<%= order.id %>" method="POST" >
+<button style="background-color:lightgreen" style="width:300">Rock on!</button>
 </form>
-<br><br><br><br>
-No?<br><br>
-Have a question for the seller?<br><br>
+<br><br>
+Have a question for the seller?<br>
 <%= order.seller_name %>,<br>
-<%= order.seller_phone %><br><br><br><br>
-Still don't like it? We'll take it back.
+<%= order.seller_phone %><br><br>
+Don't like it? We'll take it back.
 <form action="/Return" method="GET" >
 <input name="order_id" type="hidden" value="<%= order.id %>"/>
 <button style="background-color:lightred" style="width:260;height:130">Take it back..</button>

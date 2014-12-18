@@ -8,15 +8,15 @@
 </style>
 
 <h3>Debit Card Information</h3>
-<p>Enter your debit card information so we can pay you.</p>
+<p>Let's get you paid for your <%= order.item.type.downcase %>!</p>
 </p>
-<form action="/SellerPaymentDetails" method="POST" id="seller_card_details_for_recipient_creation">
+<form action="/SellerPaymentDetails/<%= order.id %>" method="POST" id="seller_card_details_for_recipient_creation">
 
 <span class="card-errors"></span>
 <div class="form-row">
     <label>
       <span>Name, as it appears on debit card</span>
-      <input name="seller[name]" type="text" size="30" value="Jim Smith"/>
+      <input name="seller[name]" type="text" size="30" value="Joe Seller"/>
 
     </label>
 </div>

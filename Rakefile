@@ -31,7 +31,8 @@ namespace :db do
 		joe_sellerprofile = SellerProfile.create({
 			:id=>"1",
 			:user_id => "2",
-			:pickup_notes => "Gate code is #234. Ask for Joe"
+			:pickup_notes => "Gate code is #234. Ask for Joe",
+			:stripe_recipient_id => "rp_15B1wkEWMqWW2cevh9LH1iRT"
 			})
 
 
@@ -119,6 +120,23 @@ namespace :db do
 				:target_delivery_time_start =>"6"
 			})
 
+		order3 = Order.create({
+				:id => "3",
+				:item => Item.get(3),
+				:buyer_profile_id => "1",
+				:total_price => "9700",
+				:seller_name => "Joe Seller",
+				:seller_phone => "4158598060",
+				:seller_address => "412 Hampshire Way, #4, San Francisco, CA 94023",
+				:seller_share => "4800",
+				:shipped => "false",
+				:shipped_date => "2014-12-07T20:05:42-08:00",
+				:buyer_address => "33 Regis Court, San Francisco, CA 97331",
+				:target_delivery_date =>"2014-12-07",
+				:target_delivery_time_start =>"6"
+			})
+
+
 
 		joe.save
 		joe_sellerprofile.save
@@ -131,6 +149,7 @@ namespace :db do
 
 		order1.save
 		order2.save
+		order3.save
 
 		puts "New Database seeded."
 		end

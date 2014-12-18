@@ -71,6 +71,7 @@ class Order
 	property :seller_name, Text
 	property :seller_phone, Text
 	property :seller_address, Text
+	property :seller_share, Integer #Seller's share of sale price
 
 	property :shipper_name, Text
 	property :shipper_phone, Text
@@ -79,7 +80,7 @@ class Order
 	property :shipped_date, Date
 	property :shipper_email_sent, Boolean, { :default => false}
 
-	property :approved, Text
+	property :approved, Boolean, { :default => false }
 	property :return_reason, Text
 	property :charged, Text
 	property :seller_paid, Boolean, { :default => false }

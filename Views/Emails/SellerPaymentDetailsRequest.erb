@@ -1,0 +1,6 @@
+<html>
+  Hi <%= order.seller_name %>. Your <%= order.item.type.downcase %> has sold!<br>
+	<p>To get paid, go here to enter your <a href="http://<%= settings.domain %>/SellerPaymentDetails/<%= order.id %>">payment details</a>.
+	<br><br>
+	More questions?  Check out the <a href='CouchRocket.com/FAQ'>CouchRocket FAQ</a> </p>
+</html>

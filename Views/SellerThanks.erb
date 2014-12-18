@@ -1,0 +1,12 @@
+<p>All set!  You've been paid <%= To_Dollars(@order.seller_share) %> for your <%= @order.item.brand %> <%= @order.item.type %>. High Five!<br><br>
+See you back soon!<br>
+Your friends at CouchRocket</p>
+
+<p>Eager to replace that furniture with some other cool items?<br>
+Have a look around:</p>
+<h2>Items for Sale</h2>
+<% items = Item.select {|item| item.sold==false }.sample(3) %>
+<% items.each do |item| %>
+	<a href="/items/<%= item.id %>">
+	<img border="1" width=50 src="<%= item.picture1_url %>"><%= item.brand %> <%= item.type %></a>
+<% end %>

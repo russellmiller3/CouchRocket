@@ -40,9 +40,72 @@ end
 #Global Variables
 delivery_fee = 3000
 return_insurance = 700
+buyer_percent = 0.80
+
 set :domain, ENV['DOMAIN']
 
 helpers do
+
+  def Charge_Buyer(order_id)
+    @order = Order.get(order_id)
+    @order.approved = :true
+
+    @buyer_profile = BuyerProfile.get(@order.buyer_profile_id)
+    customer_id = @buyer_profile.stripe_customer_id
+
+    charge_create = Stripe::Charge.create(
+        :amount => @order.total_price,
+        :currency => "usd",
+        :customer => customer_id
+        )
+
+    if charge_create.paid == true
+      @order.charged = true
+    else
+      @order.charged = "Error"
+    end
+    @order.save
+  end
+
+
+  def Pay_Seller(order_id)
+    @order = Order.get(order_id)
+    @mg_client = Mailgun::Client.new(settings.mailgun_secret_key)
+
+    if
+      #Seller has a Stripe recipient profile, Pay Seller
+      @order.item.seller_profile.stripe_recipient_id
+      pay_seller_transfer = Stripe::Transfer.create(
+      :amount =>   @order.seller_share,
+      :currency => "usd",
+      :recipient => "#{@order.item.seller_profile.stripe_recipient_id}",
+      :description => "Payment for CouchRocket sale"
+      )
+      @order.seller_paid = true
+      @order.save
+
+      #Email Seller Confirmation of Payment
+      seller_payment_confirmation = {
+      :from => "CouchRocket <info@#{settings.mail_domain}>",
+      :to => "#{@order.item.seller_profile.user.email}",
+      :subject => "Payment Confirmation for #{@order.item.type.downcase}",
+      :html => erb(:'Emails/SellerPaymentConfirmation',:locals => { :order => @order})
+      }
+      @mg_client.send_message(settings.mail_domain,seller_payment_confirmation)
+
+    else
+      #Email Seller to Register with Stripe
+      seller_payment_details_request = {
+      :from => "CouchRocket <info@#{settings.mail_domain}>",
+      :to => "#{@order.item.seller_profile.user.email}",
+      :subject => "Your #{@order.item.type.downcase} sold! Now let's get you paid!",
+      :html => erb(:'Emails/SellerPaymentDetailsRequest',:locals => { :order => @order})
+      }
+      @mg_client.send_message(settings.mail_domain,seller_payment_details_request)
+    end
+  end
+
+
   def current_user
    @current_user ||= User.last
   end
@@ -54,6 +117,8 @@ helpers do
   def To_Dollars(cents)
     cents/100
   end
+
+
 
 
   def Stripe_Error_Handling(code)
@@ -102,7 +167,7 @@ end
 
 get "/AddItem" do
   @item = Item.new
-  erb :'AddItem', :locals => { :item => @item, :user => current_user, :return_fee => return_fee }
+  erb :'AddItem', :locals => { :item => @item, :user => current_user}
 end
 
 get "/Admin" do
@@ -114,26 +179,12 @@ get "/BuyerOrderConfirmation" do
   erb(:'BuyerOrderConfirmation')
 end
 
-post "/Charge" do
+post "/Charge/:order_id" do
   show_params
   order_id = params[:order_id]
-  @order = Order.get(order_id)
-  @order.approved = :true
-  @buyer_profile = BuyerProfile.get(@order.buyer_profile_id)
-  customer_id = @buyer_profile.stripe_customer_id
+  Charge_Buyer(order_id)
+  Pay_Seller(order_id)
 
-  charge_create = Stripe::Charge.create(
-      :amount => @order.total_price,
-      :currency => "usd",
-      :customer => customer_id
-      )
-
-  if charge_create.paid == true
-    @order.charged = true
-  else
-    @order.charged = "Error"
-  end
-  @order.save
   erb :'Thanks'
 end
 
@@ -264,7 +315,9 @@ post "/orders" do
   @order.seller_name = @item.seller_profile.user.name
   @order.seller_phone = @item.seller_profile.user.phone
   @order.seller_address = @item.seller_profile.user.address
+  @order.seller_share = buyer_percent * @item.asking_price
   @order.pickup_notes = @item.seller_profile.pickup_notes
+
 
   @order.buyer_profile = @user.buyer_profile
 
@@ -324,29 +377,6 @@ post "/orders" do
 
   redirect "/BuyerOrderConfirmation"
 end
-
-post "/PaySeller" do
-
-  order = Order.get(params[:order][:id])
-
-  buyer_share = 0.8*(order.total_price-delivery_fee)
-  buyer_share = buyer_share.to_i
-
-
-  pay_seller_transfer = Stripe::Transfer.create(
-  :amount => buyer_share,
-  :currency => "usd",
-  :recipient => "#{current_user.seller_profile.stripe_recipient_id}",
-  :description => "Payment for CouchRocket sale"
-  )
-
-  order.seller_paid = true
-  order.save
-
-end
-
-
-
 
 get "/register" do
   erb(:'Register')
@@ -447,14 +477,23 @@ post "/ScheduleDelivery" do
 end
 
 
-get "/SellerPaymentDetails" do
-  erb(:'SellerPaymentDetails',:locals => {:stripe_public_key => stripe_public_key,:return_fee => return_fee})
+get "/SellerPaymentDetails/:order_id" do
+  show_params
+  order_id = params[:order_id]
+  @order = Order.get(order_id)
+  erb(:'SellerPaymentDetails',
+    :locals => {:stripe_public_key => stripe_public_key,
+    :return_insurance => return_insurance,
+    :order => @order
+    })
 end
 
 
-post "/SellerPaymentDetails" do
+post "/SellerPaymentDetails/:order_id" do
   show_params
+  order_id = params[:order_id]
   seller_attrs = params[:seller]
+  @order = Order.get(order_id)
   token = params[:stripeToken]   # Get the credit card details submitted by the form
 
   seller_stripe_recipient_profile = Stripe::Recipient.create(
@@ -472,8 +511,9 @@ post "/SellerPaymentDetails" do
   current_user.seller_profile.stripe_recipient_id = seller_stripe_recipient_profile.id
   current_user.save
 
+  Pay_Seller(order_id)
 
-  redirect "/"
+  erb(:'SellerThanks',:locals=>{:order=>@order})
 
 end
 

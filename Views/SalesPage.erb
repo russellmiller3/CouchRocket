@@ -8,11 +8,11 @@ Notes:
 <br>
 <%= item.notes %>
 <br>Originally Priced at: $<b><%= To_Dollars(item.original_price) %></b>
-<br>
+
 <h3>Now selling for: $<b><%= To_Dollars(item.asking_price) %></b></h3>
-Delivery Cost: $<%= delivery_fee %><br>
-Hassle Free Return Fee: $<%= return_insurance %> - This ensures that you can return the item if you don't like it, and have us pay the full return fee.
-<h2>Delivered to your door for:<br>$<%= To_Dollars(item.asking_price) + delivery_fee + return_insurance %></h2>
+Delivery Cost: $<%= To_Dollars(delivery_fee) %><br>
+Hassle Free Return Fee: $<%= To_Dollars(return_insurance) %> - This ensures that you can return the item if you don't like it, and have us pay the full return fee.
+<h2>Delivered to your door for:<br>$<%= To_Dollars(item.asking_price + delivery_fee + return_insurance) %></h2>
 
 
 <br><br>
@@ -28,7 +28,7 @@ Hassle Free Return Fee: $<%= return_insurance %> - This ensures that you can ret
 <div class="form-row">
     <label>
       <span>Name</span>
-      <input name="user[name]" type="text" size="30" value="Jim Smith"/>
+      <input name="user[name]" type="text" size="30" value="Tom Buyer"/>
     </label>
 </div>
 <br>
@@ -42,7 +42,7 @@ Hassle Free Return Fee: $<%= return_insurance %> - This ensures that you can ret
 <div class="form-row">
     <label>
       <span>Phone</span>
-      <input name="user[phone]" type="text" size="30" value="415-859-8060"/>
+      <input name="user[phone]" type="text" size="30" value="4158598060"/>
     </label>
 </div>
 <br>
@@ -66,7 +66,7 @@ Hassle Free Return Fee: $<%= return_insurance %> - This ensures that you can ret
 <div class="form-row">
     <label>
       <span>Shipping Address</span>
-      <input name="user[address]" type="text" size="30" value="3243 Mason Way, San Francisco, CA 94023"/>
+      <input name="user[address]" type="text" size="60" value="33 Regis Court, San Francisco, CA 97331"/>
     </label>
 </div>
 <br>
@@ -78,8 +78,7 @@ Hassle Free Return Fee: $<%= return_insurance %> - This ensures that you can ret
 <div class="form-row">
   <label>
     <span>Card Number</span>
-    <input type="text" size="20" data-stripe="number" value="4242 4242 4242 4242" />
-  </label>
+    <input type="text" size="30" data-stripe="number" value="4242 4242 4242 4242" /> </label>
 </div>
 
 <div class="form-row">
