@@ -1,12 +1,13 @@
 require 'sinatra'
 require 'sinatra/partial'
-require 'better_errors'
 require 'stripe'
 require 'json'
 require 'pry'
 require 'rest_client'
 require 'mailgun'
 require 'twilio-ruby'
+require 'better_errors'
+
 
 require_relative 'config/dotenv'
 require_relative 'models'

@@ -1,3 +1,18 @@
+<style>
+.admin {
+    border: 2px solid #a1a1a1;
+    padding: 10px 20px;
+    background: #dddddd;
+    width: 100px;
+    border-radius: 25px;
+}
+</style>
+
+<div class = "admin">
+<h4><a href="/Admin">Admin Panel</a></h4> - Hooked up to Mailgun and Twilio for SMS<br>
+<a href="/register">Register</a>
+</div>
+<br><br>
 <form action="/AddItem">
     <input type="submit" value="Add Item">
 </form>
@@ -10,3 +25,4 @@
 		Sales Page for <%= item.brand %> <%= item.type %></a><br><br>
 	<% end %>
 <% end %>
+
