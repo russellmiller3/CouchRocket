@@ -6,7 +6,7 @@ require 'pry'
 require 'rest_client'
 require 'mailgun'
 require 'twilio-ruby'
-#require 'better_errors'
+require 'better_errors'
 
 
 require_relative 'config/dotenv'
@@ -163,7 +163,7 @@ get "/" do
     @items = nil
   end
 
-  erb :'Home', :locals => { :items => @items, :user => current_user }
+  erb :'home', :locals => { :items => @items, :user => current_user }
 end
 
 get "/AddItem" do
