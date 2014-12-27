@@ -6,7 +6,7 @@ require 'pry'
 require 'rest_client'
 require 'mailgun'
 require 'twilio-ruby'
-require 'better_errors'
+#require 'better_errors'
 
 
 require_relative 'config/dotenv'
