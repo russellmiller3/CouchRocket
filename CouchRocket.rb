@@ -45,7 +45,6 @@ buyer_percent = 0.80
 set :domain, ENV['DOMAIN']
 
 helpers do
-
   def Charge_Buyer(order_id)
     @order = Order.get(order_id)
     @order.approved = :true
@@ -102,6 +101,7 @@ helpers do
       }
       @mg_client.send_message(settings.mail_domain,seller_payment_details_request)
     end
+  end
 
   def current_user
    @current_user ||= User.last
@@ -114,7 +114,6 @@ helpers do
   def To_Dollars(cents)
     cents/100
   end
-
 end
 
 
@@ -144,8 +143,6 @@ end
     end
   end
 
-end
-
 def show_params
   p params
 end
@@ -153,8 +150,8 @@ end
 #Begin Routes
 
 get "/" do
-  if @current_user.seller_profile
-    @items = @current_user.seller_profile.items
+  if current_user.seller_profile
+    @items = current_user.seller_profile.items
   else
     @items = nil
   end
