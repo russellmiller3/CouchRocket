@@ -6,8 +6,6 @@ require 'pry'
 require 'rest_client'
 require 'mailgun'
 require 'twilio-ruby'
-#require 'better_errors'
-
 
 require_relative 'config/dotenv'
 require_relative 'models'
@@ -34,6 +32,7 @@ mg_client = Mailgun::Client.new(settings.mailgun_secret_key)
 set :partial_template_engine, :erb
 
 configure :development do
+  require 'better_errors'
   use BetterErrors::Middleware
   BetterErrors.application_root = File.expand_path('..', __FILE__)
 end
@@ -157,8 +156,8 @@ end
 #Begin Routes
 
 get "/" do
-  if current_user.seller_profile
-    @items = current_user.seller_profile.items
+  if @current_user.seller_profile
+    @items = @current_user.seller_profile.items
   else
     @items = nil
   end
