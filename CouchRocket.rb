@@ -67,7 +67,6 @@ helpers do
     @order.save
   end
 
-
   def Pay_Seller(order_id)
     @order = Order.get(order_id)
     @mg_client = Mailgun::Client.new(settings.mailgun_secret_key)
@@ -103,8 +102,6 @@ helpers do
       }
       @mg_client.send_message(settings.mail_domain,seller_payment_details_request)
     end
-  end
-
 
   def current_user
    @current_user ||= User.last
@@ -118,7 +115,7 @@ helpers do
     cents/100
   end
 
-
+end
 
 
   def Stripe_Error_Handling(code)
