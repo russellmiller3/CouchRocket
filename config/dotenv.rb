@@ -1,4 +1,6 @@
 if ENV['RACK_ENV'] != 'production'
-  require 'dotenv'
+  Bundler.require(:development)
   Dotenv.load('.env')
+else
+	Bundler.require(:production)
 end
