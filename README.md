@@ -1,26 +1,28 @@
-# CouchRocket is an e-commerce program to let users sell and buy new furniture.
+# CouchRocket
+
+CouchRocket is an e-commerce program to let users sell and buy new furniture.
 
 ## Integrations:
-Stripe - Payment
-Twilio - SMS alerts
-Mailgun - Emails
-Filepicker - Uploading files
+* Stripe - Payment
+* Twilio - SMS alerts
+* Mailgun - Emails
+* Filepicker - Uploading files
 
 ## Functions:
 Buyers can:
-Register (to come)
-Order an item (pre-auth via stripe)
-Upon receiving the item, accept (and pay) or reject (pay only shipping)
+* Register (to come)
+* Order an item (pre-auth via stripe)
+* Upon receiving the item, accept (and pay) or reject (pay only shipping)
 
 Sellers can:
-Register
-Post an item
-Enter their payment information to receive funds
-Get paid once a buyer has bought an item
+* Register
+* Post an item
+* Enter their payment information to receive funds
+* Get paid once a buyer has bought an item
 
 Admin can:
-Enter Shipper Info
-Send shipper email to start the delivery process
+* Enter Shipper Info
+* Send shipper email to start the delivery process
 
 ## Running the Software:
 

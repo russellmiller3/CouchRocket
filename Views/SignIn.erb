@@ -1,0 +1,28 @@
+<article id="sessions-new-page">
+	<h2>Sign In</h2>
+
+	<% if user.errors.any? %>
+		<div class="form-errors">
+			<h3>There were some errors with your login:</h3>
+			<ul class="error-messages">
+				<% user.errors.full_messages.each do |error_msg| %>
+					<li><%= error_msg %></li>
+				<% end %>
+			</ul>
+		</div>
+	<% end %>
+
+	<form id="sign-in-form" method="POST" action="/sessions">
+	<div class="form-row">
+		<label for="user-email">Email</label>
+		<input id="user-email" type="text" name="email" placeholder="you@example.com" value="<%= user.email %>">
+		</div>
+		<br>
+		<div class="form-row">
+		<label for="user-password">Password</label>
+		<input id="user-password" type="password" name="password">
+		</div>
+		<br>
+	<button type="submit">Sign In</button>
+	</form>
+</article>

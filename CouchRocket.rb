@@ -1,106 +1,19 @@
-require 'rubygems'
-require 'bundler/setup'
-Bundler.require(:default)
+require 'sinatra'
+# require_relative 'config/dotenv'
 
-require_relative 'config/dotenv'
+# We point Datamapper to the correct database in setup.rb
+require_relative 'setup'
+
 require_relative 'models'
-
-#Stripe Setup
-set :stripe_public_key, ENV['STRIPE_PUBLIC_KEY']
-set :stripe_secret_key, ENV['STRIPE_SECRET_KEY']
-Stripe.api_key = settings.stripe_secret_key
-stripe_public_key = settings.stripe_public_key
-
-#Twilio Setup
-set :twilio_account_sid, ENV['TWILIO_ACCOUNT_SID']
-set :twilio_auth_token, ENV['TWILIO_AUTH_TOKEN']
-set :twilio_number, ENV['TWILIO_NUMBER']
-twilio_client = Twilio::REST::Client.new settings.twilio_account_sid, settings.twilio_auth_token
-twilio_number = settings.twilio_number
-
-#MailGun Setup
-set :mailgun_public_key, ENV['MAILGUN_PUBLIC_KEY']
-set :mailgun_secret_key, ENV['MAILGUN_SECRET_KEY']
-set :mail_domain, ENV['MAIL_DOMAIN']
-mg_client = Mailgun::Client.new(settings.mailgun_secret_key)
-
-set :partial_template_engine, :erb
-
-configure :development do
-  use BetterErrors::Middleware
-  BetterErrors.application_root = File.expand_path('..', __FILE__)
-end
+require_all 'helpers'
 
 #Global Variables
 delivery_fee = 3000
 return_insurance = 700
 buyer_percent = 0.80
-
 set :domain, ENV['DOMAIN']
 
 helpers do
-  def Charge_Buyer(order_id)
-    @order = Order.get(order_id)
-    @order.approved = :true
-
-    @buyer_profile = BuyerProfile.get(@order.buyer_profile_id)
-    customer_id = @buyer_profile.stripe_customer_id
-
-    charge_create = Stripe::Charge.create(
-        :amount => @order.total_price,
-        :currency => "usd",
-        :customer => customer_id
-        )
-
-    if charge_create.paid == true
-      @order.charged = true
-    else
-      @order.charged = "Error"
-    end
-    @order.save
-  end
-
-  def Pay_Seller(order_id)
-    @order = Order.get(order_id)
-    @mg_client = Mailgun::Client.new(settings.mailgun_secret_key)
-
-    if
-      #Seller has a Stripe recipient profile, Pay Seller
-      @order.item.seller_profile.stripe_recipient_id
-      pay_seller_transfer = Stripe::Transfer.create(
-      :amount =>   @order.seller_share,
-      :currency => "usd",
-      :recipient => "#{@order.item.seller_profile.stripe_recipient_id}",
-      :description => "Payment for CouchRocket sale"
-      )
-      @order.seller_paid = true
-      @order.save
-
-      #Email Seller Confirmation of Payment
-      seller_payment_confirmation = {
-      :from => "CouchRocket <info@#{settings.mail_domain}>",
-      :to => "#{@order.item.seller_profile.user.email}",
-      :subject => "Payment Confirmation for #{@order.item.type.downcase}",
-      :html => erb(:'Emails/SellerPaymentConfirmation',:locals => { :order => @order})
-      }
-      @mg_client.send_message(settings.mail_domain,seller_payment_confirmation)
-
-    else
-      #Email Seller to Register with Stripe
-      seller_payment_details_request = {
-      :from => "CouchRocket <info@#{settings.mail_domain}>",
-      :to => "#{@order.item.seller_profile.user.email}",
-      :subject => "Your #{@order.item.type.downcase} sold! Now let's get you paid!",
-      :html => erb(:'Emails/SellerPaymentDetailsRequest',:locals => { :order => @order})
-      }
-      @mg_client.send_message(settings.mail_domain,seller_payment_details_request)
-    end
-  end
-
-  def current_user
-   @current_user ||= User.last
-  end
-
   def To_Cents(dollar_amount)
     dollar_amount * 100
   end
@@ -108,59 +21,33 @@ helpers do
   def To_Dollars(cents)
     cents/100
   end
-end
 
-
-  def Stripe_Error_Handling(code)
-    begin
-      code
-    rescue Stripe::CardError => e
-      # Since it's a decline, Stripe::CardError will be caught
-    rescue Stripe::InvalidRequestError => e
-      # Invalid parameters were supplied to Stripe's API
-    rescue Stripe::AuthenticationError => e
-      # Authentication with Stripe's API failed
-      # (maybe you changed API keys recently)
-    rescue Stripe::APIConnectionError => e
-      # Network communication with Stripe failed
-    rescue Stripe::StripeError => e
-      # Display a very generic error to the user, and maybe send
-      # yourself an email
-      body = e.json_body
-      err  = body[:error]
-      puts "Status is: #{e.http_status}"
-      puts "Type is: #{err[:type]}"
-      puts "Code is: #{err[:code]}"
-      # param is '' in this case
-      puts "Param is: #{err[:param]}"
-      puts "Message is: #{err[:message]}"
-    end
+  def show_params
+    p params
   end
-
-def show_params
-  p params
 end
+
 
 #Begin Routes
-
 get "/" do
-  if current_user.seller_profile
-    @items = current_user.seller_profile.items
+  if user_signed_in? && current_user.seller_profile
+    @user_items = current_user.seller_profile.items
   else
-    @items = nil
+    @user_items = nil
   end
 
-  erb :'home', :locals => { :items => @items, :user => current_user }
+  erb :'home', :locals => { :user_items => @user_items, :user => current_user }
 end
 
-get "/AddItem" do
-  @item = Item.new
-  erb :'AddItem', :locals => { :item => @item, :user => current_user}
-end
+
 
 get "/Admin" do
-  @orders = Order.all
-  erb :'Admin', :locals => {:orders => @orders}
+  if current_user.is_admin?
+    @orders = Order.all
+    erb :'Admin', :locals => {:orders => @orders}
+  else
+    redirect "/"
+  end
 end
 
 get "/BuyerOrderConfirmation" do
@@ -189,6 +76,12 @@ get "/items/:id" do
     }
 end
 
+get "/items/new" do
+  @item = Item.new
+  erb :'NewItem', :locals => { :item => @item, :user => current_user}
+end
+
+
 post "/items" do
   show_params
 
@@ -206,8 +99,8 @@ post "/items" do
   item_attrs = params[:item]
   item_attrs.merge!({ :seller_profile_id => @seller_profile.id})
   @item = Item.new(item_attrs)
-  To_Cents(@item.original_price)
-  To_Cents(@item.asking_price)
+  @item.original_price = To_Cents(@item.original_price)
+  @item.asking_price = To_Cents(@item.asking_price)
   @item.save
   @item.errors.each do |error|
     puts error
@@ -367,17 +260,20 @@ post "/orders" do
 end
 
 get "/register" do
-  erb(:'Register')
+  user = User.new
+  erb(:'Register', :locals => {:user => user})
 end
 
 post "/register" do
   show_params
-  user_attrs = params[:user]
-  @new_user  = User.new(user_attrs)
-  @new_user.save
-  p @new_user
+  user = User.create(params[:user])
 
-  redirect "/AddItem"
+  if user.saved?
+    sign_in!(user)
+    redirect "/items/new"
+  else
+    erb(:'Register', :locals => {:user => user})
+  end
 end
 
 get "/Return" do
@@ -476,6 +372,26 @@ get "/SellerPaymentDetails/:order_id" do
     })
 end
 
+get "/sessions/new" do
+  user = User.new
+  erb(:'SignIn', :locals=> {:user=>user})
+end
+
+post "/sessions" do
+  user = User.find_by_email(params[:email])
+
+  if user && user.valid_password?(params[:password])
+    sign_in(user)
+    redirect("/")
+  else
+    erb(:'SignIn', :locals=> {:user=>user})
+  end
+end
+
+get "/sessions/sign_out" do
+  sign_out
+  redirect("/")
+end
 
 post "/SellerPaymentDetails/:order_id" do
   show_params
@@ -504,16 +420,4 @@ post "/SellerPaymentDetails/:order_id" do
   erb(:'SellerThanks',:locals=>{:order=>@order})
 
 end
-
-
-
-
-
-
-
-
-
-
-
-
 

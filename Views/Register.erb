@@ -1,7 +1,19 @@
 <p>Hey there!  We're CouchRocket.<br>
 Tell us a bit about you.</p>
 
-<form action="/register" method="post" accept-charset="utf-8" id="registration-form">
+
+<% if user.errors.any? %>
+    <div class="form-errors">
+      <h3>There were some errors with your signup:</h3>
+      <ul class="error-messages">
+        <% user.errors.full_messages.each do |error_msg| %>
+          <li><%= error_msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+<form id="registration-form" action="/register" method="post" accept-charset="utf-8" id="registration-form">
 
 <div class="form-row">
     <label>
@@ -13,21 +25,30 @@ Tell us a bit about you.</p>
 <div class="form-row">
     <label>
       <span>Email</span>
-      <input name="user[email]" type="text" size="30" data-stripe="email" value="russell@adamm.net"/>
+      <input name="user[email]" type="text" size="30" data-stripe="email" value="<%= user.email %>"/>
     </label>
 </div>
 <br>
 <div class="form-row">
     <label>
       <span>Phone</span>
-      <input name="user[phone]" type="text" size="30" value="415-853-9060"/>
+      <input name="user[phone]" type="text" size="30" value="415-853-9060" value="<%= user.phone %>"/>
     </label>
 </div>
+<br>
 <div class="form-row">
     <label>
       <span>Address</span>
-      <input name="user[address]" type="text" size="30" value="412 Hampshire Way, #4, San Francisco, CA 94023"/>
+      <input name="user[address]" type="textarea" size="60" value="412 Hampshire Way, #4, San Francisco, CA 94023" value="<%= user.address %>"/>
     </label>
 </div>
+<br>
+<div class="form-row">
+<label for="user[password">Password (Must be at least 6 characters)</label>
+<input id="user[password]" type="password" name="user[password]"><br>
+<label for="user[password_confirmation]">Confirm Password</label>
+<input id="user[password_confirmation]" type="password" name="user[password_confirmation]">
+</div>
+<br>
 <button type="submit">Set me up!</button>
 </form>

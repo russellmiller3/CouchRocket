@@ -1,13 +1,40 @@
-DataMapper.setup(:default, ENV['DATABASE_URL'])
-
 class User
 	include DataMapper::Resource
 
 	property :id, Serial
 	property :name, String
-	property :email, String
+	property :email, String,
+    :format   => :email_address,
+    :required => true,
+    :unique   => true,
+    :messages => {
+      :format => "You must enter a valid email address."
+    }
+
+  def self.find_by_email(email)
+  	self.first(:email => email)
+  end
+
+  property :password, BCryptHash, :required => true
+	validates_confirmation_of :password
+
+	# Due to the way DataMapper works, we have to add the length
+  #   validation to the confirmation field.
+	attr_accessor :password_confirmation
+	validates_length_of :password_confirmation, :min => 6
+
+	# Given a User object, check whether a given password matches
+	# the password stored in the database.
+	def valid_password?(unhashed_password)
+	    # Note: BCryptHash "overloads" the == operator, so we're actually
+	    #   comparing a BCrypt-hashed copy of unhashed_password to the hashed
+  	  #   copy stored in our database.
+  	self.password == unhashed_password
+  end
+
 	property :phone, String
 	property :address, Text
+	property :is_admin, Boolean, { :default => false }
 
 	has 1, :seller_profile, { :child_key => [:user_id] }
 	has 1, :buyer_profile, { :child_key => [:user_id] }

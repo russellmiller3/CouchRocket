@@ -3,14 +3,14 @@ source 'https://rubygems.org'
 gem 'sinatra'
 gem 'sinatra-partial'
 gem 'data_mapper'
-gem 'stripe'
+gem 'bcrypt'
+gem 'require_all'
 gem 'rake'
 gem 'json'
+gem 'stripe'
 gem 'rest-client'
 gem 'mailgun-ruby', '~>1.0.3', require: 'mailgun'
 gem 'twilio-ruby'
-
-
 
 group :development do
   gem 'sqlite3'

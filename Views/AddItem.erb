@@ -1,7 +1,9 @@
 
 <h1>Add Item</h1>
-<p>
-To avoid having your item returned and not getting paid, <i>1) please be honest about any significant flaws or issues with your item, and 2) include pictures of those flaws</i> so that the buyer can evaluate your item honestly.</p>
+<h3>
+To avoid having your item returned and <i>not getting paid</i>,<br>1) Be honest about any significant flaws or issues with your item,<br> 2) include pictures of those flaws so that the buyer can evaluate your item honestly.</h3>
+
+<br>
 
 <form id="new_item" action="/items" method="post" accept-charset="utf-8">
 
@@ -14,33 +16,31 @@ To avoid having your item returned and not getting paid, <i>1) please be honest 
   <option value="Chair">Chair</option>
   <option value="Desk">Desk</option>
 </select>
-
-<br><br>
-Items we don't accept:<br>
-Blah and foo<br>
 <br><br>
 
 <label for "item[brand]">Brand</label><br>
-<input type="text" name="item[brand]" value="Davis">
+<input type="text" name="item[brand]" value="<%= @item.brand %>">
 <br><br>
 
 <label for "item[notes]">Notes:</label><br>
 <textarea name="item[notes]"
 placeholder="To sell for the highest price, tell a story about what you like best about this item. What's cool or unique about it?"
-rows="4" cols="50" >This is a great bed!</textarea>
+rows="4" cols="50" value="<%= @item.notes %>">
+</textarea>
 <br><br>
 
 <label for "item[original_price]">Original Price</label><br>
 <input type ="integer" name="item[original_price]" label="Original Price"
 pattern="^\\$?(([1-9](\\d*|\\d{0,2}(,\\d{3})*))|0)(\\.\\d{1,2})?$"
-placeholder="100.00" value="100"
+placeholder="100.00" value="<%= @item.original_price %>"
 required data-errormessage-value-missing="Uh oh, somethings wrong!" data-errormessage-type-mismatch="Uh oh, somethings wrong!"
 >
 
-
-<br>
+<br><br>
 <label for "item[asking_price]">Asking Price</label><br>
-<input type ="integer" name="item[asking_price]" value="80">
+<input type ="integer" name="item[asking_price]"
+placeholder="80.00"
+value="<%= @item.asking_price %>">
 
 <p>
 Attach up to 3 files. Each one can be up to 10 mb.</p>
@@ -78,6 +78,7 @@ placeholder="What do we need to tell our delivery person about how to find your 
 rows="4" cols="50"></textarea>
 </label>
 </div>
+<br>
 <input type="submit" color="green">
 
 </form>
