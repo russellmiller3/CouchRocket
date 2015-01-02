@@ -22,7 +22,7 @@
 		<td> <%= order.item.brand %> <%= order.item.type %><br>
 			<IMG border="1" HEIGHT=50 WIDTH=50 SRC="<%= order.item.picture1_url %>">
 		</td>
-		<td><%= To_Dollars(order.total_price) %></td>
+		<td>$<%= To_Dollars(order.total_price) %></td>
 		<td>
 			<%=	order.buyer_name %><br>
 			<%=	order.buyer_phone %>
