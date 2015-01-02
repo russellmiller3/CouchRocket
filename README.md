@@ -31,7 +31,10 @@ Admin can:
 1. 'bundle install --without production'
 1. 'cp .env.example .env'
 		Fill in the .env settings with your values. Sign up for all of the services mentioned above to obtain their keys.
-1. 'rake db:reset' to set up the database
+1. 'rake db:seed' to seed the database with three sample users:
+	* admin (login: comicsguy@adamm.net / password: admin1) - has access to admin panel
+	* Joe Seller (login: russell@adamm.net / password: song11)
+	* Tom Buyer (login: ram@themillermediagroup.com / password: song11)
 1. rake 'env:session_secret' - Sets a long, random string for the apps session secret.
 1. 'rerun -c rackup'
 1. Open it in your browser
