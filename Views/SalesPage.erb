@@ -10,9 +10,9 @@ Notes:
 <br>Originally Priced at: $<b><%= To_Dollars(item.original_price) %></b>
 
 <h3>Now selling for: $<b><%= To_Dollars(item.asking_price) %></b></h3>
-Delivery Cost: $<%= To_Dollars(delivery_fee) %><br>
-Hassle Free Return Fee: $<%= To_Dollars(return_insurance) %> - This ensures that you can return the item if you don't like it, and have us pay the full return fee.
-<h2>Delivered to your door for:<br>$<%= To_Dollars(item.asking_price + delivery_fee + return_insurance) %></h2>
+Delivery Cost: $<%= To_Dollars($delivery_fee) %><br>
+Hassle Free Return Fee: $<%= To_Dollars($return_insurance) %> - This ensures that you can return the item if you don't like it, and have us pay the full return fee.
+<h2>Delivered to your door for:<br>$<%= To_Dollars(item.asking_price + $delivery_fee + $return_insurance) %></h2>
 
 
 <br><br>

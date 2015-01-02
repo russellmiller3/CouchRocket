@@ -1,7 +1,6 @@
 require "rake"
 require "securerandom"
 
-
 namespace :env do
 	task :session_secret do
 		File.open(".env","a+") do |f|
@@ -31,19 +30,26 @@ namespace :db do
 	require_relative './setup'
 	require_relative './models'
 
+
+
 	#create Admin
+
 		admin = User.create({
 			:id=>"1",
 			:name=>"admin",
-			:password=>"admin",
-			:is_admin=>:true
+			:password=>"admin1",
+			:password_confirmation=>"admin1",
+			:email=>"comicsguy@adamm.net",
+			:is_admin=>"true"
 			})
 
 	#create User, Seller Profiles
+
 		joe = User.create({
 			:id=>"3",
 			:name=>"Joe Seller",
 			:password=>"song11",
+			:password_confirmation=>"song11",
 			:email=>"russell@adamm.net",
 			:phone=>"4158598060",
 			:address=>"412 Hampshire Way, #4, San Francisco, CA 94023"
@@ -63,6 +69,7 @@ namespace :db do
 			:id=>"2",
 			:name=>"Tom Buyer",
 			:password=>"song11",
+			:password_confirmation=>"song11",
 			:email=>"ram@themillermediagroup.com",
 			:phone=>"4158598060",
 			:address=>"33 Regis Court, San Francisco, CA 97331"
@@ -157,21 +164,6 @@ namespace :db do
 				:target_delivery_date =>"2014-12-07",
 				:target_delivery_time_start =>"6"
 			})
-
-		admin.save
-
-		joe.save
-		joe_sellerprofile.save
-		tom.save
-		tom_buyerprofile.save
-
-		item1.save
-		item2.save
-		item3.save
-
-		order1.save
-		order2.save
-		order3.save
 
 		puts "New Database seeded."
 		end

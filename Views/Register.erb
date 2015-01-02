@@ -1,4 +1,4 @@
-<p>Hey there!  We're CouchRocket.<br>
+<p>Hey there!<br>
 Tell us a bit about you.</p>
 
 
@@ -18,28 +18,28 @@ Tell us a bit about you.</p>
 <div class="form-row">
     <label>
       <span>Name</span>
-      <input name="user[name]" type="text" size="30" value="Joe Seller"/>
+      <input name="user[name]" type="text" size="30" value="<%= user.name %>" >
     </label>
 </div>
 <br>
 <div class="form-row">
     <label>
       <span>Email</span>
-      <input name="user[email]" type="text" size="30" data-stripe="email" value="<%= user.email %>"/>
+      <input name="user[email]" type="text" size="30" data-stripe="email" value="<%= user.email %>" >
     </label>
 </div>
 <br>
 <div class="form-row">
     <label>
       <span>Phone</span>
-      <input name="user[phone]" type="text" size="30" value="415-853-9060" value="<%= user.phone %>"/>
+      <input name="user[phone]" type="text" size="30" value="<%= user.phone %>" >
     </label>
 </div>
 <br>
 <div class="form-row">
     <label>
       <span>Address</span>
-      <input name="user[address]" type="textarea" size="60" value="412 Hampshire Way, #4, San Francisco, CA 94023" value="<%= user.address %>"/>
+      <input name="user[address]" type="textarea" size="60" value="<%= user.address %>" >
     </label>
 </div>
 <br>

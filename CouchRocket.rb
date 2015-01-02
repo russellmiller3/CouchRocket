@@ -1,16 +1,13 @@
 require 'sinatra'
 # require_relative 'config/dotenv'
-
-# We point Datamapper to the correct database in setup.rb
 require_relative 'setup'
-
 require_relative 'models'
 require_all 'helpers'
 
 #Global Variables
-delivery_fee = 3000
-return_insurance = 700
-buyer_percent = 0.80
+$delivery_fee = 3000
+$return_insurance = 700
+$buyer_percent = 0.80
 set :domain, ENV['DOMAIN']
 
 helpers do
@@ -25,6 +22,23 @@ helpers do
   def show_params
     p params
   end
+
+  # assign user a random password and mail it to them, asking them to change it
+  def send_new_password(user)
+    random_password = Array.new(10).map { (65 + rand(58)).chr }.join
+    user.password = random_password
+    user.save!
+    #Send New Password Email
+    new_password_email = {
+      :from => "CouchRocket <info@#{settings.mail_domain}>",
+      :to => "#{user.email}",
+      :subject => "Password Reset",
+      :html => erb(:'Emails/NewPassword',
+      :locals => { :user => user })
+    }
+    $mg_client.send_message(settings.mail_domain,new_password_email)
+  end
+
 end
 
 
@@ -35,11 +49,28 @@ get "/" do
   else
     @user_items = nil
   end
-
-  erb :'home', :locals => { :user_items => @user_items, :user => current_user }
+  @items_for_sale = Item.select{|item| item.sold == false }
+  erb :'Home', :locals => {
+    :user_items => @user_items,
+    :items_for_sale => @items_for_sale,
+    :user => current_user }
 end
 
+get "/password/reset" do
+  @user = User.new
+  erb :'ForgotPassword', :locals=> {:user => @user}
+end
 
+post "/password/reset" do
+@user = User.find_by_email(params[:email])
+  if @user
+      send_new_password(@user)
+      erb :'NewPasswordSent'
+  else
+      @user = User.new
+      erb :'ForgotPassword', :locals=> {:user => @user}
+  end
+end
 
 get "/Admin" do
   if current_user.is_admin?
@@ -63,23 +94,23 @@ post "/Charge/:order_id" do
   erb :'Thanks'
 end
 
+get "/items/new" do
+  @item = Item.new
+  erb :'NewItem',
+  :locals => { :item => @item, :user => current_user}
+end
 
 get "/items/:id" do
   show_params
   item_id = params[:id]
   @item = Item.get(item_id)
-  show_params
   erb :'SalesPage', :locals => { :item => @item,
-    :delivery_fee => delivery_fee,
-    :return_insurance => return_insurance,
-    :stripe_public_key =>  stripe_public_key
+    :delivery_fee => $delivery_fee,
+    :return_insurance => $return_insurance,
+    :stripe_public_key => $stripe_public_key
     }
 end
 
-get "/items/new" do
-  @item = Item.new
-  erb :'NewItem', :locals => { :item => @item, :user => current_user}
-end
 
 
 post "/items" do
@@ -113,7 +144,7 @@ post "/items" do
     :subject => "Thanks for Listing with CouchRocket",
     :html => erb(:'Emails/SellerListingConfirmation',:locals => { :current_user => current_user, :item => @item })
   }
-  mg_client.send_message(settings.mail_domain,seller_listing_confirmation)
+  $mg_client.send_message(settings.mail_domain,seller_listing_confirmation)
 
   redirect "/"
 
@@ -187,7 +218,7 @@ post "/orders" do
   #Create new order, populate
   order_attrs = params[:order]
   @order = Order.new(order_attrs)
-  @order.total_price = @item.asking_price + delivery_fee + return_insurance
+  @order.total_price = @item.asking_price + $delivery_fee + $return_insurance
 
   @order.buyer_name =@user.name
   @order.buyer_address = @user.address
@@ -196,7 +227,7 @@ post "/orders" do
   @order.seller_name = @item.seller_profile.user.name
   @order.seller_phone = @item.seller_profile.user.phone
   @order.seller_address = @item.seller_profile.user.address
-  @order.seller_share = buyer_percent * @item.asking_price
+  @order.seller_share = $buyer_percent * @item.asking_price
   @order.pickup_notes = @item.seller_profile.pickup_notes
 
 
@@ -241,7 +272,7 @@ post "/orders" do
     :html => erb(:'Emails/BuyerConfirmation',
       :locals => {:user => @user,:item => @item,:order=>@order})
   }
-  mg_client.send_message(settings.mail_domain,buyer_confirmation)
+  $mg_client.send_message(settings.mail_domain,buyer_confirmation)
 
   #Look up Seller
   @seller = @item.seller_profile.user
@@ -254,7 +285,7 @@ post "/orders" do
     :html => erb(:'Emails/SellerPickupNotification',
     :locals => {:seller => @seller,:item=>@item,:order=>@order})
   }
-  mg_client.send_message(settings.mail_domain,seller_pickup_notification)
+  $mg_client.send_message(settings.mail_domain,seller_pickup_notification)
 
   redirect "/BuyerOrderConfirmation"
 end
@@ -269,7 +300,7 @@ post "/register" do
   user = User.create(params[:user])
 
   if user.saved?
-    sign_in!(user)
+    sign_in(user)
     redirect "/items/new"
   else
     erb(:'Register', :locals => {:user => user})
@@ -292,7 +323,7 @@ post "/Return" do
   @buyer_profile = BuyerProfile.get(@order.buyer_profile_id)
   customer_id = @buyer_profile.stripe_customer_id
 
-  shipping_cost = delivery_fee + return_insurance
+  shipping_cost = $delivery_fee + $return_insurance
 
   charge_create = Stripe::Charge.create(
       :amount => shipping_cost,
@@ -352,7 +383,7 @@ post "/ScheduleDelivery" do
     :html => erb(:'Emails/Shipper',
       :locals => {:order=>@order})
   }
-  mg_client.send_message(settings.mail_domain,shipper_email)
+  $mg_client.send_message(settings.mail_domain,shipper_email)
 
   @order.shipper_email_sent = true
   @order.save
@@ -367,14 +398,14 @@ get "/SellerPaymentDetails/:order_id" do
   @order = Order.get(order_id)
   erb(:'SellerPaymentDetails',
     :locals => {:stripe_public_key => stripe_public_key,
-    :return_insurance => return_insurance,
+    :return_insurance => $return_insurance,
     :order => @order
     })
 end
 
 get "/sessions/new" do
   user = User.new
-  erb(:'SignIn', :locals=> {:user=>user})
+  erb(:'SignIn', :locals=> {:user => user})
 end
 
 post "/sessions" do
@@ -384,7 +415,8 @@ post "/sessions" do
     sign_in(user)
     redirect("/")
   else
-    erb(:'SignIn', :locals=> {:user=>user})
+    user = User.new
+    erb(:'SignIn', :locals=> {:user => user})
   end
 end
 

@@ -8,7 +8,7 @@ class User
     :required => true,
     :unique   => true,
     :messages => {
-      :format => "You must enter a valid email address."
+    	:format => "You must enter a valid email address."
     }
 
   def self.find_by_email(email)
@@ -123,5 +123,3 @@ end
 
 DataMapper.finalize
 DataMapper.auto_upgrade!
-
-

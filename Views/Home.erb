@@ -9,15 +9,25 @@
 </style>
 
 <% if !user_signed_in? %>
-<a href="/sessions/new">Login</a><br>
-<a href="/register">Register</a><br><br>
+<h3><a href="/register">Sign Up and Sell your Stuff Today!</a></h3><br><br>
 <% end %>
 
-<% if user_signed_in? %>
-<a href="/sessions/sign_out">Sign Out</a><br>
+<% if user_signed_in? && user_items.nil? %>
+<p>Let's get you started! Click the link below</p>
+<form action="/items/new" method="get">
+    <input type="submit" value="Post Something for Sale!">
+</form>
 <% end %>
+<br>
 
-
+<% if !user_items.nil? %>
+	<h2>Your Items for Sale</h2>
+		<% @user_items.each do |item| %>
+		<a href="/items/<%= item.id %>">
+		<IMG border="1" HEIGHT=50 WIDTH=50 SRC="<%= item.picture1_url %>">
+		<%= item.brand %> <%= item.type %></a><br><br>
+		<% end %>
+<% end %>
 
 <% if user_signed_in? && current_user.is_admin? %>
 <div class = "admin">
@@ -25,18 +35,10 @@
 </div>
 <br><br>
 <% end %>
-<% if user_items.nil? %>
-<p>Let's get you started! Click the big button below</p>
-<% end %>
-<form action="/items/new">
-    <input type="submit" value="Post Something for Sale!">
-</form>
-<br>
-<% if !user_items.nil? %>
-	<h2>Your items for sale</h2>
-		<% @user_items.each do |item| %>
-		<a href="/items/<%= item.id %>">
-		<IMG border="1" HEIGHT=50 WIDTH=50 SRC="<%= item.picture1_url %>">
-		Sales Page for <%= item.brand %> <%= item.type %></a><br><br>
-		<% end %>
+
+<h2>Cool Stuff for Sale:</h2>
+<% items_for_sale.each do |item| %>
+<a href="/items/<%= item.id %>">
+<IMG border="1" HEIGHT=50 WIDTH=50 SRC="<%= item.picture1_url %>">
+<%= item.brand %> <%= item.type %></a><br><br>
 <% end %>

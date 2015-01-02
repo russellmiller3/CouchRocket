@@ -1,25 +1,36 @@
 <!DOCTYPE html>
+<html lang="en">
+	<head>
+		 <meta charset="utf-8">
+		 <title>CouchRocket</title>
 
-<head>
-  <title>CouchRocket</title>
+	<!-- Load jQuery version 1.11.1 (uncompressed) -->
+	  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.js"></script>
 
-<a href="/">
-<img src="http://i.imgur.com/iI7g2uKs.jpg" border="0" title="CouchRocket">
-<h1>CouchRocket</h1></a>
-
-<!-- Load jQuery version 1.11.1 (uncompressed) -->
-  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.js"></script>
-
-</head>
-
-<body>
-<br>
-<br>
-<%= yield %>
-
-
-</body>
-
-
-
-<html>
+	</head>
+	<body>
+		<div id="page">
+			<header id="site-header">
+				<a href="/">
+				<img src="http://i.imgur.com/iI7g2uKs.jpg" border="0" title="CouchRocket"><br>
+				<h3>CouchRocket</h3>
+				</a>
+					<nav>
+						<div class="nav-links">
+						<% if user_signed_in? %>
+						<span class="user-name">Welcome <%= current_user.name %></span><br>
+						<a href="/sessions/sign_out">Sign Out</a>
+						<% else %>
+						<a href="/sessions/new">Login</a><br>
+						<% end %>
+						</div>
+					</nav>
+			</header>
+			<div id="main-content">
+				<br>
+				<br>
+				<%= yield %>
+			</div>
+		</div>
+	</body>
+</html>

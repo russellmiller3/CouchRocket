@@ -1,7 +1,7 @@
+<h1>Post an Item for Sale</h1>
 
-<h1>Add Item</h1>
-<h3>
-To avoid having your item returned and <i>not getting paid</i>,<br>1) Be honest about any significant flaws or issues with your item,<br> 2) include pictures of those flaws so that the buyer can evaluate your item honestly.</h3>
+<p>
+To avoid having your item returned and <i>not getting paid</i>,<br>1) Be honest about any significant flaws or issues with your item,<br> 2) Include pictures of those flaws so that the buyer can evaluate your item clearly before they order it.</p>
 
 <br>
 
@@ -19,13 +19,13 @@ To avoid having your item returned and <i>not getting paid</i>,<br>1) Be honest 
 <br><br>
 
 <label for "item[brand]">Brand</label><br>
-<input type="text" name="item[brand]" value="<%= @item.brand %>">
+<input type="text" name="item[brand]">
 <br><br>
 
 <label for "item[notes]">Notes:</label><br>
 <textarea name="item[notes]"
 placeholder="To sell for the highest price, tell a story about what you like best about this item. What's cool or unique about it?"
-rows="4" cols="50" value="<%= @item.notes %>">
+rows="4" cols="50">
 </textarea>
 <br><br>
 
@@ -63,18 +63,17 @@ function SuccessAlert(){
 
 <script type="text/javascript" src="http://api.filepicker.io/v1/filepicker.js"></script>
 
-<% if current_user.seller_profile  %>
-  <% if current_user.seller_profile.pickup_notes  %>
-  These are the pickup notes we currently have for you:<br>
-  <%= current_user.seller_profile.pickup_notes %><br>
-  If there are any changes, please put the new pickup notes below:<br>
-  <% end %>
+<% if current_user.seller_profile && current_user.seller_profile.pickup_notes  %>
+These are the pickup notes we currently have for you:
+<p><%= current_user.seller_profile.pickup_notes %></p>
+If there are any changes, please put the new pickup notes below:<br><br>
 <% end %>
 
 <div class="form-row">
 <label for "pickup_notes">Pickup Notes:</label><br>
 <textarea name="pickup_notes"
-placeholder="What do we need to tell our delivery person about how to find your place or contact you? Is it an apartment building or a house?  Is there a gate code to contact you? Do you have a dog that may not like strangers?  etc. Thanks!"
+placeholder="What do we need to tell our delivery person about how to find your place or contact you?
+Apartment building or a house?  Is there a gate code? Do you have a dog that may not like strangers?  etc. Thanks!"
 rows="4" cols="50"></textarea>
 </label>
 </div>

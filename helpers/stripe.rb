@@ -1,4 +1,5 @@
 helpers do
+
   def Charge_Buyer(order_id)
     @order = Order.get(order_id)
     @order.approved = :true
@@ -22,7 +23,6 @@ helpers do
 
   def Pay_Seller(order_id)
     @order = Order.get(order_id)
-    @mg_client = Mailgun::Client.new(settings.mailgun_secret_key)
 
     if
       #Seller has a Stripe recipient profile, Pay Seller
@@ -43,7 +43,7 @@ helpers do
       :subject => "Payment Confirmation for #{@order.item.type.downcase}",
       :html => erb(:'Emails/SellerPaymentConfirmation',:locals => { :order => @order})
       }
-      @mg_client.send_message(settings.mail_domain,seller_payment_confirmation)
+      $mg_client.send_message(settings.mail_domain,seller_payment_confirmation)
 
     else
       #Email Seller to Register with Stripe
@@ -53,7 +53,7 @@ helpers do
       :subject => "Your #{@order.item.type.downcase} sold! Now let's get you paid!",
       :html => erb(:'Emails/SellerPaymentDetailsRequest',:locals => { :order => @order})
       }
-      @mg_client.send_message(settings.mail_domain,seller_payment_details_request)
+      $mg_client.send_message(settings.mail_domain,seller_payment_details_request)
     end
   end
 

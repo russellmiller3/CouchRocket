@@ -1,4 +1,4 @@
-require "sinatra"
+		require "sinatra"
 
 # The code below will automatically require all the gems listed in our Gemfile,
 # so we don't have to manually require gems a la
@@ -31,8 +31,6 @@ unless ENV.key?("DATABASE_URL")
   exit 1
 end
 
-
-
 # In development, the DATABASE_URL environment variable should be defined in
 #   the '.env' file. In production, Heroku will set this environment variable
 #   for you.
@@ -43,12 +41,6 @@ DataMapper.setup(:default, ENV["DATABASE_URL"])
 if Sinatra::Application.development?
   DataMapper::Logger.new($stdout, :debug)
 end
-
-#Stripe Setup
-set :stripe_public_key, ENV['STRIPE_PUBLIC_KEY']
-set :stripe_secret_key, ENV['STRIPE_SECRET_KEY']
-Stripe.api_key = settings.stripe_secret_key
-stripe_public_key = settings.stripe_public_key
 
 #Twilio Setup
 set :twilio_account_sid, ENV['TWILIO_ACCOUNT_SID']
@@ -61,7 +53,13 @@ twilio_number = settings.twilio_number
 set :mailgun_public_key, ENV['MAILGUN_PUBLIC_KEY']
 set :mailgun_secret_key, ENV['MAILGUN_SECRET_KEY']
 set :mail_domain, ENV['MAIL_DOMAIN']
-mg_client = Mailgun::Client.new(settings.mailgun_secret_key)
+$mg_client = Mailgun::Client.new(settings.mailgun_secret_key)
+
+#Stripe Setup
+set :stripe_public_key, ENV['STRIPE_PUBLIC_KEY']
+set :stripe_secret_key, ENV['STRIPE_SECRET_KEY']
+Stripe.api_key = settings.stripe_secret_key
+$stripe_public_key = settings.stripe_public_key
 
 set :partial_template_engine, :erb
 
