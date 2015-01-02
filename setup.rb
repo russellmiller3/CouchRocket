@@ -24,6 +24,8 @@ if File.exist?(".env")
   Dotenv.load(".env")
 end
 
+set(:sessions, true)
+set(:session_secret, ENV["SESSION_SECRET"])
 
 # Notify user (and exit) if DATABASE_URL isn't set
 unless ENV.key?("DATABASE_URL")
