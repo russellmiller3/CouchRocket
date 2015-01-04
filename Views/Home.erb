@@ -3,13 +3,45 @@
     border: 2px solid #a1a1a1;
     padding: 10px 20px;
     background: #dddddd;
-    width: 100px;
+    width: 200px;
     border-radius: 25px;
 }
 </style>
+<% if !user_signed_in? %>
+<a href="/sessions/new">Signin</a><br>
+<% end %>
+<a href="/FAQ">FAQ</a>
+
+<% if user_signed_in? && current_user.is_admin? %>
+<br><br>
+<div class = "admin">
+<h4><a href="/Admin">Admin Panel</a></h4> - Hooked up to Mailgun and Twilio for SMS
+</div>
+<br><br>
+<% end %>
+
+<% if user_signed_out? %>
+<h3>CouchRocket is the easiest way to buy & sell used furniture online.</h3>
+<p>How CouchRocket works for sellers:
+	<ol>
+		<li>Post your furniture for sale</li>
+		<li>A Buyer orders your item. We come pick it up from your place.<br>
+		You never have to meet the buyer.</li>
+		<li>We deliver it.  The buyer approves.  You get paid!</li>
+	</ol>
+</p>
+
+<p>How CouchRocket works for buyers:
+	<ol>
+		<li>Order an item you like.</li>
+		<li>We deliver it to you. (If you don't like it, we'll take it back.)</li>
+		<li>Enjoy your cool furniture!</li>
+	</ol>
+</p>
+<% end %>
 
 <% if !user_signed_in? %>
-<h3><a href="/register">Sign Up and Sell your Stuff Today!</a></h3><br><br>
+	<h3><a href="/register">Sign Up and Sell your Stuff Today!</a></h3>
 <% end %>
 
 <% if user_signed_in? && user_items.nil? %>
@@ -18,7 +50,6 @@
     <input type="submit" value="Post Something for Sale!">
 </form>
 <% end %>
-<br>
 
 <% if !user_items.nil? %>
 	<h2>Your Items for Sale</h2>
@@ -29,13 +60,8 @@
 		<% end %>
 <% end %>
 
-<% if user_signed_in? && current_user.is_admin? %>
-<div class = "admin">
-<h4><a href="/Admin">Admin Panel</a></h4> - Hooked up to Mailgun and Twilio for SMS<br>
-</div>
-<br><br>
-<% end %>
 
+<br>
 <h2>Cool Stuff for Sale:</h2>
 <% items_for_sale.each do |item| %>
 <a href="/items/<%= item.id %>">

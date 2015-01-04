@@ -18,17 +18,14 @@
 					<nav>
 						<div class="nav-links">
 						<% if user_signed_in? %>
-						<span class="user-name">Welcome <%= current_user.name %></span><br>
-						<a href="/sessions/sign_out">Sign Out</a>
-						<% else %>
-						<a href="/sessions/new">Login</a><br>
+						<span class="user-name">Welcome <b><%= current_user.name %></b></span><br>
+						<a href="/users/<%= current_user.id %>">Profile</a><br>
+						<a href="/sessions/sign_out">Sign Out</a><br>
 						<% end %>
 						</div>
 					</nav>
 			</header>
 			<div id="main-content">
-				<br>
-				<br>
 				<%= yield %>
 			</div>
 		</div>

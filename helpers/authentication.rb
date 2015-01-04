@@ -8,6 +8,10 @@ helpers do
 		!current_user.nil?
 	end
 
+	def user_signed_out?
+		current_user.nil?
+	end
+
 	def sign_in(user)
 		session[:user_id] = user.id
 		@current_user = user

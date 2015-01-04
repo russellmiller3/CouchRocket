@@ -49,6 +49,7 @@ get "/" do
   else
     @user_items = nil
   end
+
   @items_for_sale = Item.select{|item| item.sold == false }
 
   erb :'Home', :locals => {
@@ -56,6 +57,12 @@ get "/" do
     :items_for_sale => @items_for_sale,
     :user => current_user }
 end
+
+get "/FAQ" do
+  erb :'FAQ'
+end
+
+
 
 get "/password/reset" do
   @user = User.new
@@ -451,6 +458,25 @@ post "/SellerPaymentDetails/:order_id" do
   Pay_Seller(order_id)
 
   erb(:'SellerThanks',:locals=>{:order=>@order})
+
+get "/users/:id" do
+  @user = User.get(params[:id])
+erb(:'Profile',:locals=>{:user=>@user})
+end
+
+get "/users/:id/edit" do
+  @user = User.get(params[:id])
+erb(:'EditProfile',:locals=>{:user=>@user})
+end
+
+put "/users/:id" do
+  @user = User.get(params[:id])
+  user_attrs = params[:user]
+  @user.update(user_attrs)
+  redirect "/"
+end
+
+
 
 end
 
