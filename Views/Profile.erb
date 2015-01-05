@@ -5,6 +5,6 @@ Email: <%= user.email %><br><br>
 Phone: <%= user.phone %><br><br>
 Address: <%= user.address %><br><br>
 </p>
-<a href="/users/:id/edit">Edit Profile</a>
+<a href="/users/<%= user.id %>/edit">Edit Profile</a><br>
 
-<a href="">Change Password</a>
+<a href="/users/<%= user.id %>/edit_password">Change Password</a>

@@ -11,7 +11,7 @@
     </div>
   <% end %>
 
-<form id="edit-profile-form" action="/users/:id" method="post" accept-charset="utf-8">
+<form id="edit-profile-form" action="/users/<%= user.id %>" method="post" accept-charset="utf-8">
 <input type="hidden" name="_method" value="put">
 <div class="form-row">
     <label>

@@ -130,7 +130,7 @@ post "/items" do
     @seller_profile = SellerProfile.new({:user_id => current_user[:id]})
   end
   @seller_profile.pickup_notes = params[:pickup_notes]
-  @seller_profile.save
+  @seller_profile.save!
   @seller_profile.errors.each do |error|
     puts error
   end
@@ -140,7 +140,7 @@ post "/items" do
   @item = Item.new(item_attrs)
   @item.original_price = To_Cents(@item.original_price)
   @item.asking_price = To_Cents(@item.asking_price)
-  @item.save
+  @item.save!
   @item.errors.each do |error|
     puts error
   end
@@ -213,8 +213,8 @@ post "/orders" do
   user_attrs = params[:user]
   @user = User.new(user_attrs)
   @user.buyer_profile = BuyerProfile.new
-  @user.save
-  @user.buyer_profile.save
+  @user.save!
+  @user.buyer_profile.save!
   @user.errors.each do |error|
       puts error
   end
@@ -453,11 +453,12 @@ post "/SellerPaymentDetails/:order_id" do
 
   #Add to User's seller profile
   current_user.seller_profile.stripe_recipient_id = seller_stripe_recipient_profile.id
-  current_user.save
+  current_user.save!
 
   Pay_Seller(order_id)
 
   erb(:'SellerThanks',:locals=>{:order=>@order})
+end
 
 get "/users/:id" do
   @user = User.get(params[:id])
@@ -470,13 +471,34 @@ erb(:'EditProfile',:locals=>{:user=>@user})
 end
 
 put "/users/:id" do
-  @user = User.get(params[:id])
+  user = User.get(params[:id])
   user_attrs = params[:user]
-  @user.update(user_attrs)
+  user.name = user_attrs[:name]
+  user.email = user_attrs[:email]
+  user.phone = user_attrs[:phone]
+  user.address = user_attrs[:address]
+  user.save!
   redirect "/"
 end
 
-
-
+get "/users/:id/edit_password" do
+  user = User.get(params[:id])
+  erb(:'ChangePassword',:locals=>{:user=>user})
 end
+
+put "/users/:id/edit_password" do
+  user = User.get(params[:id])
+  if user.valid_password?(params[:password])
+  user.password = params[:user][:password]
+  user.save!
+  redirect "/users/#{user.id}"
+  else
+  erb(:'ChangePassword',:locals=>{:user=>user})
+  end
+end
+
+
+
+
+
 
