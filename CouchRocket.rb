@@ -381,7 +381,6 @@ post "/ScheduleDelivery" do
   @order = Order.get(params[:order][:id])
   @order.update(order_attrs)
 
-  binding.pry
 
   #Send Shipper Email
   shipper_email = {
@@ -491,7 +490,7 @@ put "/users/:id/edit_password" do
   if user.valid_password?(params[:password])
   user.password = params[:user][:password]
   user.save!
-  redirect "/users/#{user.id}"
+  redirect "/"
   else
   erb(:'ChangePassword',:locals=>{:user=>user})
   end
