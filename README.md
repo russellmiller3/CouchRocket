@@ -10,13 +10,13 @@ CouchRocket is an e-commerce program to let users sell and buy new furniture.
 
 ## Functions:
 Buyers can:
-* Register / Login / Reset Password
+* Register / Login / Change Password / Reset Password
 * Order an item (pre-auth via stripe)
-* Upon receiving the item, accept and pay or reject (pay only shipping)
+* Upon receiving the item, accept (charged on stripe) and or reject (charged only shipping)
 
 
 Sellers can:
-* Register / Login / Reset Password
+* Register / Login / Change Password / Reset Password
 * Post an item
 * Enter their payment information to receive funds
 * Get paid once a buyer has bought an item
