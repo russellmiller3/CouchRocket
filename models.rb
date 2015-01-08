@@ -15,7 +15,7 @@ class User
   	self.first(:email => email)
   end
 
-  property :password, BCryptHash, :required => true
+  property :password, BCryptHash, :required => true, :default => "smith"
 	validates_confirmation_of :password
 
 	# Due to the way DataMapper works, we have to add the length
