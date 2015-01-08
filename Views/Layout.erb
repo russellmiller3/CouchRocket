@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		 <meta charset="utf-8">
-		 <title>CouchRocket</title>
+<head>
+<meta charset="utf-8">
+<title>CouchRocket</title>
+<link rel="stylesheet" media="screen" type="text/css" href="/style.css" />
 
-	<!-- Load jQuery version 1.11.1 (uncompressed) -->
-	  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<!-- Load jQuery version 1.11.1 (uncompressed) -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.js"></script>
+</head>
 
-	</head>
-	<body>
+<body>
 		<div id="page">
 			<header id="site-header">
 				<a href="/">
@@ -16,13 +17,15 @@
 				<h3>CouchRocket</h3>
 				</a>
 					<nav>
-						<div class="nav-links">
+						<div class="nav">
 						<% if user_signed_in? %>
 						Welcome
 						<a href="/users/<%= current_user.id %>">
 						<span class="user-name"><b><%= current_user.name %></b></span>
 						</a><br>
 						<a href="/sessions/sign_out">Sign Out</a><br>
+						<% else %>
+						<a href="/sessions/new">Sign In</a><br>
 						<% end %>
 						</div>
 					</nav>

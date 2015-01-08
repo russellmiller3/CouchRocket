@@ -7,10 +7,7 @@
     border-radius: 25px;
 }
 </style>
-<% if !user_signed_in? %>
-<a href="/sessions/new">Signin</a><br>
-<% end %>
-<a href="/FAQ">FAQ</a>
+<a href="/FAQ">FAQ</a><br><br>
 
 <% if user_signed_in? && current_user.is_admin? %>
 <br><br>
