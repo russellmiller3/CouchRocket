@@ -59,38 +59,38 @@ get "/" do
 end
 
 get "/FAQ" do
-  erb :'FAQ'
+  erb :'faq'
 end
 
 
 
 get "/password/reset" do
   @user = User.new
-  erb :'ForgotPassword', :locals=> {:user => @user}
+  erb :'forgot_password', :locals=> {:user => @user}
 end
 
 post "/password/reset" do
 @user = User.find_by_email(params[:email])
   if @user
       send_new_password(@user)
-      erb :'NewPasswordSent'
+      erb :'new_password_sent'
   else
       @user = User.new
-      erb :'ForgotPassword', :locals=> {:user => @user}
+      erb :'forgot_password', :locals=> {:user => @user}
   end
 end
 
 get "/Admin" do
   if current_user.is_admin?
     @orders = Order.all
-    erb :'Admin', :locals => {:orders => @orders}
+    erb :'admin', :locals => {:orders => @orders}
   else
     redirect "/"
   end
 end
 
 get "/BuyerOrderConfirmation" do
-  erb(:'BuyerOrderConfirmation')
+  erb(:'buyer_order_confirmation')
 end
 
 post "/Charge/:order_id" do
@@ -99,12 +99,12 @@ post "/Charge/:order_id" do
   Charge_Buyer(order_id)
   Pay_Seller(order_id)
 
-  erb :'Thanks'
+  erb :'buyer_thanks'
 end
 
 get "/items/new" do
   @item = Item.new
-  erb :'NewItem',
+  erb :'new_item',
   :locals => { :item => @item, :user => current_user}
 end
 
@@ -150,7 +150,7 @@ post "/items" do
     :from => "CouchRocket <info@#{settings.mail_domain}>",
     :to => "#{current_user.email}",
     :subject => "Thanks for Listing with CouchRocket",
-    :html => erb(:'Emails/SellerListingConfirmation',:locals => { :current_user => current_user, :item => @item })
+    :html => erb(:'emails/seller_listing_confirmation',:locals => { :current_user => current_user, :item => @item })
   }
   $mg_client.send_message(settings.mail_domain,seller_listing_confirmation)
 
@@ -163,7 +163,7 @@ get "/BuyerAccept/:order_id" do
 order_id = params[:order_id]
 @order = Order.get(order_id)
 @item = @order.item
-erb(:'BuyerAccept',:locals => {:order => @order,:item => @item})
+erb(:'buyer_accept',:locals => {:order => @order,:item => @item})
 end
 
 
@@ -183,7 +183,7 @@ order = Order.get(order_id)
     puts e.message
     puts message.sid
   end
-erb(:'NotifyBuyer')
+erb(:'notify_buyer')
 end
 
 
@@ -203,7 +203,7 @@ order = Order.get(order_id)
     puts e.message
     puts message.sid
   end
-erb(:'NotifySeller')
+erb(:'notify_seller')
 end
 
 post "/orders" do
@@ -290,7 +290,7 @@ post "/orders" do
     :from => "CouchRocket <me@#{settings.mail_domain}>",
     :to => "#{@seller.email}",
     :subject => "Time Sensitive: Your #{@item.type.downcase} has been sold!",
-    :html => erb(:'Emails/SellerPickupNotification',
+    :html => erb(:'emails/seller_pickup_notification',
     :locals => {:seller => @seller,:item=>@item,:order=>@order})
   }
   $mg_client.send_message(settings.mail_domain,seller_pickup_notification)
@@ -300,7 +300,7 @@ end
 
 get "/register" do
   user = User.new
-  erb(:'Register', :locals => {:user => user})
+  erb(:'register', :locals => {:user => user})
 end
 
 post "/register" do
@@ -311,13 +311,13 @@ post "/register" do
     sign_in(user)
     redirect "/items/new"
   else
-    erb(:'Register', :locals => {:user => user})
+    erb(:'register', :locals => {:user => user})
   end
 end
 
 get "/Return" do
   @order = Order.get(params[:order_id])
-  erb(:'Return',:locals =>{:order=>@order})
+  erb(:'return',:locals =>{:order=>@order})
 end
 
 
@@ -365,13 +365,13 @@ post "/Return" do
 end
 
 get "/ReturnComplete" do
-  erb(:'ReturnComplete')
+  erb(:'return_complete')
 end
 
 get "/ScheduleDelivery" do
   show_params
   @order = Order.get(params[:order_id])
-  erb(:'ScheduleDelivery',
+  erb(:'schedule_delivery',
     :locals => {:order => @order})
 end
 
@@ -387,7 +387,7 @@ post "/ScheduleDelivery" do
     :from => "CouchRocket <me@#{settings.mail_domain}>",
     :to => "#{@order.shipper_email}",
     :subject => "#{@order.item.brand} #{@order.item.type} delivery #{@order.target_delivery_date.strftime('%A, %B %d')}",
-    :html => erb(:'Emails/Shipper',
+    :html => erb(:'emails/shipper',
       :locals => {:order=>@order})
   }
   $mg_client.send_message(settings.mail_domain,shipper_email)
@@ -403,7 +403,7 @@ get "/SellerPaymentDetails/:order_id" do
   show_params
   order_id = params[:order_id]
   @order = Order.get(order_id)
-  erb(:'SellerPaymentDetails',
+  erb(:'seller_payment_details',
     :locals => {:stripe_public_key => stripe_public_key,
     :return_insurance => $return_insurance,
     :order => @order
@@ -412,7 +412,7 @@ end
 
 get "/sessions/new" do
   user = User.new
-  erb(:'SignIn', :locals=> {:user => user})
+  erb(:'sign_in', :locals=> {:user => user})
 end
 
 post "/sessions" do
@@ -423,7 +423,7 @@ post "/sessions" do
     redirect("/")
   else
     user = User.new
-    erb(:'SignIn', :locals=> {:user => user})
+    erb(:'sign_in', :locals=> {:user => user})
   end
 end
 
@@ -456,17 +456,17 @@ post "/SellerPaymentDetails/:order_id" do
 
   Pay_Seller(order_id)
 
-  erb(:'SellerThanks',:locals=>{:order=>@order})
+  erb(:'seller_thanks',:locals=>{:order=>@order})
 end
 
 get "/users/:id" do
   @user = User.get(params[:id])
-erb(:'Profile',:locals=>{:user=>@user})
+erb(:'profile',:locals=>{:user=>@user})
 end
 
 get "/users/:id/edit" do
   @user = User.get(params[:id])
-erb(:'EditProfile',:locals=>{:user=>@user})
+erb(:'edit_profile',:locals=>{:user=>@user})
 end
 
 put "/users/:id" do
@@ -482,7 +482,7 @@ end
 
 get "/users/:id/edit_password" do
   user = User.get(params[:id])
-  erb(:'ChangePassword',:locals=>{:user=>user})
+  erb(:'change_password',:locals=>{:user=>user})
 end
 
 put "/users/:id/edit_password" do
@@ -492,7 +492,7 @@ put "/users/:id/edit_password" do
   user.save!
   redirect "/"
   else
-  erb(:'ChangePassword',:locals=>{:user=>user})
+  erb(:'change_password',:locals=>{:user=>user})
   end
 end
 

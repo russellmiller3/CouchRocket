@@ -12,12 +12,23 @@ end
 
 namespace :db do
 
+	task :reset_dev do
+		Rake::Task["db:delete_dev_database_file"].invoke
+		Rake::Task["db:seed"].invoke
+	end
+
 	task :reset do
 		Rake::Task["db:delete_database_file"].invoke
 		Rake::Task["db:seed"].invoke
 	end
 
 	task :delete_database_file do
+		heroku pg:reset --app couchrocket HEROKU_POSTGRESQL_CRIMSON --confirm couchrocket
+		puts "Old Database destroyed."
+	end
+
+
+	task :delete_dev_database_file do
 		if File.exist?("./development.db")
 			File.delete("./development.db")
 			puts "Old Database destroyed."

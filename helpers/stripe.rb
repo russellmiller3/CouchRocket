@@ -41,7 +41,7 @@ helpers do
       :from => "CouchRocket <info@#{settings.mail_domain}>",
       :to => "#{@order.item.seller_profile.user.email}",
       :subject => "Payment Confirmation for #{@order.item.type.downcase}",
-      :html => erb(:'Emails/SellerPaymentConfirmation',:locals => { :order => @order})
+      :html => erb(:'emails/seller_payment_confirmation',:locals => { :order => @order})
       }
       $mg_client.send_message(settings.mail_domain,seller_payment_confirmation)
 
@@ -51,7 +51,7 @@ helpers do
       :from => "CouchRocket <info@#{settings.mail_domain}>",
       :to => "#{@order.item.seller_profile.user.email}",
       :subject => "Your #{@order.item.type.downcase} sold! Now let's get you paid!",
-      :html => erb(:'Emails/SellerPaymentDetailsRequest',:locals => { :order => @order})
+      :html => erb(:'emails/seller_payment_details_request',:locals => { :order => @order})
       }
       $mg_client.send_message(settings.mail_domain,seller_payment_details_request)
     end
