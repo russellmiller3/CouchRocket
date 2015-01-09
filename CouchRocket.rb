@@ -52,7 +52,7 @@ get "/" do
 
   @items_for_sale = Item.select{|item| item.sold == false }
 
-  erb :'Home', :locals => {
+  erb :'home', :locals => {
     :user_items => @user_items,
     :items_for_sale => @items_for_sale,
     :user => current_user }
