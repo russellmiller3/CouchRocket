@@ -33,7 +33,7 @@ helpers do
       :from => "CouchRocket <info@#{settings.mail_domain}>",
       :to => "#{user.email}",
       :subject => "Password Reset",
-      :html => erb(:'Emails/NewPassword',
+      :html => erb(:'emails/new_password',
       :locals => { :user => user })
     }
     $mg_client.send_message(settings.mail_domain,new_password_email)
@@ -112,7 +112,7 @@ get "/items/:id" do
   show_params
   item_id = params[:id]
   @item = Item.get(item_id)
-  erb :'SalesPage', :locals => { :item => @item,
+  erb :'sales_page', :locals => { :item => @item,
     :delivery_fee => $delivery_fee,
     :return_insurance => $return_insurance,
     :stripe_public_key => $stripe_public_key
@@ -277,7 +277,7 @@ post "/orders" do
     :from => "CouchRocket <me@#{settings.mail_domain}>",
     :to => "#{@user.email}",
     :subject => "Your #{@item.type} is Scheduled for Delivery",
-    :html => erb(:'Emails/BuyerConfirmation',
+    :html => erb(:'emails/buyer_confirmation',
       :locals => {:user => @user,:item => @item,:order=>@order})
   }
   $mg_client.send_message(settings.mail_domain,buyer_confirmation)
