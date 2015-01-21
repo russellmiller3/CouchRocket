@@ -1,10 +1,25 @@
-<h1>Profile</h1>
-<p>
-Name: <%= user.name %><br><br>
-Email: <%= user.email %><br><br>
-Phone: <%= user.phone %><br><br>
-Address: <%= user.address %><br><br>
-</p>
-<a href="/users/<%= user.id %>/edit">Edit Profile</a><br>
+<div class="container content">
 
-<a href="/users/<%= user.id %>/edit_password">Change Password</a>
+	<h1>Profile</h1>
+	<p>
+	<%= user.name %><br>
+	<%= user.email %><br>
+	<%= user.phone %><br>
+	<%= user.address %><br>
+	</p>
+	<a href="/users/<%= user.id %>/edit">Edit Profile</a><br>
+
+	<a href="/users/<%= user.id %>/edit_password">Change Password</a>
+
+	<br>
+	<br>
+	<% if !user_items.nil? %>
+		<h2>Your Items for Sale</h2>
+			<% @user_items.each do |item| %>
+			<a href="/items/<%= item.id %>">
+			<IMG border="1" HEIGHT=50 WIDTH=50 SRC="<%= item.picture1_url %>">
+			<%= item.brand %> <%= item.type %></a><br><br>
+			<% end %>
+	<% end %>
+
+</div>

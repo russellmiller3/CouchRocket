@@ -50,7 +50,8 @@ get "/" do
     @user_items = nil
   end
 
-  @items_for_sale = Item.select{|item| item.sold == false }
+  all_items_for_sale = Item.select{|item| item.sold == false }
+  @items_for_sale = all_items_for_sale.sample(5)
 
   erb :'home', :locals => {
     :user_items => @user_items,
@@ -102,6 +103,21 @@ post "/Charge/:order_id" do
   erb :'buyer_thanks'
 end
 
+get "/checkout" do
+  show_params
+  item = Items.get(params[:item_id])
+
+  erb(:'checkout',
+  :locals => { :item => item, :delivery_fee => $delivery_fee})
+end
+
+
+post "/checkout" do
+  erb(:'checkout')
+end
+
+
+
 get "/items/new" do
   @item = Item.new
   erb :'new_item',
@@ -112,7 +128,12 @@ get "/items/:id" do
   show_params
   item_id = params[:id]
   @item = Item.get(item_id)
-  erb :'sales_page', :locals => { :item => @item,
+  all_items_for_sale = Item.select{|item| item.sold == false }
+  @items_for_sale = all_items_for_sale.sample(5)
+
+  erb :'sales_page', :locals => {
+    :item => @item,
+    :items_for_sale => @items_for_sale,
     :delivery_fee => $delivery_fee,
     :return_insurance => $return_insurance,
     :stripe_public_key => $stripe_public_key
@@ -461,12 +482,25 @@ end
 
 get "/users/:id" do
   @user = User.get(params[:id])
-erb(:'profile',:locals=>{:user=>@user})
+
+  if current_user.seller_profile
+    @user_items = current_user.seller_profile.items
+  else
+    @user_items = nil
+  end
+
+erb(:'profile',:locals=>{:user=>@user,:user_items=>@user_items})
 end
 
 get "/users/:id/edit" do
   @user = User.get(params[:id])
-erb(:'edit_profile',:locals=>{:user=>@user})
+
+
+
+erb(:'edit_profile',:locals=>{
+  :user=>@user,
+
+  })
 end
 
 put "/users/:id" do

@@ -1,54 +1,57 @@
-<p>Hey there!<br>
-Tell us a bit about you.</p>
+  <!--=== Content Part ===-->
+  <div class="container content-md">
+      <div class="row">
+          <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+              <form class="reg-page" id="registration-form" action="/register" method="post" accept-charset="utf-8">
+
+                  <% if user.errors.any? %>
+                    <div class="form-errors">
+                    <h3>There were some errors with your signup:</h3>
+                      <ul class="error-messages">
+                        <% user.errors.full_messages.each do |error_msg| %>
+                        <li><%= error_msg %></li>
+                        <% end %>
+                      </ul>
+                    </div>
+                  <% end %>
+
+                  <div class="reg-header">
+                      <h2>Sign Up</h2>
+                      <p>Hey there! Tell us a bit about you.<br>Already Signed Up? Click <a href="page_login.html" >Sign In</a> to login your account.</p>
+                  </div>
+
+                  <label>Name</label>
+                  <input type="text" class="form-control margin-bottom-20" name="user[name]" value="<%= user.name %>" >
+
+                  <label>Email Address <span class="color-red">*</span></label>
+                  <input type="text" class="form-control margin-bottom-20" name="user[email]" data-stripe="email" value="<%= user.email %>">
 
 
-<% if user.errors.any? %>
-    <div class="form-errors">
-      <h3>There were some errors with your signup:</h3>
-      <ul class="error-messages">
-        <% user.errors.full_messages.each do |error_msg| %>
-          <li><%= error_msg %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+                  <label>Phone <span class="color-red">*</span></label>
+                  <input type="text" class="form-control margin-bottom-20" name="user[phone]" type="text" size="30" value="<%= user.phone %>">
 
-<form id="registration-form" action="/register" method="post" accept-charset="utf-8" id="registration-form">
 
-<div class="form-row">
-    <label>
-      <span>Name</span>
-      <input name="user[name]" type="text" size="30" value="<%= user.name %>" >
-    </label>
-</div>
-<br>
-<div class="form-row">
-    <label>
-      <span>Email</span>
-      <input name="user[email]" type="text" size="30" data-stripe="email" value="<%= user.email %>" >
-    </label>
-</div>
-<br>
-<div class="form-row">
-    <label>
-      <span>Phone</span>
-      <input name="user[phone]" type="text" size="30" value="<%= user.phone %>" >
-    </label>
-</div>
-<br>
-<div class="form-row">
-    <label>
-      <span>Address</span>
-      <input name="user[address]" type="textarea" size="60" value="<%= user.address %>" >
-    </label>
-</div>
-<br>
-<div class="form-row">
-<label for="user[password">Password (Must be at least 6 characters)</label>
-<input id="user[password]" type="password" name="user[password]"><br>
-<label for="user[password_confirmation]">Confirm Password</label>
-<input id="user[password_confirmation]" type="password" name="user[password_confirmation]">
-</div>
-<br>
-<button type="submit">Set me up!</button>
-</form>
+                  <label>Address<span class="color-red">*</span></label>
+                  <input type="text" class="form-control margin-bottom-20" name="user[address]" type="textarea" size="60" value="<%= user.address %>" >
+
+                  <div class="row">
+                      <div class="col-sm-6">
+                          <label for="user[password">Password (At least 6 characters) <span class="color-red">*</span></label>
+                          <input id="user[password]" type="password" name="user[password]" class="form-control margin-bottom-20">
+                      </div>
+                      <div class="col-sm-6">
+                          <label for="user[password_confirmation]">Confirm Password <span class="color-red">*</span></label>
+                          <input id="user[password_confirmation]" type="password" class="form-control margin-bottom-20" name="user[password_confirmation]">
+                      </div>
+                  </div>
+
+                    <label>
+                      <input type="checkbox">
+                       I agree to the <a href="page_terms.html">Terms and Conditions</a>
+                    </label><br>
+                    <button class="btn-u btn-u-sea-shop btn-block margin-bottom-20" type="submit">Set Me Up!</button>
+              </form>
+          </div>
+      </div>
+  </div><!--/container-->
+  <!--=== End Content Part ===-->

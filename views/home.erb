@@ -1,13 +1,188 @@
-<style>
-.admin {
-    border: 2px solid #a1a1a1;
-    padding: 10px 20px;
-    background: #dddddd;
-    width: 200px;
-    border-radius: 25px;
-}
-</style>
-<a href="/FAQ">FAQ</a><br><br>
+<!--=== Slider ===-->
+    <div class="tp-banner-container" style="overflow: visible;">
+        <div class="tp-banner">
+            <ul>
+                <!-- SLIDE -->
+                <li class="revolution-mch-1" data-transition="fade" data-slotamount="5" data-masterspeed="1000" data-title="Slide 1">
+                    <!-- MAIN IMAGE -->
+                    <img src="http://i.imgur.com/YB0bRRw.jpg"
+                    alt="darkblurbg"  data-bgfit="cover" data-bgposition="left top" data-bgrepeat="no-repeat">
+
+
+
+                    <div class="tp-caption revolution-ch1 sft start"
+                        data-x="center"
+                        data-hoffset="0"
+                        data-y="100"
+                        data-speed="1500"
+                        data-start="500"
+                        data-easing="Back.easeInOut"
+                        data-endeasing="Power1.easeIn"
+                        data-endspeed="300">
+                        Selling & Buying <br>
+                        <strong>Used Furniture</strong><br>
+                        just got stupid easy.
+                    </div>
+                </li>
+                <!-- END SLIDE -->
+            </ul>
+            <div class="tp-bannertimer tp-bottom"></div>
+        </div>
+    </div>
+    <!--=== End Slider ===-->
+
+    <!--=== Product Content ===-->
+    <div class="container content-md">
+        <div class="heading heading-v1 margin-bottom-20">
+   				<h2>For Sellers:</h2>
+   				<br>
+   				<br>
+			    <div class="container">
+			        <!--=== Product Service ===-->
+			        <div class="row margin-bottom-60">
+			            <div class="col-md-4 product-service md-margin-bottom-30">
+			                <div class="product-service-heading">
+			                    <i class="fa fa-laptop"></i>
+			                </div>
+			                <div class="product-service-in">
+			                    <h3>Post an Ad</h3>
+			                    <p>Upload a great pic, add a few lines of description, and you're done!</p>
+			                </div>
+			            </div>
+			            <div class="col-md-4 product-service md-margin-bottom-30">
+			                <div class="product-service-heading">
+			                    <i class="fa fa-truck"></i>
+			                </div>
+			                <div class="product-service-in">
+			                    <h3>We Pick Up</h3>
+			                    <p>After the buyer orders, we send a professional delivery crew to you.<br>You never have to meet the buyer.</p>
+			                </div>
+			            </div>
+			            <div class="col-md-4 product-service">
+			                <div class="product-service-heading">
+			                    <i class="fa fa-money"></i>
+			                </div>
+			                <div class="product-service-in">
+			                    <h3>You Get Paid</h3>
+			                    <p>The buyer approves.<br>We pay you electronically.<br>No awkward exchange and depositing cash.</p>
+
+			                </div>
+			            </div>
+			        </div><!--/end row-->
+			        <!--=== End Product Service ===-->
+			    </div><!--/end container-->
+
+   				<h2>For Buyers:</h2>
+   				<br>
+   				<br>
+			    <div class="container">
+			        <!--=== Product Service ===-->
+			          <!--=== Product Service ===-->
+			        <div class="row margin-bottom-60">
+			            <div class="col-md-4 product-service md-margin-bottom-30">
+			                <div class="product-service-heading">
+			                    <i class="fa fa-laptop"></i>
+			                </div>
+			                <div class="product-service-in">
+			                    <h3>Pay Online, No Cash</h3>
+			                    <p>Order and pay via credit card.</p>
+			                </div>
+			            </div>
+			            <div class="col-md-4 product-service md-margin-bottom-30">
+			                <div class="product-service-heading">
+			                    <i class="fa fa-truck"></i>
+			                </div>
+			                <div class="product-service-in">
+			                    <h3>We Deliver</h3>
+			                    <p>A professional delivery crew brings your furniture at a time of your choosing<br>You never have to meet the buyer.</p>
+			                </div>
+			            </div>
+
+			            <div class="col-md-4 product-service md-margin-bottom-30">
+			                <div class="product-service-heading">
+			                    <i class="icon-refresh"></i>
+			                </div>
+			                <div class="product-service-in">
+			                    <h3>Free Returns</h3>
+			                    <p>Don't like the item?
+			                    We'll take it right back at no charge.</p>
+			                </div>
+			            </div>
+
+			        </div><!--/end row-->
+			        <!--=== End Product Service ===-->
+			    </div><!--/end container-->
+
+					<% if !user_signed_in? %>
+					<form method="GET" action="/items/new">
+           <button class="btn-u btn-u-lg btn-u-sea rounded float-shadow"><i class="fa fa-rocket"></i>List Your Stuff Today!</button>
+           </form>
+					<% end %>
+
+			    <div class ="tag-box tag-box-v2 col-md-3 product-service ">
+					<% if user_signed_out? %>
+					<br>
+					<h4>Sample Logins:</h4>
+					<b>Admin:</b><br>
+					comicsguy@adamm.net / admin1<br>
+					<b>Buyer:</b><br>
+					ram@themillermediagroup.com / song11 <br>
+					<b>Seller:</b><br>
+					russell@adamm.net / song11
+					<% end %>
+					<br><br>
+					</div>
+        </div>
+
+
+
+
+        <div class="heading heading-v1 margin-bottom-40">
+            <h2>Cool Stuff For Sale</h2>
+        </div>
+
+<!--=== Product Content ===-->
+		<div class="container content-md">
+        <!--=== Illustration v2 ===-->
+        <div class="row illustration-v2">
+        		<% items_for_sale.each do |item| %>
+            <div class="col-md-3 col-sm-6 md-margin-bottom-30">
+                <div class="product-img">
+                    <a href="/items/<%= item.id %>"><img class="full-width img-responsive" src="<%= item.picture1_url %>"></a>
+                </div>
+                <div class="product-description product-description-brd">
+                    <div class="overflow-h margin-bottom-5">
+                        <div class="pull-left">
+                            <h4 class="title-price"><a href="/items/<%= item.id %>"><%= item.brand %> <%= item.type %></a></h4>
+                        </div>
+                        <div class="product-price">
+                            <span class="title-price">$<%= To_Dollars(item.asking_price) %></span>
+                        </div>
+                    </div>
+                    <ul class="list-inline product-ratings">
+                      <li class="like-icon"><a data-original-title="Add to wishlist" data-toggle="tooltip" data-placement="left" class="tooltips" href="#"><i class="fa fa-heart"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+            <% end %>
+        </div>
+        <!--=== End Illustration v2 ===-->
+    </div>
+<!--=== End Product Content ===-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <% if user_signed_in? && current_user.is_admin? %>
 <br><br>
@@ -17,40 +192,9 @@
 <br><br>
 <% end %>
 
-<% if user_signed_out? %>
 
-<div class = "admin">
-<h4>Sample Logins:</h4>
-<b>Admin:</b><br>
-comicsguy@adamm.net / admin1<br>
-<b>Buyer:</b><br>
-ram@themillermediagroup.com / song11 <br>
-<b>Seller:</b><br>
-russell@adamm.net / song11
-</div>
 
-<h3>CouchRocket is the easiest way to buy & sell used furniture online.</h3>
-<p>How CouchRocket works for sellers:
-	<ol>
-		<li>Post your furniture for sale</li>
-		<li>A Buyer orders your item. We come pick it up from your place.<br>
-		You never have to meet the buyer.</li>
-		<li>We deliver it.  The buyer approves.  You get paid!</li>
-	</ol>
-</p>
 
-<p>How CouchRocket works for buyers:
-	<ol>
-		<li>Order an item you like.</li>
-		<li>We deliver it to you. (If you don't like it, we'll take it back.)</li>
-		<li>Enjoy your cool furniture!</li>
-	</ol>
-</p>
-<% end %>
-
-<% if !user_signed_in? %>
-	<h3><a href="/register">Sign Up and Sell your Stuff Today!</a></h3>
-<% end %>
 
 <% if user_signed_in? && user_items.nil? %>
 <p>Sell some stuff! Click the button below</p>
@@ -66,13 +210,4 @@ russell@adamm.net / song11
 		<IMG border="1" HEIGHT=50 WIDTH=50 SRC="<%= item.picture1_url %>">
 		<%= item.brand %> <%= item.type %></a><br><br>
 		<% end %>
-<% end %>
-
-
-<br>
-<h2>Cool Stuff for Sale:</h2>
-<% items_for_sale.each do |item| %>
-<a href="/items/<%= item.id %>">
-<IMG border="1" HEIGHT=50 WIDTH=50 SRC="<%= item.picture1_url %>">
-<%= item.brand %> <%= item.type %></a><br><br>
 <% end %>
