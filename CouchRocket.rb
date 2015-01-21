@@ -105,7 +105,7 @@ end
 
 get "/checkout" do
   show_params
-  item = Items.get(params[:item_id])
+  item = Item.get(params[:item_id])
 
   erb(:'checkout',
   :locals => { :item => item, :delivery_fee => $delivery_fee})

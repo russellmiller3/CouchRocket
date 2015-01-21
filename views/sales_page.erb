@@ -60,8 +60,9 @@
 
 
                     <div class="margin-bottom-40">
-                        <form method="post" action="/checkout" name="f1" class="sm-margin-bottom-20">
-                        <button type="button" class="btn-u btn-u-sea-shop btn-u-lg">Order</button>
+                        <form method="get" action="/checkout" name="f1" class="sm-margin-bottom-20">
+                        <input name="item_id" type="hidden" value="<%= item.id %>">
+                        <button a href="/checkout" class="btn-u btn-u-sea-shop btn-u-lg">Order</button>
                         </form>
                     </div><!--/end product quantity-->
 
