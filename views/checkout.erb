@@ -1,0 +1,356 @@
+    <!--=== Breadcrumbs v4 ===-->
+    <div class="breadcrumbs-v4">
+        <div class="container">
+            <span class="page-name">Check Out</span>
+            <h1>Ready for <span class="shop-green">Liftoff?</span></h1>
+            <ul class="breadcrumb-v4-in">
+                <li><a href="/">Home</a></li>
+                <li><a href="">Product</a></li>
+                <li class="active">Checkout</li>
+            </ul>
+        </div><!--/end container-->
+    </div>
+    <!--=== End Breadcrumbs v4 ===-->
+
+    <!--=== Content Medium Part ===-->
+    <div class="content-md margin-bottom-30">
+        <div class="container">
+            <form class="shopping-cart sky-form wizard clearfix" action="/orders" method="post"  id="sky-form">
+
+                <div>
+                    <div class="header-tags">
+                        <div class="overflow-h">
+                            <h2>Shopping Cart</h2>
+                            <p>Review &amp; edit your product</p>
+                            <i class="rounded-x fa fa-check"></i>
+                        </div>
+                    </div>
+                    <section>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th class="pull-left">Product</th>
+                                        <th>Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                     <tr>
+                                        <td class="product-in-table">
+                                            <img class="img-responsive" src="<%= item.picture1_url %>" alt="">
+                                            <div class="product-it-in">
+                                                <h3><%= item.brand %> <%= item.type %></h3>
+<!--                                                 <span>Sed aliquam tincidunt tempus</span>
+ -->                                            </div>
+
+                                        </td>
+                                        <td>$ <%= To_Dollars(item.asking_price) %></td>
+                                        <!--                                         <td>
+                                            <button type='button' class="quantity-button" name='subtract' onclick='javascript: subtractQty1();' value='-'>-</button>
+                                            <input type='text' class="quantity-field" name='qty1' value="5" id='qty1'/>
+                                            <button type='button' class="quantity-button" name='add' onclick='javascript: document.getElementById("qty1").value++;' value='+'>+</button>
+                                        </td>
+                                        <td class="shop-red">$ 320.00</td>
+                                        <td>
+                                            <button type="button" class="close"><span>&times;</span><span class="sr-only">Close</span></button>
+                                        </td> -->
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <div class="header-tags">
+                        <div class="overflow-h">
+                            <h2>Shipping info</h2>
+                            <p>Shipping and address info</p>
+                            <i class="rounded-x fa fa-home"></i>
+                        </div>
+                    </div>
+                    <section class="billing-info">
+                        <div class="row">
+                            <div class="col-md-6 md-margin-bottom-40">
+                                <h2 class="title-type">Shipping Info</h2>
+                                <div class="billing-info-inputs checkbox-list">
+                                    <input id="name" name="user[name]" type="text" placeholder="Name" class="form-control required">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <input id="email" type="text" placeholder="Email" name="user[email]" class="form-control required email">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input id="phone" type="tel" placeholder="Phone" name="user[phone]" class="form-control required">
+                                        </div>
+                                    </div>
+                                    <input id="billingAddress" type="text" placeholder="Address" name="user[address]" class="form-control required">
+
+
+
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label class="input">
+                                            <i class="icon-append fa fa-calendar"></i>
+                                            <input type="text" name="order[target_delivery_date]" id="date" placeholder="Date">
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="input">
+                                            <input type="text" name="order[target_delivery_time_start]"  id="time" placeholder="Time">
+                                            </label>
+                                        </div>
+                                    </div>
+
+
+                                    <label class="label">Delivery Notes:</label>
+                                    <label class="textarea">
+                                        <textarea name="order[delivery_notes]" rows="3" placeholder="What's the best time and days to deliver?  Is there an access code? Do you have a dog who might bark at the delivery person? etc."></textarea>
+                                    </label>
+
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="header-tags">
+                        <div class="overflow-h">
+                            <h2>Payment</h2>
+                            <p>Select Payment method</p>
+                            <i class="rounded-x fa fa-credit-card"></i>
+                        </div>
+                    </div>
+                    <section>
+                        <div class="row">
+                            <div class="col-md-6 md-margin-bottom-50">
+                                <h2 class="title-type">Choose a payment method</h2>
+                                <!-- Accordion -->
+                                <div class="accordion-v2">
+                                    <div class="panel-group" id="accordion">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                                        <i class="fa fa-credit-card"></i>
+                                                        Credit or Debit Card
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseOne" class="panel-collapse collapse in">
+                                                <div class="panel-body cus-form-horizontal">
+                                                    <div class="form-group">
+                                                        <label class="col-sm-4 no-col-space control-label">Cardholder Name</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" class="form-control required" name="cardholder" placeholder="">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-4 no-col-space control-label">Card Number</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" class="form-control required" name="cardnumber" placeholder="">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-4 no-col-space control-label">Payment Types</label>
+                                                        <div class="col-sm-8">
+                                                            <ul class="list-inline payment-type">
+                                                                <li><i class="fa fa-cc-paypal"></i></li>
+                                                                <li><i class="fa fa-cc-visa"></i></li>
+                                                                <li><i class="fa fa-cc-mastercard"></i></li>
+                                                                <li><i class="fa fa-cc-discover"></i></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-4">Expiration Date</label>
+                                                        <div class="col-sm-8 input-small-field">
+                                                            <input type="text" name="mm" placeholder="MM" class="form-control required sm-margin-bottom-20">
+                                                            <span class="slash">/</span>
+                                                            <input type="text" name="yy" placeholder="YY" class="form-control required">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-4 no-col-space control-label">CSC</label>
+                                                        <div class="col-sm-8 input-small-field">
+                                                            <input type="text" name="number" placeholder="" class="form-control required">
+                                                            <a href="#">What's this?</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                                        <i class="fa fa-paypal"></i>
+                                                        Pay with PayPal
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseTwo" class="panel-collapse collapse">
+                                                <div class="content margin-left-10">
+                                                    <a href="#"><img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_150x38.png" alt="PayPal"></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Accordion -->
+                            </div>
+
+                            <div class="col-md-6">
+                                <h2 class="title-type">Frequently asked questions</h2>
+                                <!-- Accordion -->
+                                <div class="accordion-v2 plus-toggle">
+                                    <div class="panel-group" id="accordion-v2">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion-v2" href="#collapseOne-v2">
+                                                        What payments methods can I use?
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseOne-v2" class="panel-collapse collapse in">
+                                                <div class="panel-body">
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam hendrerit, felis vel tincidunt sodales, urna metus rutrum leo, sit amet finibus velit ante nec lacus. Cras erat nunc, pulvinar nec leo at, rhoncus elementum orci. Nullam ut sapien ultricies, gravida ante ut, ultrices nunc.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion-v2" href="#collapseTwo-v2">
+                                                        Can I use gift card to pay for my purchase?
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseTwo-v2" class="panel-collapse collapse">
+                                                <div class="panel-body">
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam hendrerit, felis vel tincidunt sodales, urna metus rutrum leo, sit amet finibus velit ante nec lacus. Cras erat nunc, pulvinar nec leo at, rhoncus elementum orci. Nullam ut sapien ultricies, gravida ante ut, ultrices nunc.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion-v2" href="#collapseThree-v2">
+                                                        Will I be charged when I place my order?
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseThree-v2" class="panel-collapse collapse">
+                                                <div class="panel-body">
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam hendrerit, felis vel tincidunt sodales, urna metus rutrum leo, sit amet finibus velit ante nec lacus. Cras erat nunc, pulvinar nec leo at, rhoncus elementum orci. Nullam ut sapien ultricies, gravida ante ut, ultrices nunc.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion-v2" href="#collapseFour-v2">
+                                                        How long will it take to get my order?
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseFour-v2" class="panel-collapse collapse">
+                                                <div class="panel-body">
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam hendrerit, felis vel tincidunt sodales, urna metus rutrum leo, sit amet finibus velit ante nec lacus. Cras erat nunc, pulvinar nec leo at, rhoncus elementum orci. Nullam ut sapien ultricies, gravida ante ut, ultrices nunc.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Accordion -->
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="coupon-code">
+                        <div class="row">
+                            <div class="col-sm-4 sm-margin-bottom-30">
+                            </div>
+                            <div class="col-sm-3 col-sm-offset-5">
+                                <ul class="list-inline total-result">
+                                    <li>
+                                        <h4>Subtotal:</h4>
+                                        <div class="total-result-in">
+                                            <span>$ <%= To_Dollars(item.asking_price) %></span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <h4>Delivery <br>(includes free returns!)</h4>
+                                        <div class="total-result-in">
+                                            <span class="text-right">$ <%= To_Dollars($delivery_fee) %></span>
+                                        </div>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li class="total-price">
+                                        <h4>Total:</h4>
+                                        <div class="total-result-in">
+                                            <span>$ <%= To_Dollars(item.asking_price + $delivery_fee)%></span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div><!--/end container-->
+    </div>
+    <!--=== End Content Medium Part ===-->
+
+
+<!-- JS Global Compulsory -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<script src="/assets/plugins/jquery/jquery-migrate.min.js"></script>
+<script src="/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+<!-- JS Implementing Plugins -->
+<script src="/assets/plugins/back-to-top.js"></script>
+<script src="/assets/plugins/sky-forms/version-2.0.1/js/jquery.validate.min.js"></script>
+<script src="/assets/plugins/jquery-steps/build/jquery.steps.js"></script>
+<!-- Scrollbar -->
+<script src="/assets/plugins/scrollbar/src/jquery.mousewheel.js"></script>
+<script src="/assets/plugins/scrollbar/src/perfect-scrollbar.js"></script>
+<!-- JS Customization -->
+<script src="/assets/js/custom.js"></script>
+<!-- JS Page Level -->
+<script src="/assets/js/shop.app.js"></script>
+<script src="/assets/js/forms/page_login.js"></script>
+<script src="/assets/js/plugins/stepWizard.js"></script>
+<script src="/assets/js/forms/product-quantity.js"></script>
+<script src="/assets/js/jquery-ui.min.js"></script>
+
+<script src="/assets/plugins/timepicker/jquery.timepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="/assets/plugins/timepicker/jquery.timepicker.css" />
+
+<script>
+    jQuery(document).ready(function() {
+        App.init();
+        Login.initLogin();
+        StepWizard.initStepWizard();
+});
+</script>
+
+<script type="text/javascript">
+    $(function()
+    {
+        $('#date').datepicker({
+            dateFormat: 'MM d, yy',
+            prevText: '<i class="fa fa-chevron-left"></i>',
+            nextText: '<i class="fa fa-chevron-right"></i>'
+        });
+
+    });
+</script>
+
+<script>
+    $(function()
+    {
+        $('#time').timepicker({
+            'minTime': '8:30am',
+            'maxTime': '8:30pm',
+        });
+    });
+</script>

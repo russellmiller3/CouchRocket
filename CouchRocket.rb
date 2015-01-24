@@ -43,6 +43,13 @@ end
 
 
 #Begin Routes
+
+get "/test" do
+  erb(:'test')
+end
+
+
+
 get "/" do
   if user_signed_in? && current_user.seller_profile
     @user_items = current_user.seller_profile.items
