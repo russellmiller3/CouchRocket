@@ -1,162 +1,191 @@
-<div class="Sales Page">
-<h3><%= item.brand %> <%= item.type %></h3>
-<img src="<%= item.picture1_url %>" width=300>
-<img src="<%= item.picture2_url %>">
-<img src="<%= item.picture3_url %>">
-<br>
-Notes:
-<br>
-<%= item.notes %>
-<br>Originally Priced at: $<b><%= To_Dollars(item.original_price) %></b>
+<!--=== Shop Product ===-->
+    <div class="shop-product">
+        <!-- Breadcrumbs v5 -->
+        <div class="container">
+            <ul class="breadcrumb-v5">
+                <li><a href="/"><i class="fa fa-rocket"></i></a></li>
+                <li class="active">Products</li>
+            </ul>
+        </div>
+        <!-- End Breadcrumbs v5 -->
 
-<h3>Now selling for: $<b><%= To_Dollars(item.asking_price) %></b></h3>
-Delivery Cost: $<%= To_Dollars($delivery_fee) %><br>
-Hassle Free Return Fee: $<%= To_Dollars($return_insurance) %><br>This ensures that you can return the item if you don't like it, and have us pay the full return fee.
-<h2>Delivered to your door for:<br>$<%= To_Dollars(item.asking_price + $delivery_fee + $return_insurance) %></h2>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 md-margin-bottom-50">
+                    <div class="ms-showcase2-template">
+                          <!-- Master Slider -->
+                          <div class="master-slider ms-skin-default" id="masterslider">
+                            <div class="ms-slide">
+                                <img class="ms-brd" src="<%= item.picture1_url %>" data-src="<%= item.picture1_url %>">
+                                <% if item.picture2_url != nil %>
+                                <img class="ms-thumb" src="<%= item.picture1_url %>" alt="thumb">
+                                <% end %>
+                            </div>
+                            <% if item.picture2_url %>
+                            <div class="ms-slide">
+                                <img class="ms-brd" src="<%= item.picture2_url %>" data-src="<%= item.picture2_url %>">
+                                <img class="ms-thumb" src="<%= item.picture2_url %>" alt="thumb">
+                            </div>
+                            <% end %>
+                            <% if item.picture3_url %>
+                            <div class="ms-slide">
+                                <img class="ms-brd" src="<%= item.picture2_url %>" data-src="<%= item.picture2_url %>">
+                                <img class="ms-thumb" src="<%= item.picture2_url %>" alt="thumb">
+                            </div>
+                            <% end %>
+                          </div>
+                        <!-- End Master Slider -->
+                    </div>
+                </div>
 
-
-<br><br>
-<h4>Purchase Today!</h4>
-
-
-
-<form action="/orders" method="POST" id="payment-form">
-  <span class="payment-errors"></span>
-
-<input name="item[id]" type="hidden" value="<%= item.id %>">
-
-<div class="form-row">
-    <label>
-      <span>Name</span>
-      <input name="user[name]" type="text" size="30" value="Tom Buyer"/>
-    </label>
-</div>
-<br>
-<div class="form-row">
-    <label>
-      <span>Email</span>
-      <input name="user[email]" type="text" size="30" data-stripe="email" value="russell@adamm.net"/>
-    </label>
-</div>
-<br>
-<div class="form-row">
-    <label>
-      <span>Phone</span>
-      <input name="user[phone]" type="text" size="30" value="4158598060"/>
-    </label>
-</div>
-<br>
-
- Pick a day and 2-hour window in the evening when you will definitely be home and available to approve your purchase.
-<br>
-<div class="form-row">
-    <label>
-      <span>Delivery Date</span>
-      <input name="order[target_delivery_date]" type="text" size="30" id="date" value="December 14, 2014"/>
-    </label>
-</div>
-<br>
-<div class="form-row">
-    <label>
-      <span>Delivery Time - Starting time for a 2-hour window </span>
-      <input name="order[target_delivery_time_start]" type="Integer" size="30" value="6"/>
-    </label>
-</div>
-<br>
-<div class="form-row">
-    <label>
-      <span>Shipping Address</span>
-      <input name="user[address]" type="text" size="60" value="33 Regis Court, San Francisco, CA 97331"/>
-    </label>
-</div>
-<br>
-<div class="form-row">
-    <label for "order[delivery_notes]">Delivery Notes:</label><br>
-    <textarea name="order[delivery_notes]" placeholder="What's the best time and days to deliver?  Is there an access code? Do you have a dog who might bark at the delivery person? etc." rows="4" cols="50" >Please deliver at 3pm next Tuesday. My door code is #33</textarea>
-</div>
-
-<div class="form-row">
-  <label>
-    <span>Card Number</span>
-    <input type="text" size="30" data-stripe="number" value="4242 4242 4242 4242" /> </label>
-</div>
-
-<div class="form-row">
-  <label>
-    <span>CVC</span>
-    <input type="text" size="4" data-stripe="cvc" value="123"/>
-  </label>
-</div>
-
-<div class="form-row">
-  <label>
-    <span>Expiration (MM/YY)</span>
-    <input type="text" size="2" data-stripe="exp-month" value="05" />
-  </label>
-  <span> / </span>
-  <input type="text" size="4" data-stripe="exp-year" value="16"/>
-</div>
-
-  <button type="submit">Order This</button>
-</form>
-<p>We will pre-authorize your credit card.  However, you won't be charged until the item is delivered and you have approved it.</p>
-
-</div>
+                <div class="col-md-6">
+                    <div class="shop-product-heading">
+                        <h2><%= item.brand %> <%= item.type %></h2>
+                        <ul class="list-inline shop-product-social">
+                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                            <li><a href="#"><i class="fa fa-pinterest"></i></a></li>
+                        </ul>
+                    </div><!--/end shop product social-->
 
 
-<!-- Stripe -->
-  <script type="text/javascript" src="https://js.stripe.com/v2/">
-  console.log("Stripe javascript loaded")
+                    <p><%= item.notes %></p><br>
 
-  </script>
-
-  <script type="text/javascript">
-  // This identifies your website in the createToken call below
-
-  console.log("form javascript loaded")
-
-  Stripe.setPublishableKey("<%= stripe_public_key %>");
-
-  console.log("public key set")
-
-  jQuery(function($) {
-    $('#payment-form').submit(function(event) {
-      var $form = $(this);
-
-      console.log("Listening for submit")
-
-      // Disable the submit button to prevent repeated clicks
-      $form.find('button').prop('disabled', true);
+                    <ul class="list-inline shop-product-prices margin-bottom-30">
+                        <li class="shop-red">$<%= To_Dollars(item.asking_price) %></li>
+                        <li class="line-through">$<%= To_Dollars(item.original_price) %></li>
+                    </ul><!--/end shop product prices-->
 
 
-      Stripe.card.createToken($form, stripeResponseHandler);
 
-      // Prevent the form from submitting with the default action
-      return false;
+                    <div class="margin-bottom-40">
+                        <form method="get" action="/checkout" name="f1" class="sm-margin-bottom-20">
+                        <input name="item_id" type="hidden" value="<%= item.id %>">
+                        <button a href="/checkout" class="btn-u btn-u-sea-shop btn-u-lg">Order</button>
+                        </form>
+                    </div><!--/end product quantity-->
+
+                  <!-- <ul class="list-inline add-to-wishlist add-to-wishlist-brd">
+                        <li class="wishlist-in">
+                            <i class="fa fa-heart"></i>
+                            <a href="#">Add to Wishlist</a>
+                        </li>
+                        <li class="compare-in">
+                            <i class="fa fa-exchange"></i>
+                            <a href="#">Add to Compare</a>
+                        </li>
+                    </ul> -->
+                    <p class="wishlist-category"><strong>Categories:</strong><%= item.type %></p>
+                </div>
+            </div><!--/end row-->
+        </div>
+    </div>
+    <!--=== End Shop Product ===-->
+
+
+
+    <!--=== Content Medium ===-->
+    <div class="content-md container">
+        <!--=== Product Service ===-->
+<div class="row margin-bottom-60">
+                        <div class="col-md-4 product-service md-margin-bottom-30">
+                            <div class="product-service-heading">
+                                <i class="fa fa-laptop"></i>
+                            </div>
+                            <div class="product-service-in">
+                                <h3>Pay Online, No Cash</h3>
+                                <p>Order and pay via credit card.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 product-service md-margin-bottom-30">
+                            <div class="product-service-heading">
+                                <i class="fa fa-truck"></i>
+                            </div>
+                            <div class="product-service-in">
+                                <h3>We Deliver</h3>
+                                <p>A professional delivery crew brings your furniture at a time of your choosing<br>You never have to meet the buyer.</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 product-service md-margin-bottom-30">
+                            <div class="product-service-heading">
+                                <i class="icon-refresh"></i>
+                            </div>
+                            <div class="product-service-in">
+                                <h3>Free Returns</h3>
+                                <p>Don't like the item?
+                                We'll take it right back at no charge.</p>
+                            </div>
+                        </div>
+
+                    </div><!--/end row-->
+        <!--=== End Product Service ===-->
+
+    </div><!--/end container-->
+    <!--=== End Content Medium ===-->
+
+     <!--=== Illustration v2 ===-->
+    <div class="container">
+        <div class="heading heading-v1 margin-bottom-20">
+            <h2>Other Cool Stuff:</h2>
+        <!--     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed odio elit, ultrices vel cursus sed, placerat ut leo. Phasellus in magna erat. Etiam gravida convallis augue non tincidunt. Nunc lobortis dapibus neque quis lacinia. Nam dapibus tellus sit amet odio venenatis</p> -->
+        </div>
+
+        <div class="illustration-v2 margin-bottom-60">
+            <div class="customNavigation margin-bottom-25">
+                <a class="owl-btn prev rounded-x"><i class="fa fa-angle-left"></i></a>
+                <a class="owl-btn next rounded-x"><i class="fa fa-angle-right"></i></a>
+            </div>
+
+            <ul class="list-inline owl-slider-v4">
+            <% items_for_sale.each do |item| %>
+                <li class="item">
+                    <a href="/items/<%= item.id %>"><img class="img-responsive" src="<%= item.picture1_url %>" alt=""></a>
+                    <div class="product-description-v2">
+                        <div class="margin-bottom-5">
+                            <h4 class="title-price"><a href="#"><%= item.brand %> <%= item.type %></a></h4>
+                            <span class="title-price">$<%= To_Dollars(item.asking_price) %></span>
+                        </div>
+                    </div>
+                </li>
+            <% end %>
+            </ul>
+        </div>
+    </div>
+    <!--=== End Illustration v2 ===-->
+
+<!-- JS Global Compulsory -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<script src="/assets/plugins/jquery/jquery-migrate.min.js"></script>
+<script src="/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+<!-- JS Implementation Plugins -->
+<script src="/assets/plugins/back-to-top.js"></script>
+<script src="/assets/plugins/owl-carousel/owl-carousel/owl.carousel.js"></script>
+<!-- Master Slider -->
+<script src="/assets/plugins/master-slider/quick-start/masterslider/masterslider.min.js"></script>
+<script src="/assets/plugins/master-slider/quick-start/masterslider/jquery.easing.min.js"></script>
+<!-- Scrollbar -->
+<script src="/assets/plugins/scrollbar/src/jquery.mousewheel.js"></script>
+<script src="/assets/plugins/scrollbar/src/perfect-scrollbar.js"></script>
+<!-- JS Customization -->
+<script src="/assets/js/custom.js"></script>
+<!-- JS Page Level -->
+<script src="/assets/js/shop.app.js"></script>
+<script src="/assets/js/plugins/owl-carousel.js"></script>
+<script src="/assets/js/plugins/master-slider.js"></script>
+<script src="/assets/js/forms/product-quantity.js"></script>
+<script>
+    jQuery(document).ready(function() {
+        App.init();
+        OwlCarousel.initOwlCarousel();
+        MasterSliderShowcase2.initMasterSliderShowcase2();
     });
-  });
+</script>
 
-  function stripeResponseHandler(status, response) {
-    var $form = $('#payment-form');
-
-    if (response.error) {
-      // Show the errors on the form
-      $form.find('.payment-errors').text(response.error.message);
-      $form.find('button').prop('disabled', false);
-    }
-
-    else {
-      // response contains id and card, which contains additional card details
-      var token = response.id;
-
-      // Insert the token and customer into the form so they gets submitted to my server
-      $form.append($('<input type="hidden" name="stripeToken" />').val(token));
-
-      // and submit
-      $form.get(0).submit();
-    }
-  };
-
-  </script>
-
+<!--[if lt IE 9]>
+    <script src="/assets/plugins/respond.js"></script>
+    <script src="/assets/plugins/html5shiv.js"></script>
+    <script src="/assets/js/plugins/placeholder-IE-fixes.js"></script>
+<![endif]-->
 

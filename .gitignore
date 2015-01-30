@@ -8,6 +8,13 @@
 *.rbc
 /.config
 
+##Assets Javascript etc
+/public
+
+test.html
+
+views/test.*
+
 ## Environment normalisation:
 /.bundle/
 /lib/bundler/man/

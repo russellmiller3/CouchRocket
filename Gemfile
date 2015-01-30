@@ -12,6 +12,7 @@ gem 'stripe'
 gem 'rest-client'
 gem 'mailgun-ruby', '~>1.0.3', require: 'mailgun'
 gem 'twilio-ruby'
+gem 'sinatra-flash'
 
 group :development do
   gem 'sqlite3'

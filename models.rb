@@ -57,7 +57,6 @@ class BuyerProfile
 	include DataMapper::Resource
 
 	property :id, Serial
-	property :stripe_customer_id, String
 
 	belongs_to :user
 	has n, :orders, { :child_key => [:buyer_profile_id]}
@@ -67,6 +66,7 @@ class Item
 	include DataMapper::Resource
 
 	property :id, Serial
+	property :created_at, Date
 	property :type, Text
 	property :brand, Text
 	property :notes, Text
@@ -87,15 +87,18 @@ class Order
 
 	property :id, Serial
 	property :created_at, Date
-	property :total_price, Integer
+	property :total_price, Integer  #Includes Shipping Fee
 
 	property :buyer_name, Text
 	property :buyer_phone, Text
 	property :buyer_address, Text
+	property :buyer_email, Text
+	property :buyer_stripe_customer_id, String
 
 	property :seller_name, Text
 	property :seller_phone, Text
 	property :seller_address, Text
+	property :seller_email, Text
 	property :seller_share, Integer #Seller's share of sale price
 
 	property :shipper_name, Text
@@ -116,7 +119,7 @@ class Order
 	property :admin_notes, Text
 
 	has 1, :item,  { :child_key => [:order_id] }
-	belongs_to :buyer_profile
+	# belongs_to :buyer_profile  - Removed because buyer may be using guest checkout
 
 end
 

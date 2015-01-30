@@ -1,89 +1,90 @@
-<h1>Post an Item for Sale</h1>
+<div class="container content height-500">
 
-<p>
-To avoid having your item returned and <i>not getting paid</i>,<br>1) Be honest about any significant flaws or issues with your item,<br> 2) Include pictures of those flaws so that the buyer can evaluate your item clearly before they order it.</p>
+	<h1>List Your Stuff</h1>
+	<p>
+	To avoid having your item returned and <i>not getting paid</i>,<br>1) Be honest about any significant flaws or issues with your item,<br> 2) Include pictures of those flaws so that the buyer can evaluate your item clearly before they order it.</p>
 
-<br>
+	<br>
 
-<form id="new_item" action="/items" method="post" accept-charset="utf-8">
+	<form id="new_item" action="/items" method="post" accept-charset="utf-8">
 
-<label for "item[type]">Item Type</label><br>
-<select name="item[type]" form="new_item">
-  <option value="Bed">Bed</option>
-  <option value="Couch">Couch</option>
-  <option value="Bedroom Set">Bedroom Set</option>
-  <option value="Bookshelf">Bookshelf</option>
-  <option value="Chair">Chair</option>
-  <option value="Desk">Desk</option>
-</select>
-<br><br>
+	<label for "item[type]">Furniture Type (Bed, Couch, etc or Enter Custom Value)</label><br>
 
-<label for "item[brand]">Brand</label><br>
-<input type="text" name="item[brand]">
-<br><br>
+ <input type="text" list="furniture_types" name="item[type]" form="new_item"/>
+ <datalist id="furniture_types">
+	  <option>Bed</option>
+	  <option>Couch</option>
+	  <option>Bedroom Set</option>
+	  <option>Bookshelf</option>
+	  <option>Chair</option>
+	  <option>Desk</option>
+</datalist>
+	<br><br>
 
-<label for "item[notes]">Notes:</label><br>
-<textarea name="item[notes]"
-placeholder="To sell for the highest price, tell a story about what you like best about this item. What's cool or unique about it?"
-rows="4" cols="50">
-</textarea>
-<br><br>
+	<label for "item[brand]">Brand (leave blank if unknown)</label><br>
+	<input type="text" name="item[brand]">
+	<br><br>
 
-<label for "item[original_price]">Original Price</label><br>
-<input type ="integer" name="item[original_price]" label="Original Price"
-pattern="^\\$?(([1-9](\\d*|\\d{0,2}(,\\d{3})*))|0)(\\.\\d{1,2})?$"
-placeholder="100.00" value="<%= @item.original_price %>"
-required data-errormessage-value-missing="Uh oh, somethings wrong!" data-errormessage-type-mismatch="Uh oh, somethings wrong!"
->
+	<label for "item[notes]">Notes:</label><br>
+	<textarea name="item[notes]"
+	placeholder="To sell for the highest price, tell a story about what you like best about this item. What's cool or unique about it?"
+	rows="4" cols="50">
+	</textarea>
+	<br><br>
 
-<br><br>
-<label for "item[asking_price]">Asking Price</label><br>
-<input type ="integer" name="item[asking_price]"
-placeholder="80.00"
-value="<%= @item.asking_price %>">
+	<label for "item[original_price]">Original Price (Estimate if unknown)</label><br>
+	<input type ="integer" name="item[original_price]" label="Original Price"
+	pattern="^\\$?(([1-9](\\d*|\\d{0,2}(,\\d{3})*))|0)(\\.\\d{1,2})?$"
+	placeholder="100.00" value="<%= @item.original_price %>"
+	required data-errormessage-value-missing="Uh oh, somethings wrong!" data-errormessage-type-mismatch="Uh oh, somethings wrong!"
+	>
 
-<p>
-Attach up to 3 files. Each one can be up to 10 mb.</p>
+	<br><br>
+	<label for "item[asking_price]">Asking Price</label><br>
+	<input type ="integer" name="item[asking_price]"
+	placeholder="80.00"
+	value="<%= @item.asking_price %>">
 
-<input type="filepicker" name="item[picture1_url]" data-fp-button-text="Upload Image 1" data-fp-apikey="ALeZw9de5TTGfo53U9bfRz" data-fp-mimetypes="image/*" data-fp-container="modal" data-fp-maxsize="10485760"
-onchange="SuccessAlert()">
-<br><br>
-<input type="filepicker" name="item[picture2_url]" data-fp-button-text="Upload Image 2" data-fp-apikey="ALeZw9de5TTGfo53U9bfRz" data-fp-mimetypes="image/*" data-fp-container="modal" data-fp-maxsize="10485760"
-onchange="SuccessAlert()">
-<br><br>
-<input type="filepicker" name="item[picture3_url]" data-fp-button-text="Upload Image 3" data-fp-apikey="ALeZw9de5TTGfo53U9bfRz" data-fp-mimetypes="image/*" data-fp-container="modal" data-fp-maxsize="10485760"
-onchange="SuccessAlert()">
-<br><br>
+	<p>
+	Attach up to 3 files. Each one can be up to 10 mb.</p>
 
-<script type="text/javascript">
-function SuccessAlert(){
-	alert('File Uploaded.')
-}
-</script>
+	<input class="btn-u btn-u-sea rounded" type="filepicker" name="item[picture1_url]" data-fp-button-text="Upload Image 1" data-fp-apikey="ALeZw9de5TTGfo53U9bfRz" data-fp-mimetypes="image/*" data-fp-container="modal" data-fp-maxsize="10485760"
+	onchange="SuccessAlert()">
+	<br><br>
+	<input class="btn-u btn-u-sea rounded" type="filepicker" name="item[picture2_url]" data-fp-button-text="Upload Image 2" data-fp-apikey="ALeZw9de5TTGfo53U9bfRz" data-fp-mimetypes="image/*" data-fp-container="modal" data-fp-maxsize="10485760"
+	onchange="SuccessAlert()">
+	<br><br>
+	<input class="btn-u btn-u-sea rounded" type="filepicker" name="item[picture3_url]" data-fp-button-text="Upload Image 3" data-fp-apikey="ALeZw9de5TTGfo53U9bfRz" data-fp-mimetypes="image/*" data-fp-container="modal" data-fp-maxsize="10485760"
+	onchange="SuccessAlert()">
+	<br><br>
 
-<script type="text/javascript" src="http://api.filepicker.io/v1/filepicker.js"></script>
+	<script type="text/javascript">
+	function SuccessAlert(){
+		alert('File Uploaded.')
+	}
+	</script>
 
-<% if current_user.seller_profile && current_user.seller_profile.pickup_notes  %>
-These are the pickup notes we currently have for you:
-<p><%= current_user.seller_profile.pickup_notes %></p>
-If there are any changes, please put the new pickup notes below:<br><br>
-<% end %>
+	<script type="text/javascript" src="http://api.filepicker.io/v1/filepicker.js"></script>
 
-<div class="form-row">
-<label for "pickup_notes">Pickup Notes:</label><br>
-<textarea name="pickup_notes"
-placeholder="What do we need to tell our delivery person about how to find your place or contact you?
-Apartment building or a house?  Is there a gate code? Do you have a dog that may not like strangers?  etc. Thanks!"
-rows="4" cols="50"></textarea>
-</label>
+	<% if user_signed_in? && current_user.seller_profile && current_user.seller_profile.pickup_notes  %>
+	These are the pickup notes we currently have for you:
+	<p><%= current_user.seller_profile.pickup_notes %></p>
+	If there are any changes, please put the new pickup notes below:<br><br>
+	<% end %>
+
+	<div class="form-row">
+	<label for "pickup_notes">Pickup Notes:</label><br>
+	<textarea name="pickup_notes"
+	placeholder="What do we need to tell our delivery person about how to find your place or contact you? Apartment building or a house?  Is there a gate code? Do you have a dog that may not like strangers?  etc. Thanks!"
+	rows="4" cols="50"></textarea>
+	</label>
+	</div>
+	<br>
+	<input class="btn-u btn-u-sea rounded" type="submit" color="green">
+
+	</form>
+
 </div>
-<br>
-<input type="submit" color="green">
-
-</form>
-
-
-
 
 
 

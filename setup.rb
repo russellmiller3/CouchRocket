@@ -1,4 +1,4 @@
-		require "sinatra"
+require "sinatra"
 
 # The code below will automatically require all the gems listed in our Gemfile,
 # so we don't have to manually require gems a la
@@ -8,8 +8,12 @@
 #
 # See: http://bundler.io/sinatra.html
 
-require "rubygems"
 require "bundler/setup"
+
+require "rubygems"
+require "sinatra/flash"
+require "dm-timestamps"
+
 
 # Bundler.require(...) requires all gems necessary regardless of
 #   environment (:default) in addition to all environment-specific gems.
@@ -23,6 +27,8 @@ Bundler.require(:default, Sinatra::Application.environment)
 if File.exist?(".env")
   Dotenv.load(".env")
 end
+
+enable :sessions
 
 set(:sessions, true)
 set(:session_secret, ENV["SESSION_SECRET"])

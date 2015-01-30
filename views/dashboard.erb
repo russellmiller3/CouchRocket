@@ -1,0 +1,137 @@
+<!-- CSS Page Style -->
+<link rel="stylesheet" href="/assets/css/pages/profile.css">
+
+<!--=== Profile ===-->
+<div class="profile container content">
+
+    <!--Left Sidebar-->
+    <div class="col-md-3 md-margin-bottom-40">
+
+      <!--Profile-->
+      <div class="panel-heading-v2 overflow-h">
+          <h2 class="panel-title heading-sm pull-left">Profile</h2>
+          <a href="/users/<%= user.id %>/edit"><i class="fa fa-cog pull-right"></i></a>
+      </div>
+      <div class="panel-body">
+           <ul class="list-unstyled social-contacts-v2">
+              <li><i class="fa fa-user"></i><%= user.name %></li>
+              <li><i class="fa fa-home"></i><%= user.address %></li>
+              <li><i class="fa fa-phone"></i><%= user.phone %></li>
+              <li><i class="fa fa-envelope"></i><%= user.email %></li>
+              <li><i class="fa fa-pencil"></i> <a href="/users/<%= user.id %>/edit">Edit Profile</a></li>
+              <li><i class="fa fa-lock"></i> <a href="/users/<%= user.id %>/edit_password">Change Password</a></li>
+
+           </ul>
+      </div>
+      <!--End Profile-->
+
+    </div>
+    <!--End Left Sidebar-->
+
+    <div class="col-md-9">
+      <!--Profile Body-->
+      <div class="profile-body">
+        <!--Alert-->
+        <div class="col-sm-12 row-margin-bottom-20">
+            <div class="panel panel-profile">
+                <div class="panel-heading overflow-h">
+                    <h2 class="panel-title heading-sm pull-left"><i class="fa fa-send"></i>Notifications</h2>
+                </div>
+                <div id="scrollbar3" class="panel-body contentHolder">
+                    <!--Alerts -->
+                    <% flash.each do |flash| %>
+                      <%= flash %>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+        <!--End Alert-->
+        <!--Table Search v2-->
+        <div class="table-search-v2 col-sm-12 row-margin-bottom-20">
+            <div class="panel-heading overflow-h">
+                <h2 class="panel-title heading-sm pull-left col-sm-12"><i class="fa fa-list"></i>Your Furniture for Sale</h2>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Item</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                      <% @user_items.each do |item| %>
+                        <tr>
+                            <td>
+                                <img class="rounded-x image-sm" src="<%= item.picture1_url %>">
+                            </td>
+                            <td class="td-width">
+                                <h3><a href="/items/<%= item.id %>"><%= item.brand %> <%= item.type %></a></h3>
+                                <p><%= item.notes %></p>
+                                <small class="hex">Added <%= item.created_at %></small>
+                            </td>
+                            <td>
+                                <p>$<%= To_Dollars(item.asking_price) %></p>
+                            </td>
+                            <td>
+                                <% if item.sold == true %>
+                                    <span class="label label-success">Sold</span>
+                                <% else %>
+                                    <span class="label label-info"> Listed</span>
+                                <% end %>
+                            </td>
+                        </tr>
+                        <% end %>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--End Table Search v2-->
+      </div>
+      <!--End Profile Body-->
+    </div>
+</div><!--/container-->
+<!--=== End Profile ===-->
+
+
+<!-- JS Global Compulsory -->
+<script type="text/javascript" src="assets/plugins/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="assets/plugins/jquery/jquery-migrate.min.js"></script>
+<script type="text/javascript" src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+<!-- JS Implementing Plugins -->
+<script type="text/javascript" src="assets/plugins/back-to-top.js"></script>
+<script type="text/javascript" src="assets/plugins/counter/waypoints.min.js"></script>
+<script type="text/javascript" src="assets/plugins/counter/jquery.counterup.min.js"></script>
+<!-- Datepicker Form -->
+<script src="assets/plugins/sky-forms/version-2.0.1/js/jquery-ui.min.js"></script>
+<!-- Scrollbar -->
+<script src="assets/plugins/scrollbar/src/jquery.mousewheel.js"></script>
+<script src="assets/plugins/scrollbar/src/perfect-scrollbar.js"></script>
+<!-- JS Customization -->
+<script type="text/javascript" src="assets/js/custom.js"></script>
+<!-- JS Page Level -->
+<script type="text/javascript" src="assets/js/app.js"></script>
+<script type="text/javascript" src="assets/js/plugins/datepicker.js"></script>
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        App.init();
+        App.initCounter();
+        Datepicker.initDatepicker();
+    });
+</script>
+<script>
+    jQuery(document).ready(function ($) {
+        "use strict";
+        $('.contentHolder').perfectScrollbar();
+    });
+</script>
+<!--[if lt IE 9]>
+    <script src="assets/plugins/respond.js"></script>
+    <script src="assets/plugins/html5shiv.js"></script>
+<![endif]-->
+
+</body>
+</html>

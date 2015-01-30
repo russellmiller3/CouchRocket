@@ -33,7 +33,7 @@ helpers do
       :from => "CouchRocket <info@#{settings.mail_domain}>",
       :to => "#{user.email}",
       :subject => "Password Reset",
-      :html => erb(:'emails/new_password',
+      :html => erb(:'emails/new_password', :layout => false,
       :locals => { :user => user })
     }
     $mg_client.send_message(settings.mail_domain,new_password_email)
@@ -43,19 +43,42 @@ end
 
 
 #Begin Routes
-get "/" do
-  if user_signed_in? && current_user.seller_profile
-    @user_items = current_user.seller_profile.items
-  else
-    @user_items = nil
-  end
 
-  @items_for_sale = Item.select{|item| item.sold == false }
+get "/test" do
+  erb(:'test')
+end
+
+
+
+get "/" do
+
+  all_items_for_sale = Item.select{|item| item.sold == false }
+  @items_for_sale = all_items_for_sale.sample(5)
 
   erb :'home', :locals => {
     :user_items => @user_items,
     :items_for_sale => @items_for_sale,
     :user => current_user }
+end
+
+before "/dashboard" do
+  if user_signed_out?
+  redirect "/"
+  end
+end
+
+get "/dashboard" do
+  show_params
+  if current_user.seller_profile
+    @user_items = current_user.seller_profile.items
+  else
+    @user_items = nil
+  end
+
+   erb :'dashboard', :locals => {
+    :user_items => @user_items,
+    :user => current_user
+  }
 end
 
 get "/FAQ" do
@@ -102,6 +125,21 @@ post "/Charge/:order_id" do
   erb :'buyer_thanks'
 end
 
+get "/checkout" do
+  show_params
+  item = Item.get(params[:item_id])
+
+  erb(:'checkout',
+  :locals => { :item => item, :delivery_fee => $delivery_fee})
+end
+
+
+post "/checkout" do
+  erb(:'checkout')
+end
+
+
+
 get "/items/new" do
   @item = Item.new
   erb :'new_item',
@@ -112,7 +150,12 @@ get "/items/:id" do
   show_params
   item_id = params[:id]
   @item = Item.get(item_id)
-  erb :'sales_page', :locals => { :item => @item,
+  all_items_for_sale = Item.select{|item| item.sold == false }
+  @items_for_sale = all_items_for_sale.sample(5)
+
+  erb :'sales_page', :locals => {
+    :item => @item,
+    :items_for_sale => @items_for_sale,
     :delivery_fee => $delivery_fee,
     :return_insurance => $return_insurance,
     :stripe_public_key => $stripe_public_key
@@ -124,10 +167,11 @@ end
 post "/items" do
   show_params
 
-  if current_user.seller_profile
+  if user_signed_in?
     @seller_profile = current_user.seller_profile
   else
-    @seller_profile = SellerProfile.new({:user_id => current_user[:id]})
+    # If seller not logged in, add item to seller profile of dummy user
+    @seller_profile = SellerProfile.get(1)
   end
   @seller_profile.pickup_notes = params[:pickup_notes]
   @seller_profile.save!
@@ -145,16 +189,26 @@ post "/items" do
     puts error
   end
 
-  #Send Seller Listing Confirmation Email
-  seller_listing_confirmation = {
-    :from => "CouchRocket <info@#{settings.mail_domain}>",
-    :to => "#{current_user.email}",
-    :subject => "Thanks for Listing with CouchRocket",
-    :html => erb(:'emails/seller_listing_confirmation',:locals => { :current_user => current_user, :item => @item })
-  }
-  $mg_client.send_message(settings.mail_domain,seller_listing_confirmation)
+  if @item.errors == nil
+    flash[:item_added] =
+    '<div class="alert-blocks alert-blocks-success alert-dismissable">
+      <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+      <img class="rounded-x image-sm" src="<%= item.picture1_url %>">
+      <div class="overflow-h">
+        <strong class="color-green">Success!<small class="pull-right"><em>7 hours ago</em></small></strong>
+        <p>Your ad for #{@item.type} has been posted.</p>
+      </div>
+     </div>'
+  end
 
-  redirect "/"
+    binding.pry
+
+  if user_signed_in?
+    redirect "/dashboard"
+  else
+    redirect ""
+  end
+
 
 end
 
@@ -177,13 +231,13 @@ order = Order.get(order_id)
       :to => "+1#{order.buyer_phone}",
       :body => "Your delivery person from CouchRocket is here with your
       #{order.item.brand} #{order.item.type}!\n http://#{settings.domain}/BuyerAccept/#{order_id}",
-      :media_url => "http://i.imgur.com/iWHg83s.png"
+      :media_url => "http://i.imgur.com/2FnBV5f.png"
       })
   rescue Twilio::REST::RequestError => e
     puts e.message
     puts message.sid
   end
-erb(:'notify_buyer')
+erb(:'buyer_notified')
 end
 
 
@@ -197,27 +251,17 @@ order = Order.get(order_id)
       :to => "+1#{order.seller_phone}",
       :body => "Your delivery person from CouchRocket is here to pick up
       your #{order.item.brand} #{order.item.type} and deliver to your buyer.",
-      :media_url => "http://i.imgur.com/iWHg83s.png"
+      :media_url => "http://i.imgur.com/2FnBV5f.png"
       })
   rescue Twilio::REST::RequestError => e
     puts e.message
     puts message.sid
   end
-erb(:'notify_seller')
+erb(:'seller_notified')
 end
 
 post "/orders" do
   show_params
-
-  #Create new user (buyer)
-  user_attrs = params[:user]
-  @user = User.new(user_attrs)
-  @user.buyer_profile = BuyerProfile.new
-  @user.save!
-  @user.buyer_profile.save!
-  @user.errors.each do |error|
-      puts error
-  end
 
   #Fetch Item from db
   item_id = params[:item][:id]
@@ -228,23 +272,19 @@ post "/orders" do
   @order = Order.new(order_attrs)
   @order.total_price = @item.asking_price + $delivery_fee + $return_insurance
 
-  @order.buyer_name =@user.name
-  @order.buyer_address = @user.address
-  @order.buyer_phone = @user.phone
+  @order.buyer_name =params[:user][:name]
+  @order.buyer_address = params[:user][:address]
+  @order.buyer_phone = params[:user][:phone]
+  @order.buyer_email = params[:user][:email]
 
   @order.seller_name = @item.seller_profile.user.name
   @order.seller_phone = @item.seller_profile.user.phone
   @order.seller_address = @item.seller_profile.user.address
+  @order.seller_email = @item.seller_profile.user.email
   @order.seller_share = $buyer_percent * @item.asking_price
   @order.pickup_notes = @item.seller_profile.pickup_notes
 
-
-  @order.buyer_profile = @user.buyer_profile
-
-  @order.save
-  @order.errors.each do |error|
-      puts error
-  end
+  # @order.buyer_profile = @user.buyer_profile - Removed because buyer may be using guest checkout
 
   #Attach item to order, save item
   @item.order_id = @order.id
@@ -260,25 +300,29 @@ post "/orders" do
 
   customer = Stripe::Customer.create(
   :card => token,
-  :email => @user.email,
+  :email => @order.buyer_email,
   :metadata => {
-    'Name' => @user.name,
-    'Phone' => @user.phone,
-    'Address' => @user.address
+    'Name' => @order.buyer_name,
+    'Phone' => @order.buyer_phone,
+    'Address' => @order.buyer_address
     }
   )
 
-  @user.buyer_profile.stripe_customer_id = customer.id
-  @user.buyer_profile.save
+  @order.buyer_stripe_customer_id = customer.id
+
+  @order.save
+  @order.errors.each do |error|
+      puts error
+  end
 
 
   #Send Buyer Confirmation Email
   buyer_confirmation = {
     :from => "CouchRocket <me@#{settings.mail_domain}>",
-    :to => "#{@user.email}",
+    :to => "#{@order.buyer_email}",
     :subject => "Your #{@item.type} is Scheduled for Delivery",
-    :html => erb(:'emails/buyer_confirmation',
-      :locals => {:user => @user,:item => @item,:order=>@order})
+    :html => erb(:'emails/buyer_confirmation', :layout => false,
+      :locals => {:item => @item,:order=>@order})
   }
   $mg_client.send_message(settings.mail_domain,buyer_confirmation)
 
@@ -290,7 +334,7 @@ post "/orders" do
     :from => "CouchRocket <me@#{settings.mail_domain}>",
     :to => "#{@seller.email}",
     :subject => "Time Sensitive: Your #{@item.type.downcase} has been sold!",
-    :html => erb(:'emails/seller_pickup_notification',
+    :html => erb(:'emails/seller_pickup_notification', :layout => false,
     :locals => {:seller => @seller,:item=>@item,:order=>@order})
   }
   $mg_client.send_message(settings.mail_domain,seller_pickup_notification)
@@ -387,7 +431,7 @@ post "/ScheduleDelivery" do
     :from => "CouchRocket <me@#{settings.mail_domain}>",
     :to => "#{@order.shipper_email}",
     :subject => "#{@order.item.brand} #{@order.item.type} delivery #{@order.target_delivery_date.strftime('%A, %B %d')}",
-    :html => erb(:'emails/shipper',
+    :html => erb(:'emails/shipper', :layout => false,
       :locals => {:order=>@order})
   }
   $mg_client.send_message(settings.mail_domain,shipper_email)
@@ -420,7 +464,7 @@ post "/sessions" do
 
   if user && user.valid_password?(params[:password])
     sign_in(user)
-    redirect("/")
+    redirect("/dashboard")
   else
     user = User.new
     erb(:'sign_in', :locals=> {:user => user})
@@ -459,14 +503,17 @@ post "/SellerPaymentDetails/:order_id" do
   erb(:'seller_thanks',:locals=>{:order=>@order})
 end
 
-get "/users/:id" do
-  @user = User.get(params[:id])
-erb(:'profile',:locals=>{:user=>@user})
-end
+
 
 get "/users/:id/edit" do
   @user = User.get(params[:id])
-erb(:'edit_profile',:locals=>{:user=>@user})
+
+
+
+erb(:'edit_profile',:locals=>{
+  :user=>@user,
+
+  })
 end
 
 put "/users/:id" do
@@ -495,9 +542,3 @@ put "/users/:id/edit_password" do
   erb(:'change_password',:locals=>{:user=>user})
   end
 end
-
-
-
-
-
-

@@ -1,38 +1,171 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>CouchRocket</title>
-<link rel="stylesheet" media="screen" type="text/css" href="/style.css" />
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
 
-<!-- Load jQuery version 1.11.1 (uncompressed) -->
-<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<head>
+    <title>CouchRocket | Buy & Sell Used Furniture</title>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CouchRocket is the easiest way to buy and sell used furniture.">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" href="/favicon-192x192.png" sizes="192x192">
+    <link rel="icon" type="image/png" href="/favicon-160x160.png" sizes="160x160">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+
+    <!-- CSS Global Compulsory -->
+    <link rel="stylesheet" href="/assets/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/shop.style.css">
+
+    <!-- CSS Implementation Plugins -->
+
+    <link rel="stylesheet" href="/assets/plugins/revolution-slider/rs-plugin/css/settings.css">  <!-- needed for Revolution Slider -->
+
+    <link rel="stylesheet" href="/assets/plugins/line-icons/line-icons.css">
+    <link rel="stylesheet" href="/assets/plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/assets/css/plugins/hover-effect/css/custom-hover-effects.css">
+    <link rel="stylesheet" href="/assets/plugins/sky-forms/version-2.0.1/css/custom-sky-forms.css">
+    <link rel="stylesheet" href="/assets/plugins/scrollbar/src/perfect-scrollbar.css">
+    <link rel="stylesheet" href="/assets/plugins/owl-carousel/owl-carousel/owl.carousel.css">
+
+    <link rel="stylesheet" href="/assets/plugins/master-slider/quick-start/masterslider/style/masterslider.css">
+    <link rel='stylesheet' href="/assets/plugins/master-slider/quick-start/masterslider/skins/default/style.css">
+
+    <link rel="stylesheet" href="/assets/plugins/jquery-steps/css/custom-jquery.steps.css">
+    <link rel="stylesheet" href="/assets/plugins/timepicker/jquery.timepicker.css">
+
+    <!-- CSS Theme -->
+    <link rel="stylesheet" href="/assets/css/theme-colors/default.css">
+
 </head>
 
-<body>
-		<div id="page">
-			<header id="site-header">
-				<a href="/">
-				<img src="http://i.imgur.com/iI7g2uKs.jpg" border="0" title="CouchRocket"><br>
-				<h3>CouchRocket</h3>
-				</a>
-					<nav>
-						<div class="nav">
-						<% if user_signed_in? %>
-						Welcome
-						<a href="/users/<%= current_user.id %>">
-						<span class="user-name"><b><%= current_user.name %></b></span>
-						</a><br>
-						<a href="/sessions/sign_out">Sign Out</a><br>
-						<% else %>
-						<a href="/sessions/new">Sign In</a><br>
-						<% end %>
-						</div>
-					</nav>
-			</header>
-			<div id="main-content">
-				<%= yield %>
-			</div>
-		</div>
-	</body>
+<body class="header-fixed">
+<div class="wrapper">
+
+  <!--=== Header v5 ===-->
+  <div class="header-v5 header-static">
+
+    <!-- Topbar v3 -->
+    <div class="topbar-v3">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <!-- Topbar Navigation -->
+                        <ul class="left-topbar">
+                            <li>
+                            </li>
+                            <li>
+
+                            </li>
+                        </ul><!--/end left-topbar-->
+                    </div>
+                    <div class="col-sm-6">
+                        <ul class="list-inline right-topbar pull-right">
+                            <li></li>
+                            <li></li>
+                            <li></li>
+                            <li></li>
+                        </ul>
+                    </div>
+                </div>
+            </div><!--/container-->
+    </div>
+    <!-- End Topbar v3 -->
+
+      <!-- Navbar -->
+      <div class="navbar navbar-default mega-menu" role="navigation">
+          <div class="container">
+              <!-- Brand and toggle get grouped for better mobile display -->
+              <div class="navbar-header">
+                  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+                      <span class="sr-only">Toggle navigation</span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                  </button>
+                  <a class="navbar-brand" href="/">
+                      <img id="logo-header" class="float-shadow" src="http://i.imgur.com/2FnBV5f.png" alt="CouchRocket Logo">
+                  </a>
+              </div>
+
+              <!-- Collect the nav links, forms, and other content for toggling -->
+              <div class="collapse navbar-collapse navbar-responsive-collapse">
+                  <ul class="nav navbar-nav">
+                      <% if user_signed_in? %>
+                      <li><a class="float-shadow" href="/dashboard"><strong><%= current_user.name %></strong></a></li>
+                      <li><a class="float-shadow" href="/sessions/sign_out">Sign Out</a></li>
+                      <% else %>
+                      <li><a class="float-shadow" href="/register">Sign Up</a></li>
+                      <li><a class="float-shadow" href="/sessions/new">Log In</a></li>
+                      <% end %>
+                      <li><a class="float-shadow" href="/FAQ">Help</a></li>
+                      <li><br><form method="GET" action="/items/new">
+                      <button a href="/items/new" class="btn-u btn-u-sea rounded float-shadow"><i class="fa fa-rocket"></i> List Your Stuff</button>
+                      </form></li>
+                  </ul>
+
+              </div><!--/navbar-collapse-->
+          </div>
+      </div>
+      <!-- End Navbar -->
+  </div>
+  <!--=== End Header v5 ===-->
+
+  <!--=== Content Part  ===-->
+  <%= yield %>
+  <!--=== End Content Part  ===-->
+
+</div><!--/wrapper-->
+
+
+
+<!--=== Shop Subscribe ===-->
+<div class="shop-subscribe">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 md-margin-bottom-20">
+                <h2>subscribe to our weekly <strong>newsletter</strong></h2>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Enter your email...">
+                    <span class="input-group-btn">
+                        <button class="btn" type="button"><i class="fa fa-envelope-o"></i></button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div><!--/end container-->
+</div>
+<!--=== End Shop Subscribe ===-->
+
+<!--=== Footer v4 ===-->
+<div class="footer-v4">
+    <div class="copyright">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p>
+                        2014 &copy; CouchRocket
+                        | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
+                    </p>
+                </div>
+                    <ul class="list-inline shop-social pull-right">
+                        <li><a href="#"><i class="fb rounded-md fa fa-facebook"></i></a></li>
+                        <li><a href="#"><i class="tw rounded-md fa fa-twitter"></i></a></li>
+                    </ul>
+            </div>
+        </div>
+    </div><!--/copyright-->
+</div>
+<!--=== End Footer v4 ===-->
+
+
+</body>
 </html>
