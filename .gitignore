@@ -11,7 +11,9 @@
 ##Assets Javascript etc
 /public
 
+test.html
 
+views/test.*
 
 ## Environment normalisation:
 /.bundle/
