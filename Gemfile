@@ -27,5 +27,6 @@ end
 group :production do
   gem 'dm-postgres-adapter'
   gem 'pg'
+  gem 'rails_12factor'
 
 end
