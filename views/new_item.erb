@@ -1,4 +1,4 @@
-
+<div class="container content height-500">
 
 	<h1>List Your Stuff</h1>
 	<p>
@@ -8,18 +8,20 @@
 
 	<form id="new_item" action="/items" method="post" accept-charset="utf-8">
 
-	<label for "item[type]">Item Type</label><br>
-	<select name="item[type]" form="new_item">
-	  <option value="Bed">Bed</option>
-	  <option value="Couch">Couch</option>
-	  <option value="Bedroom Set">Bedroom Set</option>
-	  <option value="Bookshelf">Bookshelf</option>
-	  <option value="Chair">Chair</option>
-	  <option value="Desk">Desk</option>
-	</select>
+	<label for "item[type]">Furniture Type (Bed, Couch, etc or Enter Custom Value)</label><br>
+
+ <input type="text" list="furniture_types" name="item[type]" form="new_item"/>
+ <datalist id="furniture_types">
+	  <option>Bed</option>
+	  <option>Couch</option>
+	  <option>Bedroom Set</option>
+	  <option>Bookshelf</option>
+	  <option>Chair</option>
+	  <option>Desk</option>
+</datalist>
 	<br><br>
 
-	<label for "item[brand]">Brand</label><br>
+	<label for "item[brand]">Brand (leave blank if unknown)</label><br>
 	<input type="text" name="item[brand]">
 	<br><br>
 
@@ -82,7 +84,7 @@
 
 	</form>
 
-
+</div>
 
 
 

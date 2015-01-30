@@ -16,7 +16,8 @@
     <div class="content-md margin-bottom-30">
         <div class="container">
             <form class="shopping-cart sky-form wizard clearfix" action="/orders" method="post"  id="sky-form">
-
+              <span class="payment-errors"></span>
+              <input name="item[id]" type="hidden" value="<%= item.id %>">
                 <div>
                     <div class="header-tags">
                         <div class="overflow-h">
@@ -41,7 +42,7 @@
                                             <div class="product-it-in">
                                                 <h3><%= item.brand %> <%= item.type %></h3>
 <!--                                                 <span>Sed aliquam tincidunt tempus</span>
- -->                                            </div>
+ -->            </div>
 
                                         </td>
                                         <td>$ <%= To_Dollars(item.asking_price) %></td>
@@ -72,16 +73,16 @@
                             <div class="col-md-6 md-margin-bottom-40">
                                 <h2 class="title-type">Shipping Info</h2>
                                 <div class="billing-info-inputs checkbox-list">
-                                    <input id="name" name="user[name]" type="text" placeholder="Name" class="form-control required">
+                                    <input id="name" name="user[name]" type="text" placeholder="Name" class="form-control required" value="Tom Buyer">
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            <input id="email" type="text" placeholder="Email" name="user[email]" class="form-control required email">
+                                            <input id="email" type="text" placeholder="Email" name="user[email]" class="form-control required email" value="ram@themillermediagroup.com">
                                         </div>
                                         <div class="col-sm-6">
-                                            <input id="phone" type="tel" placeholder="Phone" name="user[phone]" class="form-control required">
+                                            <input id="phone" type="tel" placeholder="Phone" name="user[phone]" class="form-control required" value="4158598060">
                                         </div>
                                     </div>
-                                    <input id="billingAddress" type="text" placeholder="Address" name="user[address]" class="form-control required">
+                                    <input type="text" placeholder="Address" name="user[address]" class="form-control required" value="33 Regis Court, San Francisco, CA 97331">
 
 
 
@@ -89,12 +90,13 @@
                                         <div class="col-sm-6">
                                             <label class="input">
                                             <i class="icon-append fa fa-calendar"></i>
-                                            <input type="text" name="order[target_delivery_date]" id="date" placeholder="Date">
+                                            <input type="text" name="order[target_delivery_date]" id="date" placeholder="Date" value="December 14, 2014">
                                             </label>
                                         </div>
-                                        <div class="col-sm-3">
+                                        <div class="col-sm-6">
                                             <label class="input">
-                                            <input type="text" name="order[target_delivery_time_start]"  id="time" placeholder="Time">
+                                            <i class="icon-append fa fa-clock-o"></i>
+                                            <input type="text" name="order[target_delivery_time_start]"  id="time" placeholder="Time" value="6:00 pm">
                                             </label>
                                         </div>
                                     </div>
@@ -102,7 +104,7 @@
 
                                     <label class="label">Delivery Notes:</label>
                                     <label class="textarea">
-                                        <textarea name="order[delivery_notes]" rows="3" placeholder="What's the best time and days to deliver?  Is there an access code? Do you have a dog who might bark at the delivery person? etc."></textarea>
+                                        <textarea name="order[delivery_notes]" rows="3" placeholder="What does your building look like? Is there an access code? Do you have a dog who might bark at the delivery person? etc.">Please deliver at 3pm next Tuesday. My door code is #33</textarea>
                                     </label>
 
 
@@ -114,7 +116,7 @@
 
                     <div class="header-tags">
                         <div class="overflow-h">
-                            <h2>Payment</h2>
+                            <h2>Order</h2>
                             <p>Select Payment method</p>
                             <i class="rounded-x fa fa-credit-card"></i>
                         </div>
@@ -137,48 +139,50 @@
                                             </div>
                                             <div id="collapseOne" class="panel-collapse collapse in">
                                                 <div class="panel-body cus-form-horizontal">
-                                                    <div class="form-group">
+<!--                                                     <div class="form-group">
                                                         <label class="col-sm-4 no-col-space control-label">Cardholder Name</label>
                                                         <div class="col-sm-8">
                                                             <input type="text" class="form-control required" name="cardholder" placeholder="">
                                                         </div>
-                                                    </div>
+                                                    </div> -->
                                                     <div class="form-group">
                                                         <label class="col-sm-4 no-col-space control-label">Card Number</label>
                                                         <div class="col-sm-8">
-                                                            <input type="text" class="form-control required" name="cardnumber" placeholder="">
+                                                            <input type="text" class="form-control required" name="cardnumber" data-stripe="number" value="4242 4242 4242 4242">
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-4 no-col-space control-label">Payment Types</label>
                                                         <div class="col-sm-8">
                                                             <ul class="list-inline payment-type">
-                                                                <li><i class="fa fa-cc-paypal"></i></li>
+                                                                <!-- <li><i class="fa fa-cc-paypal"></i></li> -->
                                                                 <li><i class="fa fa-cc-visa"></i></li>
                                                                 <li><i class="fa fa-cc-mastercard"></i></li>
-                                                                <li><i class="fa fa-cc-discover"></i></li>
                                                             </ul>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-4">Expiration Date</label>
                                                         <div class="col-sm-8 input-small-field">
-                                                            <input type="text" name="mm" placeholder="MM" class="form-control required sm-margin-bottom-20">
+                                                            <input type="text" placeholder="MM" class="form-control required sm-margin-bottom-20" data-stripe="exp-month" value="5" >
                                                             <span class="slash">/</span>
-                                                            <input type="text" name="yy" placeholder="YY" class="form-control required">
+                                                            <input type="text" placeholder="YY" class="form-control required" data-stripe="exp-year" value="16" >
                                                         </div>
                                                     </div>
+
+
+
+
                                                     <div class="form-group">
-                                                        <label class="col-sm-4 no-col-space control-label">CSC</label>
+                                                        <label class="col-sm-4 no-col-space control-label">CVC</label>
                                                         <div class="col-sm-8 input-small-field">
-                                                            <input type="text" name="number" placeholder="" class="form-control required">
-                                                            <a href="#">What's this?</a>
+                                                            <input type="text" data-stripe="cvc" class="form-control required" data-stripe="cvc" value="123" >
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="panel panel-default">
+                                      <!--   <div class="panel panel-default">
                                             <div class="panel-heading">
                                                 <h4 class="panel-title">
                                                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
@@ -192,7 +196,7 @@
                                                     <a href="#"><img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_150x38.png" alt="PayPal"></a>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
                                 <!-- End Accordion -->
@@ -207,27 +211,13 @@
                                             <div class="panel-heading">
                                                 <h4 class="panel-title">
                                                     <a data-toggle="collapse" data-parent="#accordion-v2" href="#collapseOne-v2">
-                                                        What payments methods can I use?
+                                                        What if I don't like the item?
                                                     </a>
                                                 </h4>
                                             </div>
                                             <div id="collapseOne-v2" class="panel-collapse collapse in">
                                                 <div class="panel-body">
-                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam hendrerit, felis vel tincidunt sodales, urna metus rutrum leo, sit amet finibus velit ante nec lacus. Cras erat nunc, pulvinar nec leo at, rhoncus elementum orci. Nullam ut sapien ultricies, gravida ante ut, ultrices nunc.
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading">
-                                                <h4 class="panel-title">
-                                                    <a data-toggle="collapse" data-parent="#accordion-v2" href="#collapseTwo-v2">
-                                                        Can I use gift card to pay for my purchase?
-                                                    </a>
-                                                </h4>
-                                            </div>
-                                            <div id="collapseTwo-v2" class="panel-collapse collapse">
-                                                <div class="panel-body">
-                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam hendrerit, felis vel tincidunt sodales, urna metus rutrum leo, sit amet finibus velit ante nec lacus. Cras erat nunc, pulvinar nec leo at, rhoncus elementum orci. Nullam ut sapien ultricies, gravida ante ut, ultrices nunc.
+                                                    You can send it right back, and you will only be charged for the delivery fee.
                                                 </div>
                                             </div>
                                         </div>
@@ -241,7 +231,7 @@
                                             </div>
                                             <div id="collapseThree-v2" class="panel-collapse collapse">
                                                 <div class="panel-body">
-                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam hendrerit, felis vel tincidunt sodales, urna metus rutrum leo, sit amet finibus velit ante nec lacus. Cras erat nunc, pulvinar nec leo at, rhoncus elementum orci. Nullam ut sapien ultricies, gravida ante ut, ultrices nunc.
+                                                    We will pre-authorize your credit card.  However, you won't be charged until the furniture is delivered and you have approved it.
                                                 </div>
                                             </div>
                                         </div>
@@ -249,13 +239,13 @@
                                             <div class="panel-heading">
                                                 <h4 class="panel-title">
                                                     <a data-toggle="collapse" data-parent="#accordion-v2" href="#collapseFour-v2">
-                                                        How long will it take to get my order?
+                                                        Will I be alerted when my order arrives?
                                                     </a>
                                                 </h4>
                                             </div>
                                             <div id="collapseFour-v2" class="panel-collapse collapse">
                                                 <div class="panel-body">
-                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam hendrerit, felis vel tincidunt sodales, urna metus rutrum leo, sit amet finibus velit ante nec lacus. Cras erat nunc, pulvinar nec leo at, rhoncus elementum orci. Nullam ut sapien ultricies, gravida ante ut, ultrices nunc.
+                                                    Yes, you'll receive a text message letting you know your delivery from CouchRocket is here.
                                                 </div>
                                             </div>
                                         </div>
@@ -338,6 +328,7 @@
     {
         $('#date').datepicker({
             dateFormat: 'MM d, yy',
+            minDate: 2,
             prevText: '<i class="fa fa-chevron-left"></i>',
             nextText: '<i class="fa fa-chevron-right"></i>'
         });
@@ -354,3 +345,60 @@
         });
     });
 </script>
+
+<!-- Stripe -->
+<script type="text/javascript" src="https://js.stripe.com/v2/">
+  console.log("Stripe javascript loaded")
+
+</script>
+
+<script type="text/javascript">
+// This identifies your website in the createToken call below
+
+  console.log("form javascript loaded")
+
+  Stripe.setPublishableKey("<%= $stripe_public_key %>");
+
+  console.log("public key set")
+
+  jQuery(function($) {
+  $('#sky-form').submit(function(event) {
+    var $form = $(this);
+
+    console.log("Listening for submit")
+
+    // Disable the submit button to prevent repeated clicks
+    $form.find('button').prop('disabled', true);
+
+
+    Stripe.card.createToken($form, stripeResponseHandler);
+
+    // Prevent the form from submitting with the default action
+    return false;
+  });
+  });
+
+  function stripeResponseHandler(status, response) {
+  var $form = $('#sky-form');
+
+  if (response.error) {
+    // Show the errors on the form
+    $form.find('.payment-errors').text(response.error.message);
+    $form.find('button').prop('disabled', false);
+  }
+
+  else {
+    // response contains id and card, which contains additional card details
+    var token = response.id;
+
+    // Insert the token and customer into the form so they get submitted to the server
+    $form.append($('<input type="hidden" name="stripeToken" />').val(token));
+
+    // and submit
+    $form.get(0).submit();
+  }
+  };
+
+</script>
+
+

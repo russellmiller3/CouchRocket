@@ -89,8 +89,6 @@ namespace :db do
 		tom_buyerprofile = BuyerProfile.create({
 			:id=>"1",
 			:user_id => "2",
-			:stripe_customer_id => "cus_5FpdpefAHvug4r"
-
 			})
 
 	# Create 3 items
@@ -141,6 +139,8 @@ namespace :db do
 				:total_price => "7000",
 				:buyer_name => "Tom Buyer",
 				:buyer_phone => "4158598060",
+				:buyer_email => "ram@themillermediagroup.com",
+				:buyer_stripe_customer_id => "cus_5FpdpefAHvug4r",
 				:seller_name => "Joe Seller",
 				:seller_phone => "4158598060",
 				:shipped => "true",
@@ -157,7 +157,9 @@ namespace :db do
 				:buyer_profile_id => "1",
 				:total_price => "12000",
 				:buyer_name => "Tom Buyer",
+				:buyer_email => "ram@themillermediagroup.com",
 				:buyer_phone => "4158598060",
+				:buyer_stripe_customer_id => "cus_5FpdpefAHvug4r",
 				:seller_name => "Joe Seller",
 				:seller_phone => "4158598060",
 				:shipped => "true",
@@ -174,7 +176,9 @@ namespace :db do
 				:buyer_profile_id => "1",
 				:total_price => "9700",
 				:buyer_name => "Tom Buyer",
+				:buyer_email => "ram@themillermediagroup.com",
 				:buyer_phone => "4158598060",
+				:buyer_stripe_customer_id => "cus_5FpdpefAHvug4r",
 				:seller_name => "Joe Seller",
 				:seller_phone => "4158598060",
 				:seller_address => "412 Hampshire Way, #4, San Francisco, CA 94023",

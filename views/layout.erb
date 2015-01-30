@@ -35,6 +35,8 @@
     <link rel="stylesheet" href="/assets/plugins/owl-carousel/owl-carousel/owl.carousel.css">
 
     <link rel="stylesheet" href="/assets/plugins/master-slider/quick-start/masterslider/style/masterslider.css">
+    <link rel='stylesheet' href="/assets/plugins/master-slider/quick-start/masterslider/skins/default/style.css">
+
     <link rel="stylesheet" href="/assets/plugins/jquery-steps/css/custom-jquery.steps.css">
     <link rel="stylesheet" href="/assets/plugins/timepicker/jquery.timepicker.css">
 
@@ -48,6 +50,34 @@
 
   <!--=== Header v5 ===-->
   <div class="header-v5 header-static">
+
+    <!-- Topbar v3 -->
+    <div class="topbar-v3">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <!-- Topbar Navigation -->
+                        <ul class="left-topbar">
+                            <li>
+                            </li>
+                            <li>
+
+                            </li>
+                        </ul><!--/end left-topbar-->
+                    </div>
+                    <div class="col-sm-6">
+                        <ul class="list-inline right-topbar pull-right">
+                            <li></li>
+                            <li></li>
+                            <li></li>
+                            <li></li>
+                        </ul>
+                    </div>
+                </div>
+            </div><!--/container-->
+    </div>
+    <!-- End Topbar v3 -->
+
       <!-- Navbar -->
       <div class="navbar navbar-default mega-menu" role="navigation">
           <div class="container">
@@ -67,8 +97,13 @@
               <!-- Collect the nav links, forms, and other content for toggling -->
               <div class="collapse navbar-collapse navbar-responsive-collapse">
                   <ul class="nav navbar-nav">
+                      <% if user_signed_in? %>
+                      <li><a class="float-shadow" href="/dashboard"><strong><%= current_user.name %></strong></a></li>
+                      <li><a class="float-shadow" href="/sessions/sign_out">Sign Out</a></li>
+                      <% else %>
                       <li><a class="float-shadow" href="/register">Sign Up</a></li>
                       <li><a class="float-shadow" href="/sessions/new">Log In</a></li>
+                      <% end %>
                       <li><a class="float-shadow" href="/FAQ">Help</a></li>
                       <li><br><form method="GET" action="/items/new">
                       <button a href="/items/new" class="btn-u btn-u-sea rounded float-shadow"><i class="fa fa-rocket"></i> List Your Stuff</button>
@@ -99,7 +134,7 @@
             </div>
             <div class="col-md-4">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Email your email...">
+                    <input type="text" class="form-control" placeholder="Enter your email...">
                     <span class="input-group-btn">
                         <button class="btn" type="button"><i class="fa fa-envelope-o"></i></button>
                     </span>

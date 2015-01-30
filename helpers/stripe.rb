@@ -4,8 +4,7 @@ helpers do
     @order = Order.get(order_id)
     @order.approved = :true
 
-    @buyer_profile = BuyerProfile.get(@order.buyer_profile_id)
-    customer_id = @buyer_profile.stripe_customer_id
+    customer_id = @order.buyer_stripe_customer_id
 
     charge_create = Stripe::Charge.create(
         :amount => @order.total_price,
@@ -41,7 +40,7 @@ helpers do
       :from => "CouchRocket <info@#{settings.mail_domain}>",
       :to => "#{@order.item.seller_profile.user.email}",
       :subject => "Payment Confirmation for #{@order.item.type.downcase}",
-      :html => erb(:'emails/seller_payment_confirmation',:locals => { :order => @order})
+      :html => erb(:'emails/seller_payment_confirmation',:layout => false,:locals => { :order => @order})
       }
       $mg_client.send_message(settings.mail_domain,seller_payment_confirmation)
 
@@ -51,7 +50,7 @@ helpers do
       :from => "CouchRocket <info@#{settings.mail_domain}>",
       :to => "#{@order.item.seller_profile.user.email}",
       :subject => "Your #{@order.item.type.downcase} sold! Now let's get you paid!",
-      :html => erb(:'emails/seller_payment_details_request',:locals => { :order => @order})
+      :html => erb(:'emails/seller_payment_details_request',:layout => false,:locals => { :order => @order})
       }
       $mg_client.send_message(settings.mail_domain,seller_payment_details_request)
     end
