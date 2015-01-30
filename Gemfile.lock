@@ -96,6 +96,11 @@ GEM
     rack (1.5.2)
     rack-protection (1.5.3)
       rack
+    rails_12factor (0.0.3)
+      rails_serve_static_assets
+      rails_stdout_logging
+    rails_serve_static_assets (0.0.4)
+    rails_stdout_logging (0.0.3)
     rake (10.3.2)
     rb-fsevent (0.9.4)
     rb-inotify (0.9.5)
@@ -145,6 +150,7 @@ DEPENDENCIES
   mailgun-ruby (~> 1.0.3)
   pg
   pry
+  rails_12factor
   rake
   require_all
   rerun
