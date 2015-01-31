@@ -180,61 +180,6 @@
 <br><br>
 <% end %>
 
-<<<<<<< HEAD
-<% if user_signed_out? %>
-
-<div class = "admin">
-<h4>Sample Logins:</h4>
-<b>Admin:</b><br>
-comicsguy@adamm.net / admin1<br>
-<b>Buyer:</b><br>
-ram@themillermediagroup.com / song11 <br>
-<b>Seller:</b><br>
-russell@adamm.net / song11
-</div>
-
-<h3>CouchRocket is the easiest way to buy & sell used furniture online.</h3>
-<p>How CouchRocket works for sellers:
-	<ol>
-		<li>Post your furniture for sale</li>
-		<li>A Buyer orders your item. We come pick it up from your place.<br>
-		You never have to meet the buyer.</li>
-		<li>We deliver it.  The buyer approves.  You get paid!</li>
-	</ol>
-</p>
-
-<p>How CouchRocket works for buyers:
-	<ol>
-		<li>Order an item you like.</li>
-		<li>We deliver it to you. (If you don't like it, we'll take it back.)</li>
-		<li>Enjoy your cool furniture!</li>
-	</ol>
-</p>
-<% end %>
-
-<% if !user_signed_in? %>
-	<h3><a href="/register">Sign Up and Sell your Stuff Today!</a></h3>
-<% end %>
-
-=======
->>>>>>> frontend
-<% if user_signed_in? && user_items.nil? %>
-<p>Sell some stuff! Click the button below</p>
-<form action="/items/new" method="get">
-    <input type="submit" value="Post Something for Sale!">
-</form>
-<% end %>
-
-<% if !user_items.nil? %>
-	<h2>Your Items for Sale</h2>
-		<% @user_items.each do |item| %>
-		<a href="/items/<%= item.id %>">
-		<IMG border="1" HEIGHT=50 WIDTH=50 SRC="<%= item.picture1_url %>">
-		<%= item.brand %> <%= item.type %></a><br><br>
-		<% end %>
-<% end %>
-
-
 
 <!-- JS Global Compulsory -->
 <script src="/assets/plugins/jquery/jquery.min.js"></script>  <!-- needed for Revolution Slider -->

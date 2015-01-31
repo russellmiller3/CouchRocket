@@ -38,10 +38,18 @@
                     <h2 class="panel-title heading-sm pull-left"><i class="fa fa-send"></i>Notifications</h2>
                 </div>
                 <div id="scrollbar3" class="panel-body contentHolder">
-                    <!--Alerts -->
-                    <% flash.each do |flash| %>
-                      <%= flash %>
+                    <!--Individual Alert Classes -->
+                    <% if flash[:item_added] %>
+                      <div class="alert-blocks alert-blocks-success alert-dismissable">
+                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                        <img class="rounded-x image-sm" src="<%= item.picture1_url %>">
+                        <div class="overflow-h">
+                          <strong class="color-green">Success!</strong>
+                          <p><%= flash[:item_added] %></p>
+                        </div>
+                      </div>
                     <% end %>
+                    <!--End Alert Classes -->
                 </div>
             </div>
         </div>

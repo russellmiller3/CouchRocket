@@ -8,6 +8,7 @@ require_all 'helpers'
 $delivery_fee = 3000
 $return_insurance = 700
 $buyer_percent = 0.80
+$flash = {}
 set :domain, ENV['DOMAIN']
 
 helpers do
@@ -77,7 +78,9 @@ get "/dashboard" do
 
    erb :'dashboard', :locals => {
     :user_items => @user_items,
-    :user => current_user
+    :user => current_user,
+    :flash => $flash,
+    :item => @user_items.last
   }
 end
 
@@ -189,19 +192,10 @@ post "/items" do
     puts error
   end
 
-  if @item.errors == nil
-    flash[:item_added] =
-    '<div class="alert-blocks alert-blocks-success alert-dismissable">
-      <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-      <img class="rounded-x image-sm" src="<%= item.picture1_url %>">
-      <div class="overflow-h">
-        <strong class="color-green">Success!<small class="pull-right"><em>7 hours ago</em></small></strong>
-        <p>Your ad for #{@item.type} has been posted.</p>
-      </div>
-     </div>'
-  end
+  if @item.errors != nil
+    $flash[:item_added] = "Your ad for #{@item.type} has been posted."
 
-    binding.pry
+  end
 
   if user_signed_in?
     redirect "/dashboard"
