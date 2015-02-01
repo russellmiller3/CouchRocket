@@ -54,6 +54,22 @@ namespace :db do
 			:is_admin=>"true"
 			})
 
+	#create Dummy Seller Profile. Used for Guest adding item to temporarily store new items.
+
+		dummy_seller = User.create({
+			:id=>"4",
+			:name=>"Dummy Seller",
+			:password=>"song11",
+			:password_confirmation=>"song11",
+			:email=>"dsag@mailinator.com"
+			})
+
+		dummy_seller_sellerprofile = SellerProfile.create({
+			:id=>"2",
+			:user_id => "4"
+			})
+
+
 	#create User, Seller Profiles
 
 		joe = User.create({

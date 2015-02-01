@@ -173,8 +173,8 @@ post "/items" do
   if user_signed_in?
     @seller_profile = current_user.seller_profile
   else
-    # If seller not logged in, add item to seller profile of dummy user
-    @seller_profile = SellerProfile.get(1)
+    # If seller not logged in, use dummy seller profile
+    @seller_profile = SellerProfile.get(2)
   end
   @seller_profile.pickup_notes = params[:pickup_notes]
   @seller_profile.save!
@@ -193,14 +193,14 @@ post "/items" do
   end
 
   if @item.errors != nil
-    $flash[:item_added] = "Your ad for #{@item.type} has been posted."
+    $flash[:item_added] = "Your #{@item.type} ad has been posted."
 
   end
 
   if user_signed_in?
     redirect "/dashboard"
   else
-    redirect ""
+    redirect "/register"
   end
 
 
@@ -344,10 +344,21 @@ end
 post "/register" do
   show_params
   user = User.create(params[:user])
+  dummy_seller = User.get(4)
 
   if user.saved?
     sign_in(user)
-    redirect "/items/new"
+
+    #Check to see if seller added items before registering
+    if dummy_seller.seller_profile.items
+      current_user.seller_profile = SellerProfile.create
+      current_user.seller_profile.items = dummy_seller.seller_profile.items
+      current_user.seller_profile.pickup_notes = dummy_seller.seller_profile.pickup_notes
+      current_user.seller_profile.save!
+      current_user.seller_profile.items.save!
+    end
+
+    redirect "/dashboard"
   else
     erb(:'register', :locals => {:user => user})
   end
