@@ -12,6 +12,7 @@ require "bundler/setup"
 
 require "rubygems"
 require "sinatra/flash"
+require "dm-core"
 require "dm-timestamps"
 
 

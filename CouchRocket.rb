@@ -183,7 +183,7 @@ post "/items" do
   end
 
   item_attrs = params[:item]
-  item_attrs.merge!({ :seller_profile_id => @seller_profile.id})
+  item_attrs.merge!({ :seller_profile_id => @seller_profile.id, :created_at => DateTime.now })
   @item = Item.new(item_attrs)
   @item.original_price = To_Cents(@item.original_price)
   @item.asking_price = To_Cents(@item.asking_price)
@@ -349,16 +349,27 @@ post "/register" do
   if user.saved?
     sign_in(user)
 
-    #Check to see if seller added items before registering
+    #Check to see if seller added items before signing in
     if dummy_seller.seller_profile.items
-      current_user.seller_profile = SellerProfile.create
-      current_user.seller_profile.items = dummy_seller.seller_profile.items
-      current_user.seller_profile.pickup_notes = dummy_seller.seller_profile.pickup_notes
+
+      #Re-assign items to user's seller profile from dummy seller profile
+      dummy_seller.seller_profile.items.each do |item|
+        item.seller_profile_id = current_user.seller_profile.id
+        item.save!
+      end
+
+      if dummy_seller.seller_profile.pickup_notes
+        current_user.seller_profile.pickup_notes = dummy_seller.seller_profile.pickup_notes
+        dummy_seller.seller_profile.pickup_notes = nil
+      end
+
       current_user.seller_profile.save!
-      current_user.seller_profile.items.save!
+      dummy_seller.seller_profile.save!
+
     end
 
     redirect "/dashboard"
+
   else
     erb(:'register', :locals => {:user => user})
   end
@@ -465,10 +476,38 @@ get "/sessions/new" do
 end
 
 post "/sessions" do
+  show_params
   user = User.find_by_email(params[:email])
 
   if user && user.valid_password?(params[:password])
     sign_in(user)
+    dummy_seller = User.get(4)
+
+    #Check to see if seller added items before signing in
+    if dummy_seller.seller_profile.items
+
+      #Create a seller profile if user doesn't have one
+      if current_user.seller_profile == nil
+        current_user.seller_profile = SellerProfile.create
+      end
+
+
+      #Re-assign items to user's seller profile from dummy seller profile
+      dummy_seller.seller_profile.items.each do |item|
+        item.seller_profile_id = current_user.seller_profile.id
+        item.save!
+      end
+
+      if dummy_seller.seller_profile.pickup_notes
+        current_user.seller_profile.pickup_notes = dummy_seller.seller_profile.pickup_notes
+        dummy_seller.seller_profile.pickup_notes = nil
+      end
+
+      current_user.seller_profile.save!
+      dummy_seller.seller_profile.save!
+
+    end
+
     redirect("/dashboard")
   else
     user = User.new
