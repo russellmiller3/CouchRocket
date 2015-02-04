@@ -1,57 +1,60 @@
-<style>
-.card-errors {
-    color: red;
-    font-size: 125%;
-    display: block;
-}
+<div class="container content height-500">
+	<style>
+	.card-errors {
+	    color: red;
+	    font-size: 125%;
+	    display: block;
+	}
 
-</style>
+	</style>
 
-<h3>Debit Card Information</h3>
-<p>Let's get you paid for your <%= order.item.type.downcase %>!</p>
-</p>
-<form action="/SellerPaymentDetails/<%= order.id %>" method="POST" id="seller_card_details_for_recipient_creation">
+	<h3>Debit Card Information</h3>
+	<p>Let's get you paid for your <%= order.item.type.downcase %>!</p>
+	</p>
+	<form action="/SellerPaymentDetails/<%= order.id %>" method="POST" id="seller_card_details_for_recipient_creation">
 
-<span class="card-errors"></span>
-<div class="form-row">
-    <label>
-      <span>Name, as it appears on debit card</span>
-      <input name="seller[name]" type="text" size="30" value="Joe Seller"/>
+	<span class="card-errors"></span>
+	<div class="form-row">
+	    <label>
+	      <span>Name, as it appears on debit card</span>
+	      <input name="seller[name]" type="text" size="30" value="Joe Seller"/>
 
-    </label>
+	    </label>
+	</div>
+	<br>
+	<div class="form-row">
+	    <label>
+	      <span>Social Security Number - To help avoid criminal activity and money laundering, US law requires we run an OFAC check on each person we pay. <i>We do not store your SSN</i>, we only use it for a one-time verification check.</span>
+	    <input type="text" name="seller[ssn]" placeholder="555555555" value="000000000">
+	    </label>
+	</div>
+	<div class="form-row">
+	  <label>
+	    <span>Debit Card Number</span>
+	    <input type="text" size="20" data-stripe="number" value="4000056655665556" />
+	  </label>
+	</div>
+	<div class="form-row">
+	  <label>
+	    <span>Expiration (MM/YY)</span>
+	    <input type="text" size="2" data-stripe="exp-month" value="04" />
+	  </label>
+	  <span> / </span>
+	  <input type="text" size="2" data-stripe="exp-year" value="16"/>
+	</div>
+
+	<div class="form-row">
+	  <label>
+	    <span>CVC</span>
+	    <input type="text" size="4" data-stripe="cvc" value="123"/>
+	  </label>
+	</div>
+	<br><br>
+	  <button type="submit">Submit</button>
+	</form>
+
+	</style>
 </div>
-<br>
-<div class="form-row">
-    <label>
-      <span>Social Security Number - To help avoid criminal activity and money laundering, US law requires we run an OFAC check on each person we pay. <i>We do not store your SSN</i>, we only use it for a one-time verification check.</span>
-    <input type="text" name="seller[ssn]" placeholder="555555555" value="000000000">
-    </label>
-</div>
-<div class="form-row">
-  <label>
-    <span>Debit Card Number</span>
-    <input type="text" size="20" data-stripe="number" value="4000056655665556" />
-  </label>
-</div>
-<div class="form-row">
-  <label>
-    <span>Expiration (MM/YY)</span>
-    <input type="text" size="2" data-stripe="exp-month" value="04" />
-  </label>
-  <span> / </span>
-  <input type="text" size="2" data-stripe="exp-year" value="16"/>
-</div>
-
-<div class="form-row">
-  <label>
-    <span>CVC</span>
-    <input type="text" size="4" data-stripe="cvc" value="123"/>
-  </label>
-</div>
-<br><br>
-  <button type="submit">Submit</button>
-</form>
-
 
 
 <!-- Remove extra characters from SSN

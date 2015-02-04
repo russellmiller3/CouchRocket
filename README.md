@@ -7,19 +7,24 @@ CouchRocket is an e-commerce program to let users sell and buy new furniture.
 * Twilio - SMS alerts
 * Mailgun - Emails
 * Filepicker - Uploading files
+* <a href="https://wrapbootstrap.com/theme/unify-responsive-website-template-WB0412697">Unify Template</a>
 
 ## Functions:
+
 Buyers can:
 * Register / Login / Change Password / Reset Password
-* Order an item (pre-auth via stripe)
+* Order an item (pre-auth via stripe) using Guest Checkout
 * Upon receiving the item, accept (charged on stripe) and or reject (charged only shipping)
 
 
 Sellers can:
 * Register / Login / Change Password / Reset Password
+* Guest Add Item, Login or Register afterwards
 * Post an item
+* Alerts(Flash) when item is added
 * Enter their payment information to receive funds
 * Get paid once a buyer has bought an item
+
 
 Admin can:
 * Enter Shipper Info

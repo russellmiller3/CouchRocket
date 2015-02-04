@@ -1,45 +1,50 @@
-<h1>Update Profile</h1>
 
-<% if user.errors.any? %>
-    <div class="form-errors">
-      <h3>There were some errors with your edit:</h3>
-      <ul class="error-messages">
-        <% user.errors.full_messages.each do |error_msg| %>
-          <li><%= error_msg %></li>
-        <% end %>
-      </ul>
-    </div>
+
+<div class="container content height-500">
+  <h1>Update Profile</h1>
+  <% if user.errors.any? %>
+      <div class="form-errors">
+        <h3>There were some errors with your edit:</h3>
+        <ul class="error-messages">
+          <% user.errors.full_messages.each do |error_msg| %>
+            <li><%= error_msg %></li>
+          <% end %>
+        </ul>
+      </div>
   <% end %>
 
-<form id="edit-profile-form" action="/users/<%= user.id %>" method="post" accept-charset="utf-8">
-<input type="hidden" name="_method" value="put">
-<div class="form-row">
-    <label>
-      <span>Name</span>
-      <input name="user[name]" type="text" size="30" value="<%= user.name %>" >
-    </label>
+  <form id="edit-profile-form" action="/users/<%= user.id %>" method="post" accept-charset="utf-8">
+  <input type="hidden" name="_method" value="put">
+  <div class="form-row">
+      <label>
+        <span>Name</span><br>
+        <input name="user[name]" type="text" size="20" value="<%= user.name %>" >
+      </label>
+  </div>
+  <br>
+  <div class="form-row">
+      <label>
+        <span>Email</span><br>
+        <input name="user[email]" type="text" size="20" data-stripe="email" value="<%= user.email %>" >
+      </label>
+  </div>
+  <br>
+  <div class="form-row">
+      <label>
+        <span>Phone</span><br>
+        <input name="user[phone]" type="text" size="20" value="<%= user.phone %>" >
+      </label>
+  </div>
+  <br>
+  <div class="form-row">
+      <label>
+        <span>Address</span><br>
+        <input name="user[address]" type="textarea" size="40" value="<%= user.address %>" >
+      </label>
+  </div>
+  <br>
+  <button type="submit">Update Profile</button>
+  </form>
+
 </div>
-<br>
-<div class="form-row">
-    <label>
-      <span>Email</span>
-      <input name="user[email]" type="text" size="30" data-stripe="email" value="<%= user.email %>" >
-    </label>
-</div>
-<br>
-<div class="form-row">
-    <label>
-      <span>Phone</span>
-      <input name="user[phone]" type="text" size="30" value="<%= user.phone %>" >
-    </label>
-</div>
-<br>
-<div class="form-row">
-    <label>
-      <span>Address</span>
-      <input name="user[address]" type="textarea" size="60" value="<%= user.address %>" >
-    </label>
-</div>
-<br>
-<button type="submit">Update Profile</button>
-</form>
+

@@ -1,9 +1,6 @@
-<p>Sorry that didn't work out. But please take a look around at some of our other items!</p>
-<br><br>
+<div class="container content height-500">
 
-<h2>Items for Sale</h2>
-<% items = Item.all %>
-<% items.each do |item| %>
-<a href="/items/<%= item.id %>">
-<img border="1" width=50 src="<%= item.picture1_url %>"><%= item.brand %> <%= item.type %></a>
-<% end %>
+<p>Sorry that didn't work out. But please take a look around at some of our other items!</p>
+
+
+</div>
