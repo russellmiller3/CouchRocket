@@ -349,17 +349,15 @@ post "/register" do
   if user.saved?
     sign_in(user)
 
-    binding.pry
-
-
     #Check to see if seller added items before signing in
     if dummy_seller.seller_profile.items
 
       current_user.seller_profile = SellerProfile.new
+      current_user.seller_profile.save!
 
       #Re-assign items to user's seller profile from dummy seller profile
       dummy_seller.seller_profile.items.each do |item|
-        item.seller_profile_id = current_user.seller_profile.id
+        item.seller_profile = current_user.seller_profile
         item.save!
       end
 
@@ -368,6 +366,7 @@ post "/register" do
         dummy_seller.seller_profile.pickup_notes = nil
       end
 
+      current_user.save!
       current_user.seller_profile.save!
       dummy_seller.seller_profile.save!
 
@@ -509,6 +508,7 @@ post "/sessions" do
       end
 
       current_user.seller_profile.save!
+      current_user.save!
       dummy_seller.seller_profile.save!
 
     end
