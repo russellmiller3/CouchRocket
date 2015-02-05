@@ -2,6 +2,8 @@
 
 CouchRocket is an e-commerce program to let users sell and buy new furniture.
 
+Program running here: <a href="https://couchrocket.herokuapp.com/">couchrocket.herokuapp.com</a>
+
 ## Integrations:
 * Stripe - Payment
 * Twilio - SMS alerts
