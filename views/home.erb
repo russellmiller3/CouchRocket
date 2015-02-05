@@ -112,30 +112,30 @@
       <!--=== End Product Service ===-->
   </div><!--/end container-->
 
-	<% if !user_signed_in? %>
-	<form method="GET" action="/items/new">
-   <button class="btn-u btn-u-lg btn-u-sea rounded float-shadow"><i class="fa fa-rocket"></i>List Your Stuff Today!</button>
-   </form>
-	<% end %>
+  	<% if !user_signed_in? %>
+  	<form method="GET" action="/items/new">
+     <button class="btn-u btn-u-lg btn-u-sea rounded float-shadow"><i class="fa fa-rocket"></i>List Your Stuff Today!</button>
+     </form>
+  	<% end %>
 
-	<div class="col-md-6 shadow-wrapper">
-                <blockquote class="hero box-shadow shadow-effect-4">
-                    <p><em>"Lorem ipsum dolor sit amet, consectetur adipiscing duis mollis, est non commodo luctus elit posuere erat a ante. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis lorem ipsum dolor sit amet, consectetur adipiscing"</em></p>
-                    <small><em>Etiam porta sem malesuada</em></small>
-                </blockquote>
-            </div>
-  <div class ="tag-box tag-box-v2 col-md-3 product-service ">
-	<% if user_signed_out? %>
-	<br>
-	<h4>Sample Logins:</h4>
-	<b>Admin:</b><br>
-	comicsguy@adamm.net / admin1<br>
-	<b>Buyer:</b><br>
-	ram@themillermediagroup.com / song11 <br>
-	<b>Seller:</b><br>
-	russell@adamm.net / song11
-	<% end %>
-	<br><br>
+    <% if user_signed_out? %>
+    <div class="col-md-4 product-service md-margin-bottom-30">
+        <div class="product-service-heading">
+            <i class="icon-refresh"></i>
+        </div>
+        <div class="product-service-in">
+            <h3>Sample Logins</h3>
+            <b>Admin:</b><br>
+            comicsguy@adamm.net / admin1<br>
+            <b>Buyer:</b><br>
+            ram@themillermediagroup.com / song11 <br>
+            <b>Seller:</b><br>
+            russell@adamm.net / song11
+            </p>
+        </div>
+    </div>
+    <% end %>
+
 	</div>
 </div>
 
