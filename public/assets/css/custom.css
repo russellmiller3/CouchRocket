@@ -1,0 +1,16 @@
+/* Add here all your css styles (customizations) */
+
+.admin {
+    border: 2px solid #a1a1a1;
+    padding: 10px 10px;
+    background: #dddddd;
+    width: 300px;
+    text-align: center;
+
+}
+
+.center {
+	padding: 10px 0;
+	text-align: center;
+	background: #18ba9b;
+}
