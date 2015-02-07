@@ -23,41 +23,46 @@
 
            </ul>
       </div>
-      <!--End Profile-->
-
     </div>
     <!--End Left Sidebar-->
 
     <div class="col-md-9">
       <!--Profile Body-->
       <div class="profile-body">
-        <!--Alert-->
-        <div class="col-sm-12 row-margin-bottom-20">
-            <div class="panel panel-profile">
-                <div class="panel-heading overflow-h">
-                    <h2 class="panel-title heading-sm pull-left"><i class="fa fa-send"></i>Notifications</h2>
-                </div>
-                <div id="scrollbar3" class="panel-body contentHolder">
-                    <!--Individual Alert Classes -->
-                    <% if flash[:item_added] %>
-                      <div class="alert-blocks alert-blocks-success alert-dismissable">
-                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-                        <img class="rounded-x image-sm" src="<%= item.picture1_url %>">
-                        <div class="overflow-h">
-                          <strong class="color-green">Success!</strong>
-                          <p><%= flash[:item_added] %></p>
+
+
+        <!--Alerts-->
+        <% if flash != {} %>
+        <div class="panel panel-profile">
+            <div class="panel-heading overflow-h">
+                <h2 class="panel-title heading-sm pull-left"><i class="fa fa-send"></i>Notifications</h2>
+            </div>
+            <div class="panel-body margin-bottom-20">
+                <div class="row">
+                    <div id="scrollbar3" class="panel-body contentHolder">
+                      <!--Individual Alert Classes -->
+                      <% if flash[:item_added] %>
+                        <div class="alert-blocks alert-blocks-success alert-dismissable">
+                          <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                          <img class="rounded-x image-sm" src="<%= item.picture1_url %>">
+                          <div class="overflow-h">
+                            <strong class="color-green">Success!</strong>
+                            <p><%= flash[:item_added] %></p>
+                          </div>
                         </div>
-                      </div>
-                    <% end %>
-                    <!--End Alert Classes -->
+                      <% end %>
+                      <!--End Alert Classes -->
+                    </div>
                 </div>
             </div>
         </div>
-        <!--End Alert-->
+        <% end %>
+        <!--End Alerts-->
+
         <!--Table Search v2-->
-        <div class="table-search-v2 col-sm-12 row-margin-bottom-20">
+        <div class="panel panel-profile">
             <div class="panel-heading overflow-h">
-                <h2 class="panel-title heading-sm pull-left col-sm-12"><i class="fa fa-list"></i>Your Furniture for Sale</h2>
+                <h2 class="panel-title heading-sm pull-left"><i class="fa fa-list"></i>Your Furniture for Sale</h2>
             </div>
             <div class="table-responsive">
                 <table class="table table-hover">

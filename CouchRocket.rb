@@ -349,28 +349,28 @@ post "/register" do
   if user.saved?
     sign_in(user)
 
-    #Check to see if seller added items before signing in
-    if dummy_seller.seller_profile.items
+    # #Check to see if seller added items before signing in
+    # if dummy_seller.seller_profile.items
 
-      current_user.seller_profile = SellerProfile.new
-      current_user.seller_profile.save!
+    #   current_user.seller_profile = SellerProfile.new
+    #   current_user.seller_profile.save!
 
-      #Re-assign items to user's seller profile from dummy seller profile
-      dummy_seller.seller_profile.items.each do |item|
-        item.seller_profile = current_user.seller_profile
-        item.save!
-      end
+    #   #Re-assign items to user's seller profile from dummy seller profile
+    #   dummy_seller.seller_profile.items.each do |item|
+    #     item.seller_profile = current_user.seller_profile
+    #     item.save!
+    #     current_user.save!
+    #   end
 
-      if dummy_seller.seller_profile.pickup_notes
-        current_user.seller_profile.pickup_notes = dummy_seller.seller_profile.pickup_notes
-        dummy_seller.seller_profile.pickup_notes = nil
-      end
+    #   if dummy_seller.seller_profile.pickup_notes
+    #     current_user.seller_profile.pickup_notes = dummy_seller.seller_profile.pickup_notes
+    #     dummy_seller.seller_profile.pickup_notes = nil
+    #   end
 
-      current_user.save!
-      current_user.seller_profile.save!
-      dummy_seller.seller_profile.save!
+    #   current_user.save!
+    #   dummy_seller.save!
 
-    end
+    # end
 
     redirect "/dashboard"
 
@@ -487,31 +487,31 @@ post "/sessions" do
     sign_in(user)
     dummy_seller = User.get(4)
 
-    #Check to see if seller added items before signing in
-    if dummy_seller.seller_profile.items
+    # #Check to see if seller added items before signing in
+    # if dummy_seller.seller_profile.items
 
-      #Create a seller profile if user doesn't have one
-      if current_user.seller_profile == nil
-        current_user.seller_profile = SellerProfile.create
-      end
+    #   #Create a seller profile if user doesn't have one
+    #   if current_user.seller_profile == nil
+    #     current_user.seller_profile = SellerProfile.create
+    #   end
 
 
-      #Re-assign items to user's seller profile from dummy seller profile
-      dummy_seller.seller_profile.items.each do |item|
-        item.seller_profile_id = current_user.seller_profile.id
-        item.save!
-      end
+    #   #Re-assign items to user's seller profile from dummy seller profile
+    #   dummy_seller.seller_profile.items.each do |item|
+    #     item.seller_profile_id = current_user.seller_profile.id
+    #     item.save!
+    #   end
 
-      if dummy_seller.seller_profile.pickup_notes
-        current_user.seller_profile.pickup_notes = dummy_seller.seller_profile.pickup_notes
-        dummy_seller.seller_profile.pickup_notes = nil
-      end
+    #   if dummy_seller.seller_profile.pickup_notes
+    #     current_user.seller_profile.pickup_notes = dummy_seller.seller_profile.pickup_notes
+    #     dummy_seller.seller_profile.pickup_notes = nil
+    #   end
 
-      current_user.seller_profile.save!
-      current_user.save!
-      dummy_seller.seller_profile.save!
+    #   current_user.seller_profile.save!
+    #   current_user.save!
+    #   dummy_seller.seller_profile.save!
 
-    end
+    # end
 
     redirect("/dashboard")
   else

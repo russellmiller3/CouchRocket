@@ -44,7 +44,7 @@ end
 #   the '.env' file. In production, Heroku will set this environment variable
 #   for you.
 DataMapper.setup(:default, ENV["DATABASE_URL"])
-
+DataMapper::Model.raise_on_save_failure = true  # globally across all models
 
 # Display DataMapper debugging information in development
 if Sinatra::Application.development?
