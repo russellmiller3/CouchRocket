@@ -13,6 +13,7 @@ gem 'rest-client'
 gem 'mailgun-ruby', '~>1.0.3', require: 'mailgun'
 gem 'twilio-ruby'
 gem 'sinatra-flash'
+gem 'better_errors'
 
 group :development do
   gem 'sqlite3'
@@ -21,14 +22,10 @@ group :development do
   gem 'rerun'
   gem 'binding_of_caller'
   gem 'pry'
-  gem 'better_errors'
 end
 
 group :production do
   gem 'dm-postgres-adapter'
   gem 'pg'
   gem 'rails_12factor'
-  gem 'better_errors'
-
-
 end
