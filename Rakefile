@@ -144,7 +144,7 @@ namespace :db do
 
 		order1 = Order.create({
 
-				:item => item1.id,
+				:item => item1,
 				:buyer_profile_id => tom_buyerprofile.id,
 				:total_price => "7000",
 				:buyer_name => "Tom Buyer",
@@ -163,7 +163,7 @@ namespace :db do
 
 		order2 = Order.create({
 
-				:item => item2.id,
+				:item => item2,
 				:buyer_profile_id => tom_buyerprofile.id,
 				:total_price => "12000",
 				:buyer_name => "Tom Buyer",
@@ -182,7 +182,7 @@ namespace :db do
 
 		order3 = Order.create({
 
-				:item => item3.id,
+				:item => item3,
 				:buyer_profile_id => tom_buyerprofile.id,
 				:total_price => "9700",
 				:buyer_name => "Tom Buyer",
