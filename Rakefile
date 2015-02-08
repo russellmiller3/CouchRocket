@@ -46,7 +46,7 @@ namespace :db do
 	#create Admin
 
 		admin = User.create({
-			:id=>"1",
+
 			:name=>"admin",
 			:password=>"admin1",
 			:password_confirmation=>"admin1",
@@ -57,7 +57,7 @@ namespace :db do
 	#create Dummy Seller Profile. Used for Guest adding item to temporarily store new items.
 
 		dummy_seller = User.create({
-			:id=>"4",
+
 			:name=>"Dummy Seller",
 			:password=>"song11",
 			:password_confirmation=>"song11",
@@ -65,15 +65,14 @@ namespace :db do
 			})
 
 		dummy_seller_sellerprofile = SellerProfile.create({
-			:id=>"2",
-			:user_id => "4"
+
+			:user_id => dummy_seller.id
 			})
 
 
 	#create User, Seller Profiles
 
 		joe = User.create({
-			:id=>"3",
 			:name=>"Joe Seller",
 			:password=>"song11",
 			:password_confirmation=>"song11",
@@ -83,8 +82,7 @@ namespace :db do
 			})
 
 		joe_sellerprofile = SellerProfile.create({
-			:id=>"1",
-			:user_id => "3",
+			:user_id => joe.id,
 			:pickup_notes => "Gate code is #234. Ask for Joe",
 			:stripe_recipient_id => "rp_15B1wkEWMqWW2cevh9LH1iRT"
 			})
@@ -93,7 +91,7 @@ namespace :db do
 	#create User, Buyer profile,
 
 		tom = User.create({
-			:id=>"2",
+
 			:name=>"Tom Buyer",
 			:password=>"song11",
 			:password_confirmation=>"song11",
@@ -103,55 +101,51 @@ namespace :db do
 			})
 
 		tom_buyerprofile = BuyerProfile.create({
-			:id=>"1",
-			:user_id => "2",
+
+			:user_id => tom.id,
 			})
 
 	# Create 3 items
 
 		item1 = Item.create({
-				:id =>"1",
 				:type=>"Couch",
 				:brand=>"Davis",
 				:notes=>"A fine leather couch suitable for all occasions",
 				:original_price=>"10000",
 				:asking_price=>"7000",
 				:picture1_url=>"http://www.thisthatandlife.com/wp-content/uploads/2012/11/Craigslist-Man-Leather-Couch-225.jpg",
-				:seller_profile_id=>"1",
-				:order_id=>"1",
+				:seller_profile_id => joe_sellerprofile.id,
 				:sold=>"true"
 
 			})
 
 		item2 = Item.create({
-				:id =>"2",
 				:type=>"Bed",
 				:brand=>"Ikea",
 				:notes=>"A very comfortable bed",
 				:original_price=>"20000",
 				:asking_price=>"12000",
 				:picture1_url=>"http://jacobandlevis.com/CMS/uploads/Stafford_Queen_Bed.jpg",
-				:seller_profile_id=>"1",
-				:order_id=>"2"
+				:seller_profile_id => joe_sellerprofile.id
+
 			})
 
 		item3 = Item.create({
-				:id =>"3",
 				:type=>"Chair",
 				:brand=>"Nordstrom",
 				:notes=>"Great looking chair",
 				:original_price=>"8000",
 				:asking_price=>"6000",
 				:picture1_url=>"http://www.ikea.com/PIAimages/0122106_PE278491_S5.JPG",
-				:seller_profile_id=>"1",
+				:seller_profile_id => joe_sellerprofile.id
 			})
 
 # Create 2 orders
 
 		order1 = Order.create({
-				:id => "1",
-				:item => Item.get(1),
-				:buyer_profile_id => "1",
+
+				:item => item1.id,
+				:buyer_profile_id => tom_buyerprofile.id,
 				:total_price => "7000",
 				:buyer_name => "Tom Buyer",
 				:buyer_phone => "4158598060",
@@ -168,9 +162,9 @@ namespace :db do
 			})
 
 		order2 = Order.create({
-				:id => "2",
-				:item => Item.get(2),
-				:buyer_profile_id => "1",
+
+				:item => item2.id,
+				:buyer_profile_id => tom_buyerprofile.id,
 				:total_price => "12000",
 				:buyer_name => "Tom Buyer",
 				:buyer_email => "ram@themillermediagroup.com",
@@ -187,9 +181,9 @@ namespace :db do
 			})
 
 		order3 = Order.create({
-				:id => "3",
-				:item => Item.get(3),
-				:buyer_profile_id => "1",
+
+				:item => item3.id,
+				:buyer_profile_id => tom_buyerprofile.id,
 				:total_price => "9700",
 				:buyer_name => "Tom Buyer",
 				:buyer_email => "ram@themillermediagroup.com",

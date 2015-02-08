@@ -349,28 +349,30 @@ post "/register" do
   if user.saved?
     sign_in(user)
 
-    # #Check to see if seller added items before signing in
-    # if dummy_seller.seller_profile.items
+    #Check to see if seller added items before signing in
+    if dummy_seller.seller_profile.items
 
-    #   current_user.seller_profile = SellerProfile.new
-    #   current_user.seller_profile.save!
+      current_user.seller_profile = SellerProfile.new
+      current_user.seller_profile.save!
 
-    #   #Re-assign items to user's seller profile from dummy seller profile
-    #   dummy_seller.seller_profile.items.each do |item|
-    #     item.seller_profile = current_user.seller_profile
-    #     item.save!
-    #     current_user.save!
-    #   end
+      #Re-assign items to user's seller profile from dummy seller profile
+      dummy_seller.seller_profile.items.each do |item|
+        item.seller_profile = current_user.seller_profile
+        item.save!
+        current_user.save!
+      end
 
-    #   if dummy_seller.seller_profile.pickup_notes
-    #     current_user.seller_profile.pickup_notes = dummy_seller.seller_profile.pickup_notes
-    #     dummy_seller.seller_profile.pickup_notes = nil
-    #   end
+      if dummy_seller.seller_profile.pickup_notes
+        current_user.seller_profile.pickup_notes = dummy_seller.seller_profile.pickup_notes
+        dummy_seller.seller_profile.pickup_notes = nil
+      end
 
-    #   current_user.save!
-    #   dummy_seller.save!
+      current_user.save!
+      dummy_seller.save!
 
-    # end
+    end
+
+    binding.pry
 
     redirect "/dashboard"
 
