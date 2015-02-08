@@ -65,8 +65,8 @@ namespace :db do
 			})
 
 		dummy_seller_sellerprofile = SellerProfile.create({
-
-			:user => dummy_seller
+			:user_id => dummy_seller.id
+			#:user => dummy_seller
 			})
 
 
