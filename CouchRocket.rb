@@ -350,7 +350,7 @@ post "/register" do
     sign_in(user)
 
     #Check to see if seller added items before signing in
-    if dummy_seller.seller_profile.items
+    if dummy_seller.seller_profile.item
 
       current_user.seller_profile = SellerProfile.new
       current_user.seller_profile.save!
