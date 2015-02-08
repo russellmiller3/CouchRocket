@@ -65,7 +65,8 @@ namespace :db do
 			})
 
 		dummy_seller_sellerprofile = SellerProfile.create({
-			:user_id => dummy_seller.id
+			:user_id => dummy_seller.id,
+			:pickup_notes => "Gate code is #234. Ask for Joe"
 			#:user => dummy_seller
 			})
 
