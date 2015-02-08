@@ -23,7 +23,7 @@ namespace :db do
 	end
 
 	task :delete_database_file do
-		heroku pg:reset --app couchrocket HEROKU_POSTGRESQL_CRIMSON --confirm couchrocket
+		heroku pg:reset DATABASE --confirm couchrocket
 		puts "Old Database destroyed."
 	end
 
